@@ -39,7 +39,6 @@ test_that("Defaults", {
     equilibrium_solver_logN = TRUE,
     equilibrium_solver_try_keep = TRUE,
     
-    newton_tol_abs = 1e-3,
     GSS_tol_abs = 1e-3,
     vulnerability_curve_ncontrol = 1e2,
     ci_abs_tol = 1e-3,

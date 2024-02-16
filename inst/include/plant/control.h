@@ -65,7 +65,6 @@ struct Control {
   bool   save_RK45_cache;
   
   //ff16w control parameters
-  double newton_tol_abs;
   double GSS_tol_abs;
   double vulnerability_curve_ncontrol;
   double ci_abs_tol;
