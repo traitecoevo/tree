@@ -115,9 +115,6 @@ Leaf:
     hydraulic_cost_Sperry:
       return_type: double
       args: [psi_stem: double]
-    hydraulic_cost_Bartlett:
-      return_type: double
-      args: [psi_stem: double] 
     hydraulic_cost_TF:
       return_type: double
       args: [psi_stem: double]
@@ -130,9 +127,6 @@ Leaf:
     profit_psi_stem_Sperry_analytical:
       return_type: double
       args: [psi_stem: double]  
-    profit_psi_stem_Bartlett:
-      return_type: double
-      args: [psi_stem: double]
     profit_psi_stem_TF:
       return_type: double
       args: [psi_stem: double]
@@ -146,9 +140,6 @@ Leaf:
     optimise_ci_Sperry:
       return_type: void
       args: [max_ci: double]
-    optimise_psi_stem_Bartlett:
-      return_type: void
-      args: []
     optimise_psi_stem_TF:
       return_type: void
       args: []

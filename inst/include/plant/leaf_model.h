@@ -215,11 +215,8 @@ public:
 
 
 // leaf economics functions
-  double hydraulic_cost_Bartlett(double psi_stem);
   double hydraulic_cost_Sperry(double psi_stem);
   double hydraulic_cost_TF(double psi_stem);
-  double profit_psi_stem_Bartlett(double psi_stem);
-  double profit_psi_stem_Bartlett_analytical(double psi_stem);
 
   double profit_psi_stem_Sperry(double psi_stem);
   double profit_psi_stem_Sperry_analytical(double psi_stem);
@@ -231,7 +228,6 @@ public:
   void optimise_psi_stem_Sperry();
   void optimise_psi_stem_Sperry_analytical();
   void optimise_ci_Sperry(double ci_guess);
-  void optimise_psi_stem_Bartlett();
   void optimise_psi_stem_TF();
   void optimise_psi_stem_TF_newton(double psi_guess);
 
