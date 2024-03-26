@@ -24,7 +24,7 @@ public:
   void set_state_from_system() {solver.set_state_from_system(obj);}
   std::vector<double> times() const {return solver.get_times();}
   T object() const {return obj;}
-  void advance(double time) {solver.advance(obj, time);}
+  void advance_adaptive(double time) { solver.advance_adaptive(obj, time); }
   void advance_fixed(std::vector<double> times) {
     solver.advance_fixed(obj, times);
   }

@@ -25,7 +25,7 @@ public:
   double get_time() const {return time;}
   std::vector<double> get_times() const {return prev_times;}
 
-  void advance(System& system, double time_max_);
+  void advance_adaptive(System &system, double time_max_);
   void advance_fixed(System& system, const std::vector<double>& times);
 
   void step(System& system);
@@ -109,7 +109,8 @@ void Solver<System>::set_state_from_system(const System& system) {
 }
 
 template <class System>
-void Solver<System>::advance(System& system, double time_max_) {
+void Solver<System>::advance_adaptive(System &system, double time_max_)
+{
   set_time_max(time_max_);
   while (time < time_max) {
     step(system);

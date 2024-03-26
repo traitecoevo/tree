@@ -36,7 +36,7 @@ OdeRunner:
     times: {type: "std::vector<double>", access: member}
     object: {type: T, access: member}
   methods:
-    advance: {return_type: void, args: [time: double]}
+    advance_adaptive: {return_type: void, args: [time: double]}
     advance_fixed: {return_type: void, args: [time: "std::vector<double>"]}
     step: {return_type: void}
     step_to: {return_type: void, args: [time: double]}

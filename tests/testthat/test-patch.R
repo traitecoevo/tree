@@ -121,7 +121,7 @@ for (x in names(strategy_types)) {
     ## tt <- seq(0, 25, length.out=26)
     ## hh <- patch$state("height")[[1]]
     ## for (ti in tt[-1]) {
-    ##   solver$advance(ti)
+    ##   solver$advance_adaptive(ti)
     ##   hh <- c(hh, patch$state("height")[[1]])
     ## }
     
@@ -134,9 +134,9 @@ for (x in names(strategy_types)) {
     
     ## test_that("OK at end of sequence", {
     ##   expect_identical(patch$time, tt[[length(tt)]])
-    ##   solver$advance(tt[[length(tt)]])
+    ##   solver$advance_adaptive(tt[[length(tt)]])
     ##   expect_identical(patch$time, tt[[length(tt)]])
-    ##   expect_error(solver$advance(tt[[length(tt)]] - 1e-8))
+    ##   expect_error(solver$advance_adaptive(tt[[length(tt)]] - 1e-8))
     ## })
     
     ## test_that("State get/set works", {

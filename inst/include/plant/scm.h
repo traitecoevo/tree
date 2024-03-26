@@ -112,7 +112,7 @@ template <typename T, typename E> std::vector<size_t> SCM<T, E>::run_next() {
   if (use_ode_times) {
     solver.advance_fixed(patch, e.times);
   } else {
-    solver.advance(patch, e.time_end());
+    solver.advance_adaptive(patch, e.time_end());
   }
 
   return ret;
