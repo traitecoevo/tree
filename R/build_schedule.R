@@ -51,7 +51,7 @@ build_schedule <- function(p, env = make_environment(parameters = p),
     plant_log_debug(msg, routine="schedule", event="split", round=i)
   }
 
-  p$node_schedule_ode_times <- res$ode_times
+  p$ode_times <- res$ode_times
   ## Useful to record the last offspring produced:
 
   attr(p, "offspring_production") <- offspring_production
