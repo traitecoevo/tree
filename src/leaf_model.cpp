@@ -296,7 +296,7 @@ double Leaf::hydraulic_cost_TF(double psi_stem) {
 hydraulic_cost_ = 1e6 * 
     hk_s /(365*24*60*60)* 
     (1/a_bio_) * 
-    rho_ * sapwood_volume_per_leaf_area_ * pow((1 - proportion_of_conductivity(psi_stem)));
+    rho_ * sapwood_volume_per_leaf_area_ * (1 - proportion_of_conductivity(psi_stem));
 
 return hydraulic_cost_;
 }
