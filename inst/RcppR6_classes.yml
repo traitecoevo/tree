@@ -6,8 +6,6 @@ Leaf:
       - c: double
       - b: double
       - psi_crit: double
-      - beta1: double
-      - beta2: double
       - jmax_25: double
       - hk_s: double
       - a: double
@@ -1244,8 +1242,6 @@ FF16w_Strategy:
     - hk_s: double
     - newton_tol_abs: double
     - GSS_tol_abs: double
-    - beta1: double
-    - beta2: double
     - jmax_25: double
     - a: double
     - curv_fact_elec_trans: double

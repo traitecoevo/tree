@@ -18,7 +18,7 @@ double FF16w_Strategy::compute_average_light_environment(
      return std::max(environment.get_environment_at_height(z), 0.0001) * q(z, height);
 }
 
-// assumes calc_profit_bartlett has been run for optimal psi_stem
+// assumes optimise_psi_stem_TF has been run for optimal psi_stem
 double FF16w_Strategy::evapotranspiration_dt(double area_leaf_) {
   return leaf.transpiration_ * area_leaf_;
 }
@@ -72,7 +72,6 @@ double FF16w_Strategy::net_mass_production_dt(const FF16_Environment &environmen
   leaf.set_physiology(rho, a_bio, average_radiation, psi_soil, leaf_specific_conductance_max, environment.get_atm_vpd(), environment.get_ca(), sapwood_volume_per_leaf_area, environment.get_leaf_temp(), environment.get_atm_o2_kpa(), environment.get_atm_kpa());
 
   // optimise psi_stem, setting opt_psi_stem_, profit_, hydraulic_cost_, assim_colimited_ etc.
-  // leaf.optimise_psi_stem_Bartlett_analytical();
   leaf.optimise_psi_stem_TF();
 
   // stomatal conductance to c02 (umol m^-2 s^-1)
@@ -207,7 +206,7 @@ void FF16w_Strategy::prepare_strategy() {
   } else {
     extrinsic_drivers.set_constant("birth_rate", birth_rate_y[0]);
   }
-  leaf = Leaf(vcmax_25,  c,  b, psi_crit,  beta1,  beta2, jmax_25, hk_s, a, curv_fact_elec_trans,curv_fact_colim, control.newton_tol_abs, control.GSS_tol_abs,
+  leaf = Leaf(vcmax_25,  c,  b, psi_crit, jmax_25, hk_s, a, curv_fact_elec_trans,curv_fact_colim, control.newton_tol_abs, control.GSS_tol_abs,
            control.vulnerability_curve_ncontrol,
            control.ci_abs_tol,
            control.ci_niter);

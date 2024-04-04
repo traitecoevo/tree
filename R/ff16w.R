@@ -464,8 +464,6 @@ FF16w_hyperpar <- make_FF16w_hyperpar()
 #' @param vcmax_25 
 #' @param K_s 
 #' @param c 
-#' @param beta1 
-#' @param beta2 
 #' @param hk_s 
 #' @param jmax_25 
 #' @param a 
@@ -503,8 +501,6 @@ make_FF16w_parameters <- function(p0 = FF16w_Parameters(),
                             k_I = p0$strategy_default$k_I,
                             vcmax_25 = p0$strategy_default$vcmax_25,
                             K_s = p0$strategy_default$K_s,
-                            beta1 = p0$strategy_default$beta1,
-                            beta2 = p0$strategy_default$beta2,
                             jmax_25 = p0$strategy_default$jmax_25,
                             a = p0$strategy_default$a,
                             curv_fact_elec_trans = p0$strategy_default$curv_fact_elec_trans,
@@ -538,8 +534,6 @@ make_FF16w_parameters <- function(p0 = FF16w_Parameters(),
                         k_I = k_I,
                         vcmax_25 = vcmax_25,
                         K_s = K_s,
-                        beta1 = beta1,
-                        beta2 = beta2,
                         jmax_25 = jmax_25,
                         a = a,
                         curv_fact_elec_trans = curv_fact_elec_trans,
@@ -611,7 +605,7 @@ if(!is.numeric(ff16w_env[["leaf_temp"]])){
 eta_c = 1 - 2 / (1 + ff16w_params$eta) + 1 / (1 + 2 * ff16w_params$eta)
 leaf_specific_conductance_max <- ff16w_params$K_s * ff16w_params$theta / (height * eta_c)
 sapwood_volume_per_leaf_area <- ff16w_params$theta * height* eta_c
-leaf_obj <- Leaf(vcmax_25 = ff16w_params$vcmax_25, jmax_25 = ff16w_params$jmax_25, c = ff16w_params$c, b = ff16w_params$b, psi_crit = ff16w_params$psi_crit, beta1 = ff16w_params$beta1, beta2= ff16w_params$beta2, hk_s = ff16w_params$hk_s, a = ff16w_params$a,
+leaf_obj <- Leaf(vcmax_25 = ff16w_params$vcmax_25, jmax_25 = ff16w_params$jmax_25, c = ff16w_params$c, b = ff16w_params$b, psi_crit = ff16w_params$psi_crit, hk_s = ff16w_params$hk_s, a = ff16w_params$a,
           curv_fact_elec_trans = ff16w_params$curv_fact_elec_trans, curv_fact_colim = ff16w_params$curv_fact_colim,
           newton_tol_abs = ff16w_params$control$newton_tol_abs, GSS_tol_abs = ff16w_params$control$GSS_tol_abs, vulnerability_curve_ncontrol = ff16w_params$control$vulnerability_curve_ncontrol, ci_abs_tol = ff16w_params$control$ci_abs_tol, 
           ci_niter = ff16w_params$control$ci_niter)

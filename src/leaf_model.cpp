@@ -8,8 +8,6 @@ Leaf::Leaf()
     c(2.680147), //unitless
     b(3.898245), //-MPa
     psi_crit(5.870283), //-MPa 
-    beta1(20000), //hydraulic cost for Bartlett method umol m^-3 s^-1
-    beta2(1.5), //exponent for effect of hydraulic risk (unitless)
     jmax_25(157.44), // maximum electron transport rate umol m^-2 s^-1
     hk_s(4),  // maximum hydraulic-dependent sapwood turnover rate yr ^ -1
     a(0.30), //quantum yield of photosynthetic electron transport (mol mol^-1)
@@ -27,7 +25,7 @@ Leaf::Leaf()
 
 Leaf::Leaf(double vcmax_25, double c, double b,
            double psi_crit, // derived from b and c,
-           double beta1, double beta2, double jmax_25, double hk_s,
+           double jmax_25, double hk_s,
            double a, double curv_fact_elec_trans, double curv_fact_colim, 
            double newton_tol_abs,
            double GSS_tol_abs,
@@ -38,8 +36,6 @@ Leaf::Leaf(double vcmax_25, double c, double b,
     c(c), //unitless
     b(b), //-MPa
     psi_crit(psi_crit), //-MPa 
-    beta1(beta1), //hydraulic cost for Bartlett method umol m^-3 s^-1
-    beta2(beta2), //exponent for effect of hydraulic risk (unitless)
     jmax_25(jmax_25), // maximum electron transport rate umol m^-2 s^-1
     hk_s(hk_s),  // maximum hydraulic-dependent sapwood turnover rate yr ^ -1
     a(a), //quantum yield of photosynthetic electron transport (mol mol^-1)
@@ -345,7 +341,7 @@ double Leaf::hydraulic_cost_TF(double psi_stem) {
 hydraulic_cost_ = 1e6 * 
     hk_s /(365*24*60*60)* 
     (1/a_bio_) * 
-    rho_ * sapwood_volume_per_leaf_area_ * pow((1 - proportion_of_conductivity(psi_stem)), beta2);
+    rho_ * sapwood_volume_per_leaf_area_ * pow((1 - proportion_of_conductivity(psi_stem)));
 
 return hydraulic_cost_;
 }
@@ -371,16 +367,6 @@ set_leaf_states_rates_from_psi_stem(psi_stem);
 
   return benefit_ - hydraulic_cost_;
 }
-
-double Leaf::profit_psi_stem_Bartlett_analytical(double psi_stem) {
-
-set_leaf_states_rates_from_psi_stem_analytical(psi_stem);
-  double benefit_ = assim_colimited_;
-  double hydraulic_cost_ = hydraulic_cost_Bartlett(psi_stem);
-
-  return benefit_ - hydraulic_cost_;
-}
-
 
 double Leaf::profit_psi_stem_Sperry_analytical(double psi_stem) {
 

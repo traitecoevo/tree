@@ -81,8 +81,6 @@ public:
        double c, 
        double b, 
        double psi_crit,
-       double beta1,
-       double beta2, 
        double jmax_25, 
        double hk_s,
        double a, 
@@ -104,8 +102,6 @@ public:
   double c;
   double b;
   double psi_crit;  // derived from b and c
-  double beta1;
-  double beta2;
   double jmax_25;
   double hk_s;
   double a;

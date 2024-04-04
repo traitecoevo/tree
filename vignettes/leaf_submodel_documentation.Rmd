@@ -38,8 +38,6 @@ There are 9 new traits thus far:
 -c: Shape parameter for the hydraulic vulnerability curve (unitless)
 -b: Sensitivity parameter for the hydraulic vulnerability curve (-MPa)
 -psi_crit: $\psi_l$ at which 95% of conductivity is lost. Maximum water potential. (-MPa)
--beta1: cost of sapwood per volume per unit of hydraulic damage (umol C m^{-3} sapwood)
--beta2: shape parameter for relationship between lost conductivity and sapwood repair cost (unitless). 
 
 For the most part, these traits, in combination with traits from `ff16`, determine how plant assimilate carbon and tranpsire water via the physiological `Leaf` submodel. We can start by exploring the theory behind how the `Leaf` submodel works, found in `leaf_model.cpp`. 
 
@@ -106,7 +104,7 @@ First, we need to initialise a leaf with some traits and some environmental info
 The `Leaf` function creates a `Leaf` object, which contains most of the internal functions which are used when calculating the photosynthetic assimilation and water use of a unit of leaf area when using `ff16w`. We initialise the `Leaf` object with a set of traits.
 
 ```{r}
-leaf <- Leaf(vcmax= sw$vcmax_25, b = sw$b, c = sw$c, psi_crit = sw$psi_crit, epsilon_leaf = sw$epsilon_leaf, beta1 = sw$beta1, beta2 = sw$beta2, jmax_25 = sw$jmax_25, hk_s = sw$hk_s, a = sw$a, curv_fact_elec_trans = sw$curv_fact_elec_trans, curv_fact_colim = sw$curv_fact_colim)
+leaf <- Leaf(vcmax= sw$vcmax_25, b = sw$b, c = sw$c, psi_crit = sw$psi_crit, epsilon_leaf = sw$epsilon_leaf, jmax_25 = sw$jmax_25, hk_s = sw$hk_s, a = sw$a, curv_fact_elec_trans = sw$curv_fact_elec_trans, curv_fact_colim = sw$curv_fact_colim)
 ```
 
 We also need to set a series of variables which describe the environmment and physiology of the plant at a given time using the `set_physiology` function. Whereas the traits set using the `Leaf` function describe a species' strategy and do not vary over time, the variables set in `set_physiology` do vary. This becomes more relevant for when we dynamically running an individual plant or forest. For now, we will set some constants, based on plant height. 
@@ -251,7 +249,7 @@ tibble(psi_stem = seq(1, 4, length.out = 100)) %>%
     leaf$set_leaf_states_rates_from_psi_stem_analytical(.x)
     leaf$assim_colimited_}
     )) %>%
-  mutate(C = map_dbl(psi_stem, ~leaf$hydraulic_cost_Bartlett(.x)))-> data
+  mutate(C = map_dbl(psi_stem, ~leaf$hydraulic_cost_TF(.x)))-> data
 
 data %>%
   mutate(P = R-C) %>%
@@ -262,12 +260,12 @@ data %>%
   geom_vline(xintercept = 2.05, linetype = "dashed")
 ```
 
-That's a pretty complicated way to do it though. We can just automatically calculated these values using a given profit funciton. For example, the in-built profit funciton in `ff16w` is the `profit_psi_stem_Bartlett_analytical`.
+That's a pretty complicated way to do it though. We can just automatically calculated these values using a given profit funciton. For example, the in-built profit funciton in `ff16w` is the `profit_psi_stem_TF`.
 
 ```{r}
 tibble(psi_stem = seq(1, 4, length.out = 100)) %>%
   mutate(outcomes = map(.x = psi_stem, ~{
-    leaf$profit_psi_stem_Bartlett(.x)
+    leaf$profit_psi_stem_TF(.x)
     return(tibble(H = leaf$hydraulic_cost_, R = leaf$assim_colimited_, P = R-H, ))
     }))-> data
 
@@ -310,8 +308,8 @@ bound_d = bound_a + (bound_b - bound_a) / gr;
 
 while (abs(bound_b - bound_a) > delta_crit) {
   
-  profit_at_c = leaf$profit_psi_stem_Bartlett_analytical(bound_c);
-  profit_at_d = leaf$profit_psi_stem_Bartlett_analytical(bound_d);
+  profit_at_c = leaf$profit_psi_stem_TF(bound_c);
+  profit_at_d = leaf$profit_psi_stem_TF(bound_d);
   
   if (profit_at_c > profit_at_d) {
         bound_b = bound_d;
@@ -325,15 +323,18 @@ while (abs(bound_b - bound_a) > delta_crit) {
       }
 
     opt_psi_stem = ((bound_b + bound_a) / 2);
-    profit = leaf$profit_psi_stem_Bartlett_analytical(opt_psi_stem);
+    profit = leaf$optimise_psi_stem_TF();
     transpiration = leaf$transpiration_
 ```
 
 `ff16w` implementation.
 
 ```{r}
-leaf$optimise_psi_stem_Bartlett_analytical()
+leaf$optimise_psi_stem_TF()
 leaf$profit_
 leaf$transpiration_
+```
+
+ion_
 ```
 
