@@ -1,3 +1,4 @@
 ## -*- makefile -*-
 CXX_STD = CXX14
 PKG_CPPFLAGS = -isystem../inst/include/
+## PKG_LIBS = -lprofiler

@@ -1,6 +1,7 @@
 // -*-c++-*-
 #ifndef _PLANT_H_
 #define _PLANT_H_
+// #include "gperftools/profiler.h"
 
 #include <plant/util.h>
 
