@@ -5,16 +5,14 @@ vignette: >
   %\VignetteIndexEntry{Getting started with the plant model}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
-  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
 options(rmarkdown.html_vignette.check_title = FALSE)
 ```
 
-- **authors**: DS Falster, A O'Reilly-Nugent, I Towers, F Robinson
-- **date**: 2022
+**authors**: DS Falster, A O'Reilly-Nugent, I Towers, F Robinson
+**date**: 2022
 
 # Background
 

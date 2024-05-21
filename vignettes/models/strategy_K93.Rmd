@@ -3,15 +3,11 @@ title: "The `K93` model"
 subtitle: "Kohymama 1993 - The Forest Architecture Hypothesis for the Stable Coexistence of Species"
 bibliography: ../assets/refs.bib
 csl: ../assets/methods-in-ecology-and-evolution.csl
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{The `K93` model}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: bookdown::html_document2
 ---
 
-- **authors**: Andrew O'Reilly-Nugent, Daniel Falster
-- **date**: 2020
+**authors**: Andrew O'Reilly-Nugent, Daniel Falster
+**date**: 2020
 
 # Background
 

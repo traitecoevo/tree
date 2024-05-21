@@ -2,15 +2,11 @@
 title: "The `FF16` model"
 bibliography: ../assets/refs.bib
 csl: ../assets/methods-in-ecology-and-evolution.csl
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{The `FF16` model}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: bookdown::html_document2
 ---
 
-- **authors**: DS Falster, RG FitzJohn, Å Brännström, U Dieckmann, M Westoby
-- **date**: 2016
+**authors**: DS Falster, RG FitzJohn, Å Brännström, U Dieckmann, M Westoby
+**date**: 2016
 
 ```{r, echo=FALSE}
 library(plant)

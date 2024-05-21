@@ -2,15 +2,11 @@
 title: "Demography of individuals, patches, and metacommunities"
 bibliography: assets/refs.bib
 csl: assets/methods-in-ecology-and-evolution.csl
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Demography of individuals, patches, and metacommunities}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: bookdown::html_document2
 ---
 
-- **authors**: DS Falster, Å Brännström, U Dieckmann
-- **date**: 2016
+**authors**: DS Falster, Å Brännström, U Dieckmann \n
+**date**: 2016
 
 ```{r setup, include=FALSE}
 options(rmarkdown.html_vignette.check_title = FALSE)

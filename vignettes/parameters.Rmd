@@ -1,15 +1,10 @@
 ---
 title: "Modifying parameters"
-author: 
-- Rich FitzJohn
-- Daniel Falster
-date: 2016
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Modifying parameters}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: bookdown::html_document2
 ---
+
+**authors**: DS Falster, RG FitzJohn
+**date**: 2016
 
 ```{r}
 library(plant)

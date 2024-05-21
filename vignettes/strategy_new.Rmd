@@ -1,15 +1,11 @@
 ---
 title: "Implementing a new startegy"
 subtitle: "(Using Kohymama 1993 - forest architecture model)"
-author: Andrew O'Reilly-Nugent
-date: August 28, 2020
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Implementing a new startegy}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: bookdown::html_document2
 ---
 
+**authors**: Andrew O'Reilly-Nugent
+**date**: 2020
 
 # 🚧 Under construction 🚧
 
@@ -167,7 +163,6 @@ Dispersal and establishment are fixtures of the `plant` framework, but not used 
 
 *"As a naming convention, strategies are named using two initials (eg. the first two authors) followed by a year, e.g. FF16. A single letter suffix can be added to indicate a minor modification of an existing strategy, e.g. FF16r"*
 
-[Developer Notes](https://traitecoevo.github.io/plant/articles/developer_notes.html)
 
 ### 1. Use scaffolder to create template files
 

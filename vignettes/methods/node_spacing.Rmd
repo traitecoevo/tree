@@ -1,15 +1,10 @@
 ---
 title: "Node spacing method"
-author: 
-- Rich FitzJohn
-- Daniel Falster
-date: 2016
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Node spacing method}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: bookdown::html_document2
 ---
+
+**authors**: DS Falster, RG FitzJohn
+**date**: 2016
 
 <!-- NB:
  This file is generated from the file `vignettes/methods/node_spacing.Rmd`. Make any edits there. To regenerate

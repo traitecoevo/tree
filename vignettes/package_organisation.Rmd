@@ -1,12 +1,9 @@
 ---
-title: "Notes for future developers"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Notes for future developers}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+title: "Organisation of the package"
+output: bookdown::html_document2
 ---
+
+**authors**: DS Falster
 
 ```{r setup, include=FALSE}
 options(rmarkdown.html_vignette.check_title = FALSE)

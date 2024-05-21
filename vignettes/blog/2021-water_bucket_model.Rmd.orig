@@ -5,8 +5,8 @@ output:
   html_document: default
 ---
 
-- **authors**: Isaac Towers
-- **date**: 2021-05-19
+**authors**: Isaac Towers
+**date**: 2021-05-19
 
 <!-- NB:
  This file is generated from an original. Make any edits there. To regenerate

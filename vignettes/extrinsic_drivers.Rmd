@@ -1,16 +1,11 @@
 ---
 title: "Utilising Extrinsic Drivers"
-author: 
-- Mitchell Henry
-date: 2022
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Utilising Extrinsic Drivers}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
-  chunk_output_type: console
+output: bookdown::html_document2
 ---
+
+**authors**: Mitchell Henry
+**date**: 2022
+
 ```{r}
 library(plant)
 ```

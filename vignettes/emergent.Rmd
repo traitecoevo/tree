@@ -1,15 +1,10 @@
 ---
 title: "Patch-level emergent properties"
-author: 
-- Rich FitzJohn
-- Daniel Falster
-date: 2016
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Patch-level emergent properties}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: bookdown::html_document2
 ---
+
+**authors**: DS Falster, RG FitzJohn
+**date**: 2016
 
 # Background
 

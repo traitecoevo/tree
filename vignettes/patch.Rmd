@@ -1,14 +1,11 @@
 ---
 title: "Growing a patch of competiting individuals"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Growing a patch of competiting individuals}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: bookdown::html_document2
+
 ---
 
-- **authors**: DS Falster, RG FitzJohn
-- **date**: 2016
+**authors**: DS Falster, RG FitzJohn
+**date**: 2016
 
 # Background
 
