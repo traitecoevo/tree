@@ -52,8 +52,4 @@ clean:
 vignettes:
 	Rscript -e "devtools::build_vignettes()"
 
-website: vignettes
-	Rscript -e "pkgdown::build_site()" /
-	open "inst/website/index.html"
-
-.PHONY: all compile doc clean test attributes roxygen install build check vignettes website push_website
+.PHONY: all compile doc clean test attributes roxygen install build check vignettes
