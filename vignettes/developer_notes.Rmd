@@ -1,9 +1,9 @@
 ---
-title: "Developer Notes"
+title: "Notes for future developers"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{developer_notes}
+  %\VignetteIndexEntry{Notes for future developers}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

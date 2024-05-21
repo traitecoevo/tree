@@ -26,3 +26,4 @@
 ^inst/RcppR6*$
 ^Meta$
 ^water_bucket_submodel$
+^vignettes/articles$

@@ -1,20 +1,20 @@
 ---
-title: "Node spacing in the size-density distribution"
+title: "Node spacing method"
 author: 
 - Rich FitzJohn
 - Daniel Falster
 date: 2016
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{node_spacing}
+  %\VignetteIndexEntry{Node spacing method}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 <!-- NB:
- This file is generated from the file `vignettes/Node_spacing.Rmd`. Make any edits there. To regenerate
+ This file is generated from the file `vignettes/methods/node_spacing.Rmd`. Make any edits there. To regenerate
 
-setwd("vignettes")
+setwd("vignettes/methods")
 knitr::knit("node_spacing.Rmd.orig", "node_spacing.md")
 file.copy("node_spacing.md", "node_spacing.Rmd", overwrite = TRUE)
 unlink("node_spacing.md")

@@ -1,0 +1,13 @@
+---
+title: "The `TF24` model"
+bibliography: ../assets/refs.bib
+csl: ../assets/methods-in-ecology-and-evolution.csl
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The `TF24` model}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+- **authors**: I Towers, DS Falster
+- **date**: 2024

@@ -69,8 +69,11 @@ navbar:
       desc: >
         These articles are used to record experiments, that are not expected to continue working into the future.
       menu:
-        - text: "2021-water_bucket_model"
-          href: articles/blog/2021-water_bucket_model.html
+        - text: "Fonti 1"
+          href: articles/blog/Fontis-apple-cake.html
+        - text: "Fonti 2"
+          href: articles/blog/Fontis-apple-cake2.html
+
 
   right:
     - text: "News"

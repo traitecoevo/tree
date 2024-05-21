@@ -6,10 +6,12 @@ author:
 date: 2016
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Individuals}
+  %\VignetteIndexEntry{Growing individuals}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+
 
 # Background
 

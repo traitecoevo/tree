@@ -5,14 +5,11 @@ author: Andrew O'Reilly-Nugent
 date: August 28, 2020
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{strategy_new}
+  %\VignetteIndexEntry{Implementing a new startegy}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
-options(rmarkdown.html_vignette.check_title = FALSE)
-```
 
 # 🚧 Under construction 🚧
 
