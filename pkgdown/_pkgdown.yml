@@ -25,9 +25,7 @@ navbar:
         - text: "Theory"
         - text: "Demography of individuals, patches, and metacommunities"
           href: articles/demography.html
-        - text: -------
-        - text: "Numerical methods"
-        - text: "Solving system of equations"
+        - text: "Numerical methods for solving equations"
           href: articles/methods/solving_dynamics.html
         - text: "The node spacing algorithm"
           href: articles/blog/node_spacing.html
@@ -41,29 +39,27 @@ navbar:
           href: articles/models/strategy_K93.html
         - text: -------
         - text: "Examples"
+        - text: "Example analysis"
+          href: articles/example_analysis.html
+        - text: "Changing parameters"
+          href: articles/parameters.html
+        - text: "Self thinning"
+          href: articles/self_thinning.html
         - text: "Individual plants"
           href: articles/individuals.html
         - text: "Patches of competing plants"
           href: articles/patch.html
-        - text: "Finding demographic equilibrium"
-          href: articles/equilibrium.html
         - text: "Emergent properties of patches"
           href: articles/emergent.html
-        - text: "Calculating fitness"
-          href: articles/fitness.html
-        - text: "Changing parameters"
-          href: articles/parameters.html
-        - text: -------
-        - text: "How to"
-        - text: "Changing parameters"
-          href: articles/parameters.html
+        - text: "Utilising Extrinsic Drivers"
+          href: articles/extrinsic_drivers.html
         - text: -------
         - text: "Developer Notes"
-        - text: "Notes for future developers"
+        - text: "Organisation of the package"
           icon: fa-terminal
-          href: articles/developer_notes.html
+          href: articles/package_organisation.html
         - text: "Implementing a new strategy"
-          href: articles/strategy.html
+          href: articles/strategy_new.html
     - text: "Blog"
       icon: fa-book
       desc: >
