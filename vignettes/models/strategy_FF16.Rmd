@@ -10,10 +10,6 @@ output: bookdown::html_document2
 
 ```{r, echo=FALSE}
 library(plant)
-
-get_file <- function(file) {
-  here::here(file.path("vignettes/models/FF16", file))
-}
 ```
 
 # Introduction
@@ -29,15 +25,15 @@ current size, light environment, and physiological parameters as inputs,
 and return its growth, mortality, and fecundity rates. In the `FF16`
 physiological model, these vital rates are all
 derived from the rate at which living biomass is produced by the plant,
-which in turn is calculated based on well-understood physiology Fig. \@ref(fig:phys). Various physiological parameters
+which in turn is calculated based on well-understood physiology (see Fig. below). Various physiological parameters
 influence demographic outcomes. Varying these parameters allows accounting for
-species differences, potentially via traits (see last
-section). Tables \@ref(tab:definitions), \@ref(tab:params-core), \@ref(tab:params-hyper) summarize the
-units and definitions of all variables, parameters, and hyper-parameters used in
+species differences, potentially via traits. Tables summarize the units and definitions of all variables, parameters, and hyper-parameters used in
 the material below. 
 
 ```{r phys, out.width = '100%', fig.cap="**Physiological model in `plant`, giving demographic rates on the basis of its traits, size, and light environment, as functions of net mass production.** The dashed arrow towards mortality indicates that, although the mortality rate is assumed to depend on mass production, no mass is actually allocated there. Figure adapted from @Falster-2011 and @Falster-2015.", echo=FALSE}
-knitr::include_graphics(get_file("FF16-schematic-phys.png"))
+
+"FF16-schematic-phys.png" %>%
+knitr::include_graphics()
 ```
 
 # Growth {#growth}
@@ -456,7 +452,7 @@ extract_strategy_parameter_values <- function(vars){
 ```
 
 ```{r definitions, echo=FALSE, results='asis'}
-here::here("vignettes/demography-vars.csv") %>%
+system.file("docs", "demography-vars.csv", package = "plant") %>%
 read.csv() %>% dplyr::as_tibble() %>%
 # TODO: can we get groups as headers spanning multiple columns?
 knitr::kable(align = "l",
@@ -465,7 +461,7 @@ knitr::kable(align = "l",
 ```
 
 ```{r allometry, echo=FALSE, results='asis'}
-get_file("FF16-eqns.csv") %>%
+system.file("docs/FF16", "FF16-eqns.csv", package = "plant") %>%
   read.csv() %>% dplyr::as_tibble() %>% 
   knitr::kable(align = "l",
   caption = 'Equations of the allometric growth model implemented within the `FF16` physiological model, based on functional-balance assumptions (see text for details). In (a) we list  key assumptions of allocation model between specific variation with leaf area, under "Function". From these assumptions, allocation functions are derived for tissue areas and tissue masses (b). Also the growth rate of each tissue type can be expressed as a function of the growth rate of leaf area. For mass ($M$), respiration ($r$), and turnover ($k$) variables, subscripts refer to any of the following tissues: ${\\rm l}$ = leaves, ${\\rm b}$ = bark, ${\\rm s}$ = sapwood, ${\\rm r}$ = roots, ${\\rm a}$ = all living tissue. For area $A$ variables, subscripts refer to any of the following: ${\\rm l}$ = leaves, ${\\rm st}$ = total stem cross-section, ${\\rm s}$ = sapwood cross-section, ${\\rm b}$ = bark cross-section, ${\\rm h}$ = heartwood cross-section'
@@ -473,7 +469,7 @@ get_file("FF16-eqns.csv") %>%
 ```
 
 ```{r params-core, echo=FALSE, results='asis'}
-x <- get_file("FF16-params-core.csv") %>%
+x <- system.file("docs/FF16", "FF16-params-core.csv", package = "plant") %>%
   read.csv() %>% dplyr::as_tibble()
 
 x$Value <- extract_strategy_parameter_values(x$Symbol)
@@ -484,7 +480,7 @@ knitr::kable(x,  align = "l",
 
 
 ```{r params-hyper, echo=FALSE, results='asis'}
-x <- get_file("FF16-params-hyper.csv") %>%
+x <- system.file("docs/FF16", "FF16-params-hyper.csv", package = "plant") %>%
   read.csv() %>% dplyr::as_tibble() 
 
 x$Value <- extract_strategy_parameter_values(x$Code)
