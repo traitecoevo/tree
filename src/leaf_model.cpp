@@ -52,8 +52,7 @@ Leaf::Leaf(double vcmax_25, double c, double b,
       setup_clean_leaf();
 }
 
-
-//set various states and physiology parameters obtained from ff16w to NA to clean leaf object
+// set various states and physiology parameters obtained from TF24 to NA to clean leaf object
 void Leaf::setup_clean_leaf() {
   ci_ = NA_REAL; // Pa
   stom_cond_CO2_= NA_REAL; //mol Co2 m^-2 s^-1 
