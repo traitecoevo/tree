@@ -1,5 +1,4 @@
 inst/website
-inst/doc*
 gh-pages
 *Rproj*
 *.Rhistory*
