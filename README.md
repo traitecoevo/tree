@@ -21,7 +21,7 @@ An overview of the plant package is given by the above publication. Further back
 
 Plant is a complex package, using [c++14](https://en.wikipedia.org/wiki/C%2B%2B14) behind the scenes for speed with [R6 classes](https://cran.r-project.org/web/packages/R6/vignettes/Introduction.html) (via the [Rcpp](https://cran.r-project.org/web/packages/Rcpp/index.html) and [RcppR6](https://github.com/richfitz/RcppR6) packages).  In this blog post, Rich FitzJohn and I describe the [key technologies used to build the plant package](https://methodsblog.wordpress.com/2016/02/23/plant/). 
 
-If you are interested in developing plant you should read the [Developer Notes](https://traitecoevo.github.io/plant/articles/developer_notes.html).
+If you are interested in developing plant you should read the Developer Notes.
 
 ## Installation
 

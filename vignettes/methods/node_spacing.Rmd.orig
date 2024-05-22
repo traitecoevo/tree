@@ -1,26 +1,22 @@
 ---
-title: "Node spacing in the size-density distribution"
-author: 
-- Rich FitzJohn
-- Daniel Falster
-date: 2016
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{node_spacing}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+title: "Node spacing method"
+output: bookdown::html_document2
 ---
 
-<!-- NB:
- This file is generated from the file `vignettes/Node_spacing.Rmd`. Make any edits there. To regenerate
+**authors**: DS Falster, RG FitzJohn
+**date**: 2016
 
-setwd("vignettes")
+<!-- NB:
+ This file is generated from the file `vignettes/methods/node_spacing.Rmd`. Make any edits there. To regenerate
+
+setwd("vignettes/methods")
 knitr::knit("node_spacing.Rmd.orig", "node_spacing.md")
 file.copy("node_spacing.md", "node_spacing.Rmd", overwrite = TRUE)
 unlink("node_spacing.md")
 -->"
 
-```{r setup, include=FALSE}
+```{r, echo=FALSE}
+knitr::opts_chunk$set(fig.path = "figures/node_spacing_")
 options(rmarkdown.html_vignette.check_title = FALSE)
 ```
 
@@ -65,8 +61,7 @@ The default node introduction times are designed to concentrate
 node introductions onto earlier times, based on empirical
 patterns of node refining:
 
-
-```r
+```{r}
 library(plant)
 library(parallel)
 ncores <- detectCores() - 1
@@ -77,20 +72,15 @@ p <- expand_parameters(trait_matrix(0.0825, "lma"), p0, birth_rate_list = 20)
 times_default <- p$node_schedule_times[[1]]
 plot(times_default, cex=.2, pch=19, ylab="Time (years)", las=1)
 ```
-
-![plot of chunk unnamed-chunk-2](figures/node_spacing_unnamed-chunk-2-1.png)
 <!-- TODO: explain how introducing two species together reduces work -->
 
 The actual differences are stepped in order to increase the chance
 that nodes from different species will be introduced at the same
 time and reduce the total amount of work being done.
 
-
-```r
+```{r}
 plot(diff(times_default), pch=19, cex=.2, ylab="Time difference (years)", las=1)
 ```
-
-![plot of chunk unnamed-chunk-3](figures/node_spacing_unnamed-chunk-3-1.png)
 
 
 # Estimating error in node spacing
@@ -104,8 +94,7 @@ at the expense of more computational effort. We can create more refined schedule
 by interleaving points into the existing schedule:
 
 
-
-```r
+```{r}
 interleave <- function(x) {
   n <- length(x)
   xp <- c(x[-n] + diff(x) / 2, NA)
@@ -121,15 +110,12 @@ plot(times_default, xlab = "Node #", ylab="Time (years)",
 points(times_2x, pch=19, cex=.2, las=1, col = "blue")
 points(times_4x, pch=19, cex=.2, las=1, col = "red")
 ```
-
-![plot of chunk unnamed-chunk-4](figures/node_spacing_unnamed-chunk-4-1.png)
 Each schedule runs for the same duration, but `times_high` has 4x as many nodes.
 Running a patch with each node schedule allows us to compare the propagule
 outputs:
 
 
-
-```r
+```{r}
 run_with_times <- function(p, t) {
   p$node_schedule_times[[1]] <- t
   
@@ -141,29 +127,9 @@ run_with_times <- function(p, t) {
 }
 
 offspring_production_default <- run_with_times(p, times_default)
-```
-
-```
-## [1] "Time to solve: 0.68"
-```
-
-```r
 offspring_production_2x <- run_with_times(p, times_2x)
-```
-
-```
-## [1] "Time to solve: 1.36"
-```
-
-```r
 offspring_production_4x <- run_with_times(p, times_4x)
-```
 
-```
-## [1] "Time to solve: 4.35"
-```
-
-```r
 node_range <- c(length(times_default), length(times_2x),
                   length(times_4x))
 offspring_production_range <- c(offspring_production_default, offspring_production_2x, 
@@ -172,13 +138,10 @@ offspring_production_range <- c(offspring_production_default, offspring_producti
 Quadrupling the number of nodes results in nearly a 6x increase in runtime,
 eight times the nodes takes roughly 26x longer (the latter not shown).
 
-
-```r
+```{r}
 plot(x = node_range, y = offspring_production_range,
      xlab="Number of node introductions", ylab="Offspring production", las=1)
 ```
-
-![plot of chunk unnamed-chunk-6](figures/node_spacing_unnamed-chunk-6-1.png)
 Offspring production increases as nodes are introduced more finely,
 though at a saturating rate, meaning there are diminishing returns in accuracy
 for additional nodes.
@@ -186,7 +149,7 @@ for additional nodes.
 
 The differences in sffspring production are not actually that striking
 (perhaps 
-1%) but 
+`r signif(100 * diff(range(offspring_production_range)) / mean(offspring_production_range), 1)`%) but 
 the introduced  *variation* creates instabilities of sufficient concern.
 
 # Individual Offspring production contributions
@@ -197,8 +160,7 @@ Consider adding a *single* additional node at one of the points
 along the first vector of times `times_default` and computing the 
 output Offspring production:
 
-
-```r
+```{r}
 insert_time <- function(i, x) {
   j <- seq_len(i)
   c(x[j], (x[i] + x[i+1])/2, x[-j])
@@ -218,14 +180,11 @@ plot(insert_positions, offspring_production_differences,
 abline(h=0, col="grey")
 ```
 
-![plot of chunk unnamed-chunk-7](figures/node_spacing_unnamed-chunk-7-1.png)
-
 The biggest deviations in output Offspring production come about half way
 through the schedule, though because of the compression of early times 
 this occurs fairly early in patch development:
 
-
-```r
+```{r}
 times_interpolated <- (times_default[-1L] + 
                          times_default[-length(times_default)]) / 2
 
@@ -233,15 +192,13 @@ plot(times_interpolated, offspring_production_differences,
      xlab="Time (years)", ylab="Difference from default Offspring production", las=1)
 abline(h=0, col="grey")
 ```
-
-![plot of chunk unnamed-chunk-8](figures/node_spacing_unnamed-chunk-8-1.png)
 Now look at the contribution of different nodes to the overall patch output
 (log scaled for clarity):
 
 Todo: This code and thes rest of this sectiuon is broken, need to fix
 
+```{r, eval =F}
 
-```r
 default <- run_scm(p)
 
 # remove first node to avoid log(0)
@@ -278,8 +235,7 @@ identified above.
 First we run patches with and without the extra node, collecting the complete
 set of patch conditions at each timestep.
 
-
-```r
+```{r, eval=F}
 collect_with_times <- function(p, t) {
   p$node_schedule_times[[1]] <- t
   result <- run_scm_collect(p)
@@ -297,8 +253,7 @@ environment over a common set of heights at each time step.
 
 We reconstruct the light environment spline for both runs, and compute light_availability in both:
 
-
-```r
+```{r, eval=F}
 interpolated_light_availability <- function(env, heights) {
   # intialise new spline with existing values
   spline <- plant:::Interpolator()
@@ -333,8 +288,7 @@ with the additional node is lighter (higher light_availability)
 and red in regions where the the light environment is darker with the additional
 node.
 
-
-```r
+```{r, eval= F}
 # ColorBrewer's RdBu palette
 cols <- c("#B2182B", "#D6604D", "#F4A582", "#FDDBC7",
           "#D1E5F0", "#92C5DE", "#4393C3", "#2166AC")
@@ -371,16 +325,10 @@ the leaf area for all nodes.
 
 The black line indicates the node identified as problematic above.
 
-
-```r
+```{r}
 patch_error <- plant:::run_scm_error(p)
 image(times_default, times_default, patch_error$err$lai[[1]],
       xlab="Patch age (years)", ylab="Introduction time (years)", las=1)
-```
-
-![plot of chunk unnamed-chunk-13](figures/node_spacing_unnamed-chunk-13-1.png)
-
-```r
 #abline(h=times_default[top_5[1]])
 ```
 
@@ -388,8 +336,7 @@ image(times_default, times_default, patch_error$err$lai[[1]],
 an appropriately refined node spacing algorithm that minimises both
 integration errors. 
 
-
-```r
+```{r}
 p_refined <- build_schedule(p)
 offspring_production_refined <- attr(p_refined, "offspring_production")
 ```
@@ -397,8 +344,7 @@ offspring_production_refined <- attr(p_refined, "offspring_production")
 We can see the impact of this refinement by repeating our earlier analysis
 and inserting a new node at each timestep and extracting the Offspring production:
 
-
-```r
+```{r, message=FALSE}
 times_refined <- p_refined$node_schedule_times[[1]]
 
 insert_positions <- seq_len(length(times_refined) - 1)
@@ -414,18 +360,14 @@ plot(insert_positions, refined_differences,
 abline(h=0, col="grey")
 ```
 
-![plot of chunk unnamed-chunk-15](figures/node_spacing_unnamed-chunk-15-1.png)
-
 Some nodes still introduce variation, however errors in Offspring production are reduced
 by an order of magnitude, and are even smaller if considering relative error:
 
+```{r}
 
-```r
 plot(insert_positions, offspring_productions_refined / offspring_production_refined - 1, 
      xlab="Index", ylab="Relative Offspring production differences", las=1)
 ```
-
-![plot of chunk unnamed-chunk-16](figures/node_spacing_unnamed-chunk-16-1.png)
 The refined node introduction schedule results in a Offspring production near the
-saturating value identified in [# Offspring production] but with 210
-nodes rather than the 1121 nodes used in naive interpolation.
+saturating value identified in [# Offspring production] but with `r length(times_refined)`
+nodes rather than the `r length(times_8x)` nodes used in naive interpolation.

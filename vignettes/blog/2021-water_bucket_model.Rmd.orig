@@ -1,14 +1,30 @@
 ---
-title: "water_bucket_model"
-author: "Isaac Towers"
-date: "19/05/2021"
+title: "Water Bucket Model"
 output:
   pdf_document: default
   html_document: default
 ---
 
+**authors**: Isaac Towers
+**date**: 2021-05-19
+
+<!-- NB:
+ This file is generated from an original. Make any edits there. To regenerate
+
+filename <- "2021-water_bucket_model"
+file.orig <- paste0(filename, ".Rmd.orig")
+file.Rmd <- paste0(filename, ".Rmd")
+file.md <- paste0(filename, ".md")
+
+setwd("vignettes/blog")
+knitr::knit(file.orig, file.md)
+file.copy(file.md, file.Rmd, overwrite = TRUE)
+unlink(file.md)
+-->
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.path = "figure/2021_water_bucket_model-")
 ```
 
 ```{r warning=FALSE}
