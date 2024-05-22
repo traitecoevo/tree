@@ -243,7 +243,7 @@ double Leaf::assim_colimited(double ci_) {
 // returns difference between co-limited assimilation and stom_cond_CO2, to be minimised (umol m^-2 s^-1)
 double Leaf::assim_minus_stom_cond_CO2(double x, double psi_stem) {
 
-  double assim_colimited_x_ = assim_colimited(x) + R_d_;
+  double assim_colimited_x_ = assim_colimited(x);
 
   double stom_cond_CO2_x_ = stom_cond_CO2(psi_stem);
   return assim_colimited_x_ * umol_to_mol -
