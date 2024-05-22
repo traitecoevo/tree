@@ -1,7 +1,6 @@
 inst/website
-inst/docs/*.md
-inst/docs/figure
-inst/doc
+inst/doc*
+gh-pages
 *Rproj*
 *.Rhistory*
 ^plant.Rcheck$

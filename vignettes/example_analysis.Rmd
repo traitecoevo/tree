@@ -1,16 +1,10 @@
 ---
 title: "Example workflow"
-author: 
-- Daniel Falster
-date: 2022
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Example workflow}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
-  chunk_output_type: console
+output: bookdown::html_document2
 ---
+
+**authors**: DS Falster
+**date**: 2022
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
