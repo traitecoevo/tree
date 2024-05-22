@@ -1,4 +1,4 @@
-##' Build an appropriately refined schedule.
+##' Build an appropriately refined schedule for node introduction.
 ##'
 ##' There are control options (within the \code{Parameters} object)
 ##' that affect how this function runs, in particular
