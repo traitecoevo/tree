@@ -25,7 +25,7 @@ Leaf::Leaf()
 
 Leaf::Leaf(double vcmax_25, double c, double b,
            double psi_crit, // derived from b and c,
-           double beta1, double beta2, double jmax_25, double hk_s,
+           double beta2, double jmax_25, double hk_s,
            double a, double curv_fact_elec_trans, double curv_fact_colim, 
            double GSS_tol_abs,
            double vulnerability_curve_ncontrol,
