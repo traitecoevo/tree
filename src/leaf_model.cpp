@@ -8,7 +8,6 @@ Leaf::Leaf()
     c(2.680147), //unitless
     b(3.898245), //-MPa
     psi_crit(5.870283), //-MPa 
-    beta1(20000), //hydraulic cost for Bartlett method umol m^-3 s^-1
     beta2(1.5), //exponent for effect of hydraulic risk (unitless)
     jmax_25(157.44), // maximum electron transport rate umol m^-2 s^-1
     hk_s(4),  // maximum hydraulic-dependent sapwood turnover rate yr ^ -1
@@ -36,7 +35,6 @@ Leaf::Leaf(double vcmax_25, double c, double b,
     c(c), //unitless
     b(b), //-MPa
     psi_crit(psi_crit), //-MPa 
-    beta1(beta1), //hydraulic cost for Bartlett method umol m^-3 s^-1
     beta2(beta2), //exponent for effect of hydraulic risk (unitless)
     jmax_25(jmax_25), // maximum electron transport rate umol m^-2 s^-1
     hk_s(hk_s),  // maximum hydraulic-dependent sapwood turnover rate yr ^ -1
