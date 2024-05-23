@@ -2,7 +2,7 @@
 #ifndef PLANT_PLANT_LORENZ_H_
 #define PLANT_PLANT_LORENZ_H_
 
-#include <plant/ode_interface.h>
+#include <plant/ode_solver/ode_interface.h>
 
 namespace plant {
 namespace ode {

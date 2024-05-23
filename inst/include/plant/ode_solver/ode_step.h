@@ -4,7 +4,7 @@
 
 #include <vector>
 #include <cstddef>
-#include <plant/ode_interface.h>
+#include <plant/ode_solver/ode_interface.h>
 
 namespace plant {
 namespace ode {

@@ -9,10 +9,10 @@
 #include <plant/interpolator.h>
 #include <plant/adaptive_interpolator.h>
 
-#include <plant/ode_control.h>
-#include <plant/ode_step.h>
-#include <plant/ode_solver.h>
-#include <plant/ode_runner.h>
+#include <plant/ode_solver/ode_control.h>
+#include <plant/ode_solver/ode_step.h>
+#include <plant/ode_solver/ode_solver.h>
+#include <plant/ode_solver/ode_runner.h>
 
 #include <plant/environment.h>
 #include <plant/resource_spline.h>
@@ -48,10 +48,10 @@
 #include <plant/stochastic_patch.h>
 #include <plant/stochastic_patch_runner.h>
 
-#include <plant/plant_runner.h>
+#include <plant/individual_runner.h>
 
 // Purely for testing
-#include <plant/lorenz.h>
+#include <plant/ode_solver/lorenz.h>
 
 // Include this early on.  It can be either after classes have been
 // declared (but before Rcpp has been loaded) or first.  This file will
@@ -65,7 +65,7 @@
 // them earlier up.
 
 #include <Rcpp.h>
-#include <plant/ode_r.h>
+#include <plant/ode_solver/ode_r.h>
 
 // This line can safely be the last line in the file, but may go any
 // point after RcppR6_pre.hpp is included.
@@ -73,6 +73,5 @@
 #include <plant/util_post_rcpp.h>
 #include <plant/get_state.h>
 #include <plant/get_aux.h>
-#include <plant/individual_tools.h>
 
 #endif

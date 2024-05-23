@@ -2,9 +2,9 @@
 #ifndef PLANT_PLANT_ODE_SOLVER_H_
 #define PLANT_PLANT_ODE_SOLVER_H_
 
-#include <plant/ode_interface.h>
-#include <plant/ode_control.h>
-#include <plant/ode_step.h>
+#include <plant/ode_solver/ode_interface.h>
+#include <plant/ode_solver/ode_control.h>
+#include <plant/ode_solver/ode_step.h>
 #include <plant/util.h>
 
 #include <limits>

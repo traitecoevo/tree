@@ -2,7 +2,7 @@
 #ifndef PLANT_PLANT_ODE_RUNNER_H_
 #define PLANT_PLANT_ODE_RUNNER_H_
 
-#include <plant/ode_solver.h>
+#include <plant/ode_solver/ode_solver.h>
 
 namespace plant {
 namespace ode {

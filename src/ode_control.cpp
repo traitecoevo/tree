@@ -1,4 +1,4 @@
-#include <plant/ode_control.h>
+#include <plant/ode_solver/ode_control.h>
 #include <plant/util.h>
 
 namespace plant {

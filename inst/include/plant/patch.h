@@ -4,7 +4,7 @@
 
 #include <plant/parameters.h>
 #include <plant/species.h>
-#include <plant/ode_interface.h>
+#include <plant/ode_solver/ode_interface.h>
 
 #include <plant/disturbance_regime.h>
 
