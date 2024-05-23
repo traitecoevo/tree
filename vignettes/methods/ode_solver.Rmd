@@ -6,15 +6,83 @@ output: bookdown::html_document2
 **authors**: DS Falster
 **date**: 2023
 
-The `plant` model uses am explicit Runge-Kutta ODE stepper to integrate the differential equations that need to be solved (for overview of these see XXXX).  The particular method used is Runge-Kutta Cash-Karp 4-5 algorithm, with adpative time step. You can read more about Runge-Kutta methods and adpative time steps on Wikipedia at <https://en.wikipedia.org/wiki/Runge-Kutta_methods>. 
-
-The solver is controlled by a set of parameters that determine how the solver steps through time. 
-
-The code is built into the model, based on  code ported directly from the [GNU Scientific Library](http://www.gnu.org/software/gsl/)
-[@Galassi-2009]. 
+The `plant` model uses am explicit Runge-Kutta ODE stepper to integrate the ordinary differential equations that describe the system. (For details on these see <demography.html> and <solving_dynamics.html>.) Specifically, we use the Runge-Kutta Cash-Karp 4-5 algorithm, with adpative time step. In brief, this means that the solver takes a step through time, and then evaluates the error in the step. Error is estimated by comparing two possible steps: one using 4 sub-intervals, and one using 5 sub-intervals. By comparing the step made with more sub-intervals, the algorithm can estimate the non-linearity in the system and error in the step. If the error is too high, the solver will attempt to take a smaller step. If the error is well below a target value, the solver will attempt to take a larger step. Importantly, the 5 step reuses information from the 4 step and thereby only requires a single extra call on rates of change, so the RK45 algorithm is much more efficient than alternatives like the RK4-8. The math of RK45 stepping has long been established, and the method is available in most solvers for ODE systems. You can read more about Runge-Kutta methods and adpative time steps on Wikipedia at <https://en.wikipedia.org/wiki/Runge-Kutta_methods>. 
 
 # Setup in C++
 
+The characteristic method used to solve density requires regular introduction of new nodes, which entails a resizing of the ODE system as the system progresses. To make this play nicely with the ODE stepping, Rich FitzJohn deisgned a custom ODE solver class based on the RK45 method. The code is built into the model, with some details ported from the [GNU Scientific Library](http://www.gnu.org/software/gsl/) [@Galassi-2009]. 
+
+The main interface is described in the class `plant::ode::Solver` described in the file  `ode_solver.h`. The class is established using a template `System` class, meaning you can effectively cast any variety of classes as an ODE Solver. (In a similar way, you can create a vector of any variety of data types.) 
+
+From `ode_solver.h`:
+```c
+template <class System>
+class Solver {
+public:
+  Solver(const System& system, OdeControl control_);
+  ...
+```
+
+## Solving an entire patch
+
+The main solver for the system is the class `SCM`, (in the file `sch.h`). This creates an ode solver based on patch type. Simultaenously, the class `SCM` owns an actual instance of the patch:
+
+```c
+patch_type patch;                 # Instance of patch
+ode::Solver<patch_type> solver;   # ODE solver
+```
+
+All we need to do to advance the system is make calls like the following. These advance the system, using the patch to estimate rates of change. Moreoever, we can take steps of a specified fixed size, or an adapative step where the solver determines the spacing 
+
+```c
+solver.advance_fixed(patch, e.times);  
+solver.advance_adaptive(patch, e.time_end());
+```
+In the background, the solver then passes information (rates of change, states) between the actual patch (which contains all the biological information informing rates of change) and ode solver (which uses the RK4 math to caluclate future states from rates of change).
+
+Additonally, we have the following function, which resizes the ODE system after a node has been introduced.
+
+```c
+solver.set_state_from_system(patch)
+```
+
+For the above to work, the patch class (see `patch.h`) must has some essential functions used by the ODE system. 
+
+```c
+// * ODE interface
+// Caluclate size of ode system (number of equations).
+size_t ode_size() const;
+// How many auxiallary variables are we tracking. These are being collected but
+// are not part of core ode system
+size_t aux_size() const;
+double ode_time() const;
+
+// Retrieve ode state from patch and save into the ode solver
+ode::iterator ode_state(ode::iterator it) const;
+// Retrieve ode rates from patch and save into the ode solver
+ode::iterator ode_rates(ode::iterator it) const;
+// Retrieve auxillary variables and save into the ode solver
+ode::iterator ode_aux(ode::iterator it) const;
+
+// Set state of patch, based on estimate of future state estimated by the solver
+ode::const_iterator set_ode_state(ode::const_iterator it, double time);
+```
+
+Note the use of iterators. These enable state from a complicated data structure like a patch, to be converted into a vector, as needed by ode solver. And vice versa. 
+
+## Solving individuals
+
+### Via ode Runner
+
+
+OdeRunner:
+
+```c
+template <typename T>
+class Runner {
+public:
+  Runner(T obj_, OdeControl control) : obj(obj_), solver(obj, control) {}
+```` 
 
 
 # Controls on ODE stepping
@@ -66,7 +134,7 @@ However, note that unlike a regular ode solver, the number of steps taken is als
 current system in NodeSchedule interweaves ode_times and node_schedule_times.  
 
 
-```{r}
+```{r, eval = FALSE}
 plant_log_console()
 params <- scm_base_parameters("FF16")
 params$max_patch_lifetime <- 10
@@ -112,7 +180,7 @@ result$ode_times |>
 
 Let's alter the maximum step size and compare to what we had above.
 
-```{r}
+```{r, eval = FALSE}
 ctrl2 <- ctrl
 ctrl2$ode_step_size_max <- 0.1
 
@@ -134,7 +202,7 @@ f(out2$ode_times, "max 0.1")
 
 Now let's alter the minimum step size and compare to what we had above.
 
-```{r}
+```{r, eval = FALSE}
 ctrl3 <- ctrl
 ctrl3$ode_step_size_min <- 0.01
 ctrl3$ode_step_size_initial <- 0.01
@@ -153,7 +221,7 @@ f(out3$ode_times, "min 0.01")
 
 # Can we limit step sizes at lower end?
 
-```{r}
+```{r, eval = FALSE}
 ctrl <- scm_base_control()
 ctrl$ode_step_size_min <- 0.01
 ctrl$ode_step_size_initial <- 0.01
@@ -170,7 +238,7 @@ result2$ode_times
 ## Option 1
 yes, by specifying ode_times in parameters
 
-```{r}
+```{r, eval = FALSE}
 ctrl <- scm_base_control()
 
 p0c <- p0
@@ -185,7 +253,7 @@ result2$ode_times
 ## Option 2
 yes, by specifying max and min step sizes. But this could result in odd times, dpeending on the cohort schedule
 
-```{r}
+```{r, eval = FALSE}
 ctrl <- scm_base_control()
 ctrl$ode_step_size_min <- 0.1
 ctrl$ode_step_size_max <- 0.1

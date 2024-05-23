@@ -50,18 +50,26 @@ public:
   Disturbance_Regime* survival_weighting;
 
   // * ODE interface
+  // Caluclate size of ode system (number of equations). Is constantly changing as 
+  // new nodes are introduced into size-density distreibution 
   size_t ode_size() const;
+  // How many auxiallary variables are we tracking. These are being collected but
+  // are not part of core ode system
   size_t aux_size() const;
   double ode_time() const;
 
-  ode::iterator       ode_state(ode::iterator it) const;
-  ode::iterator       ode_rates(ode::iterator it) const;
-  ode::iterator       ode_aux(ode::iterator it) const;
+  // Retrieve ode state from patch and save into the ode solver
+  ode::iterator ode_state(ode::iterator it) const;
+  // Retrieve ode rates from patch and save into the ode solver
+  ode::iterator ode_rates(ode::iterator it) const;
+  // Retrieve auxillary variables and save into the ode solver
+  ode::iterator ode_aux(ode::iterator it) const;
 
-  // set_ode_state is the main interface for stepping the patch as an ode system
+  // Set state of patch, based on estimate of future state estimated by the solver
   // There are two implementations.
-  //   - first set_ode_state function is for resident runs.
-  //   - second is for mutant runs
+  //   - first function is for resident runs.
+  //   - second is for mutant runs.
+  // The second does not calculate environment when states are updated, as mutants only experience the environment
   // The decision which to use is determined by `use_cached_environment` below
   ode::const_iterator set_ode_state(ode::const_iterator it, double time);
   ode::const_iterator set_ode_state(ode::const_iterator it, int index);
