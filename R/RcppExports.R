@@ -37,8 +37,8 @@ OdeRunner___Lorenz__ctor <- function(obj, control) {
     .Call('_plant_OdeRunner___Lorenz__ctor', PACKAGE = 'plant', obj, control)
 }
 
-OdeRunner___Lorenz__advance <- function(obj_, time) {
-    invisible(.Call('_plant_OdeRunner___Lorenz__advance', PACKAGE = 'plant', obj_, time))
+OdeRunner___Lorenz__advance_adaptive <- function(obj_, time) {
+    invisible(.Call('_plant_OdeRunner___Lorenz__advance_adaptive', PACKAGE = 'plant', obj_, time))
 }
 
 OdeRunner___Lorenz__advance_fixed <- function(obj_, time) {
@@ -81,8 +81,8 @@ OdeRunner___OdeR__ctor <- function(obj, control) {
     .Call('_plant_OdeRunner___OdeR__ctor', PACKAGE = 'plant', obj, control)
 }
 
-OdeRunner___OdeR__advance <- function(obj_, time) {
-    invisible(.Call('_plant_OdeRunner___OdeR__advance', PACKAGE = 'plant', obj_, time))
+OdeRunner___OdeR__advance_adaptive <- function(obj_, time) {
+    invisible(.Call('_plant_OdeRunner___OdeR__advance_adaptive', PACKAGE = 'plant', obj_, time))
 }
 
 OdeRunner___OdeR__advance_fixed <- function(obj_, time) {
@@ -125,8 +125,8 @@ OdeRunner___FF16__ctor <- function(obj, control) {
     .Call('_plant_OdeRunner___FF16__ctor', PACKAGE = 'plant', obj, control)
 }
 
-OdeRunner___FF16__advance <- function(obj_, time) {
-    invisible(.Call('_plant_OdeRunner___FF16__advance', PACKAGE = 'plant', obj_, time))
+OdeRunner___FF16__advance_adaptive <- function(obj_, time) {
+    invisible(.Call('_plant_OdeRunner___FF16__advance_adaptive', PACKAGE = 'plant', obj_, time))
 }
 
 OdeRunner___FF16__advance_fixed <- function(obj_, time) {
@@ -169,8 +169,8 @@ OdeRunner___TF24__ctor <- function(obj, control) {
     .Call('_plant_OdeRunner___TF24__ctor', PACKAGE = 'plant', obj, control)
 }
 
-OdeRunner___TF24__advance <- function(obj_, time) {
-    invisible(.Call('_plant_OdeRunner___TF24__advance', PACKAGE = 'plant', obj_, time))
+OdeRunner___TF24__advance_adaptive <- function(obj_, time) {
+    invisible(.Call('_plant_OdeRunner___TF24__advance_adaptive', PACKAGE = 'plant', obj_, time))
 }
 
 OdeRunner___TF24__advance_fixed <- function(obj_, time) {
@@ -213,8 +213,8 @@ OdeRunner___FF16w__ctor <- function(obj, control) {
     .Call('_plant_OdeRunner___FF16w__ctor', PACKAGE = 'plant', obj, control)
 }
 
-OdeRunner___FF16w__advance <- function(obj_, time) {
-    invisible(.Call('_plant_OdeRunner___FF16w__advance', PACKAGE = 'plant', obj_, time))
+OdeRunner___FF16w__advance_adaptive <- function(obj_, time) {
+    invisible(.Call('_plant_OdeRunner___FF16w__advance_adaptive', PACKAGE = 'plant', obj_, time))
 }
 
 OdeRunner___FF16w__advance_fixed <- function(obj_, time) {
@@ -257,8 +257,8 @@ OdeRunner___FF16r__ctor <- function(obj, control) {
     .Call('_plant_OdeRunner___FF16r__ctor', PACKAGE = 'plant', obj, control)
 }
 
-OdeRunner___FF16r__advance <- function(obj_, time) {
-    invisible(.Call('_plant_OdeRunner___FF16r__advance', PACKAGE = 'plant', obj_, time))
+OdeRunner___FF16r__advance_adaptive <- function(obj_, time) {
+    invisible(.Call('_plant_OdeRunner___FF16r__advance_adaptive', PACKAGE = 'plant', obj_, time))
 }
 
 OdeRunner___FF16r__advance_fixed <- function(obj_, time) {
@@ -301,8 +301,8 @@ OdeRunner___K93__ctor <- function(obj, control) {
     .Call('_plant_OdeRunner___K93__ctor', PACKAGE = 'plant', obj, control)
 }
 
-OdeRunner___K93__advance <- function(obj_, time) {
-    invisible(.Call('_plant_OdeRunner___K93__advance', PACKAGE = 'plant', obj_, time))
+OdeRunner___K93__advance_adaptive <- function(obj_, time) {
+    invisible(.Call('_plant_OdeRunner___K93__advance_adaptive', PACKAGE = 'plant', obj_, time))
 }
 
 OdeRunner___K93__advance_fixed <- function(obj_, time) {

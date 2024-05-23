@@ -114,14 +114,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// OdeRunner___Lorenz__advance
-void OdeRunner___Lorenz__advance(plant::RcppR6::RcppR6<plant::ode::Runner<plant::ode::test::Lorenz> > obj_, double time);
-RcppExport SEXP _plant_OdeRunner___Lorenz__advance(SEXP obj_SEXP, SEXP timeSEXP) {
+// OdeRunner___Lorenz__advance_adaptive
+void OdeRunner___Lorenz__advance_adaptive(plant::RcppR6::RcppR6<plant::ode::Runner<plant::ode::test::Lorenz> > obj_, double time);
+RcppExport SEXP _plant_OdeRunner___Lorenz__advance_adaptive(SEXP obj_SEXP, SEXP timeSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::ode::Runner<plant::ode::test::Lorenz> > >::type obj_(obj_SEXP);
     Rcpp::traits::input_parameter< double >::type time(timeSEXP);
-    OdeRunner___Lorenz__advance(obj_, time);
+    OdeRunner___Lorenz__advance_adaptive(obj_, time);
     return R_NilValue;
 END_RCPP
 }
@@ -235,14 +235,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// OdeRunner___OdeR__advance
-void OdeRunner___OdeR__advance(plant::RcppR6::RcppR6<plant::ode::Runner<plant::ode::test::OdeR> > obj_, double time);
-RcppExport SEXP _plant_OdeRunner___OdeR__advance(SEXP obj_SEXP, SEXP timeSEXP) {
+// OdeRunner___OdeR__advance_adaptive
+void OdeRunner___OdeR__advance_adaptive(plant::RcppR6::RcppR6<plant::ode::Runner<plant::ode::test::OdeR> > obj_, double time);
+RcppExport SEXP _plant_OdeRunner___OdeR__advance_adaptive(SEXP obj_SEXP, SEXP timeSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::ode::Runner<plant::ode::test::OdeR> > >::type obj_(obj_SEXP);
     Rcpp::traits::input_parameter< double >::type time(timeSEXP);
-    OdeRunner___OdeR__advance(obj_, time);
+    OdeRunner___OdeR__advance_adaptive(obj_, time);
     return R_NilValue;
 END_RCPP
 }
@@ -356,14 +356,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// OdeRunner___FF16__advance
-void OdeRunner___FF16__advance(plant::RcppR6::RcppR6<plant::ode::Runner<plant::tools::IndividualRunner<plant::FF16_Strategy, plant::FF16_Environment> > > obj_, double time);
-RcppExport SEXP _plant_OdeRunner___FF16__advance(SEXP obj_SEXP, SEXP timeSEXP) {
+// OdeRunner___FF16__advance_adaptive
+void OdeRunner___FF16__advance_adaptive(plant::RcppR6::RcppR6<plant::ode::Runner<plant::tools::IndividualRunner<plant::FF16_Strategy, plant::FF16_Environment> > > obj_, double time);
+RcppExport SEXP _plant_OdeRunner___FF16__advance_adaptive(SEXP obj_SEXP, SEXP timeSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::ode::Runner<plant::tools::IndividualRunner<plant::FF16_Strategy, plant::FF16_Environment> > > >::type obj_(obj_SEXP);
     Rcpp::traits::input_parameter< double >::type time(timeSEXP);
-    OdeRunner___FF16__advance(obj_, time);
+    OdeRunner___FF16__advance_adaptive(obj_, time);
     return R_NilValue;
 END_RCPP
 }
@@ -477,14 +477,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// OdeRunner___TF24__advance
-void OdeRunner___TF24__advance(plant::RcppR6::RcppR6<plant::ode::Runner<plant::tools::IndividualRunner<plant::TF24_Strategy, plant::TF24_Environment> > > obj_, double time);
-RcppExport SEXP _plant_OdeRunner___TF24__advance(SEXP obj_SEXP, SEXP timeSEXP) {
+// OdeRunner___TF24__advance_adaptive
+void OdeRunner___TF24__advance_adaptive(plant::RcppR6::RcppR6<plant::ode::Runner<plant::tools::IndividualRunner<plant::TF24_Strategy, plant::TF24_Environment> > > obj_, double time);
+RcppExport SEXP _plant_OdeRunner___TF24__advance_adaptive(SEXP obj_SEXP, SEXP timeSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::ode::Runner<plant::tools::IndividualRunner<plant::TF24_Strategy, plant::TF24_Environment> > > >::type obj_(obj_SEXP);
     Rcpp::traits::input_parameter< double >::type time(timeSEXP);
-    OdeRunner___TF24__advance(obj_, time);
+    OdeRunner___TF24__advance_adaptive(obj_, time);
     return R_NilValue;
 END_RCPP
 }
@@ -598,14 +598,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// OdeRunner___FF16w__advance
-void OdeRunner___FF16w__advance(plant::RcppR6::RcppR6<plant::ode::Runner<plant::tools::IndividualRunner<plant::FF16w_Strategy, plant::FF16_Environment> > > obj_, double time);
-RcppExport SEXP _plant_OdeRunner___FF16w__advance(SEXP obj_SEXP, SEXP timeSEXP) {
+// OdeRunner___FF16w__advance_adaptive
+void OdeRunner___FF16w__advance_adaptive(plant::RcppR6::RcppR6<plant::ode::Runner<plant::tools::IndividualRunner<plant::FF16w_Strategy, plant::FF16_Environment> > > obj_, double time);
+RcppExport SEXP _plant_OdeRunner___FF16w__advance_adaptive(SEXP obj_SEXP, SEXP timeSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::ode::Runner<plant::tools::IndividualRunner<plant::FF16w_Strategy, plant::FF16_Environment> > > >::type obj_(obj_SEXP);
     Rcpp::traits::input_parameter< double >::type time(timeSEXP);
-    OdeRunner___FF16w__advance(obj_, time);
+    OdeRunner___FF16w__advance_adaptive(obj_, time);
     return R_NilValue;
 END_RCPP
 }
@@ -719,14 +719,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// OdeRunner___FF16r__advance
-void OdeRunner___FF16r__advance(plant::RcppR6::RcppR6<plant::ode::Runner<plant::tools::IndividualRunner<plant::FF16r_Strategy, plant::FF16_Environment> > > obj_, double time);
-RcppExport SEXP _plant_OdeRunner___FF16r__advance(SEXP obj_SEXP, SEXP timeSEXP) {
+// OdeRunner___FF16r__advance_adaptive
+void OdeRunner___FF16r__advance_adaptive(plant::RcppR6::RcppR6<plant::ode::Runner<plant::tools::IndividualRunner<plant::FF16r_Strategy, plant::FF16_Environment> > > obj_, double time);
+RcppExport SEXP _plant_OdeRunner___FF16r__advance_adaptive(SEXP obj_SEXP, SEXP timeSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::ode::Runner<plant::tools::IndividualRunner<plant::FF16r_Strategy, plant::FF16_Environment> > > >::type obj_(obj_SEXP);
     Rcpp::traits::input_parameter< double >::type time(timeSEXP);
-    OdeRunner___FF16r__advance(obj_, time);
+    OdeRunner___FF16r__advance_adaptive(obj_, time);
     return R_NilValue;
 END_RCPP
 }
@@ -840,14 +840,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// OdeRunner___K93__advance
-void OdeRunner___K93__advance(plant::RcppR6::RcppR6<plant::ode::Runner<plant::tools::IndividualRunner<plant::K93_Strategy, plant::K93_Environment> > > obj_, double time);
-RcppExport SEXP _plant_OdeRunner___K93__advance(SEXP obj_SEXP, SEXP timeSEXP) {
+// OdeRunner___K93__advance_adaptive
+void OdeRunner___K93__advance_adaptive(plant::RcppR6::RcppR6<plant::ode::Runner<plant::tools::IndividualRunner<plant::K93_Strategy, plant::K93_Environment> > > obj_, double time);
+RcppExport SEXP _plant_OdeRunner___K93__advance_adaptive(SEXP obj_SEXP, SEXP timeSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::ode::Runner<plant::tools::IndividualRunner<plant::K93_Strategy, plant::K93_Environment> > > >::type obj_(obj_SEXP);
     Rcpp::traits::input_parameter< double >::type time(timeSEXP);
-    OdeRunner___K93__advance(obj_, time);
+    OdeRunner___K93__advance_adaptive(obj_, time);
     return R_NilValue;
 END_RCPP
 }
@@ -12150,7 +12150,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_OdeR__ctor", (DL_FUNC) &_plant_OdeR__ctor, 3},
     {"_plant_OdeR__update_state", (DL_FUNC) &_plant_OdeR__update_state, 1},
     {"_plant_OdeRunner___Lorenz__ctor", (DL_FUNC) &_plant_OdeRunner___Lorenz__ctor, 2},
-    {"_plant_OdeRunner___Lorenz__advance", (DL_FUNC) &_plant_OdeRunner___Lorenz__advance, 2},
+    {"_plant_OdeRunner___Lorenz__advance_adaptive", (DL_FUNC) &_plant_OdeRunner___Lorenz__advance_adaptive, 2},
     {"_plant_OdeRunner___Lorenz__advance_fixed", (DL_FUNC) &_plant_OdeRunner___Lorenz__advance_fixed, 2},
     {"_plant_OdeRunner___Lorenz__step", (DL_FUNC) &_plant_OdeRunner___Lorenz__step, 1},
     {"_plant_OdeRunner___Lorenz__step_to", (DL_FUNC) &_plant_OdeRunner___Lorenz__step_to, 2},
@@ -12161,7 +12161,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_OdeRunner___Lorenz__times__get", (DL_FUNC) &_plant_OdeRunner___Lorenz__times__get, 1},
     {"_plant_OdeRunner___Lorenz__object__get", (DL_FUNC) &_plant_OdeRunner___Lorenz__object__get, 1},
     {"_plant_OdeRunner___OdeR__ctor", (DL_FUNC) &_plant_OdeRunner___OdeR__ctor, 2},
-    {"_plant_OdeRunner___OdeR__advance", (DL_FUNC) &_plant_OdeRunner___OdeR__advance, 2},
+    {"_plant_OdeRunner___OdeR__advance_adaptive", (DL_FUNC) &_plant_OdeRunner___OdeR__advance_adaptive, 2},
     {"_plant_OdeRunner___OdeR__advance_fixed", (DL_FUNC) &_plant_OdeRunner___OdeR__advance_fixed, 2},
     {"_plant_OdeRunner___OdeR__step", (DL_FUNC) &_plant_OdeRunner___OdeR__step, 1},
     {"_plant_OdeRunner___OdeR__step_to", (DL_FUNC) &_plant_OdeRunner___OdeR__step_to, 2},
@@ -12172,7 +12172,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_OdeRunner___OdeR__times__get", (DL_FUNC) &_plant_OdeRunner___OdeR__times__get, 1},
     {"_plant_OdeRunner___OdeR__object__get", (DL_FUNC) &_plant_OdeRunner___OdeR__object__get, 1},
     {"_plant_OdeRunner___FF16__ctor", (DL_FUNC) &_plant_OdeRunner___FF16__ctor, 2},
-    {"_plant_OdeRunner___FF16__advance", (DL_FUNC) &_plant_OdeRunner___FF16__advance, 2},
+    {"_plant_OdeRunner___FF16__advance_adaptive", (DL_FUNC) &_plant_OdeRunner___FF16__advance_adaptive, 2},
     {"_plant_OdeRunner___FF16__advance_fixed", (DL_FUNC) &_plant_OdeRunner___FF16__advance_fixed, 2},
     {"_plant_OdeRunner___FF16__step", (DL_FUNC) &_plant_OdeRunner___FF16__step, 1},
     {"_plant_OdeRunner___FF16__step_to", (DL_FUNC) &_plant_OdeRunner___FF16__step_to, 2},
@@ -12183,7 +12183,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_OdeRunner___FF16__times__get", (DL_FUNC) &_plant_OdeRunner___FF16__times__get, 1},
     {"_plant_OdeRunner___FF16__object__get", (DL_FUNC) &_plant_OdeRunner___FF16__object__get, 1},
     {"_plant_OdeRunner___TF24__ctor", (DL_FUNC) &_plant_OdeRunner___TF24__ctor, 2},
-    {"_plant_OdeRunner___TF24__advance", (DL_FUNC) &_plant_OdeRunner___TF24__advance, 2},
+    {"_plant_OdeRunner___TF24__advance_adaptive", (DL_FUNC) &_plant_OdeRunner___TF24__advance_adaptive, 2},
     {"_plant_OdeRunner___TF24__advance_fixed", (DL_FUNC) &_plant_OdeRunner___TF24__advance_fixed, 2},
     {"_plant_OdeRunner___TF24__step", (DL_FUNC) &_plant_OdeRunner___TF24__step, 1},
     {"_plant_OdeRunner___TF24__step_to", (DL_FUNC) &_plant_OdeRunner___TF24__step_to, 2},
@@ -12194,7 +12194,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_OdeRunner___TF24__times__get", (DL_FUNC) &_plant_OdeRunner___TF24__times__get, 1},
     {"_plant_OdeRunner___TF24__object__get", (DL_FUNC) &_plant_OdeRunner___TF24__object__get, 1},
     {"_plant_OdeRunner___FF16w__ctor", (DL_FUNC) &_plant_OdeRunner___FF16w__ctor, 2},
-    {"_plant_OdeRunner___FF16w__advance", (DL_FUNC) &_plant_OdeRunner___FF16w__advance, 2},
+    {"_plant_OdeRunner___FF16w__advance_adaptive", (DL_FUNC) &_plant_OdeRunner___FF16w__advance_adaptive, 2},
     {"_plant_OdeRunner___FF16w__advance_fixed", (DL_FUNC) &_plant_OdeRunner___FF16w__advance_fixed, 2},
     {"_plant_OdeRunner___FF16w__step", (DL_FUNC) &_plant_OdeRunner___FF16w__step, 1},
     {"_plant_OdeRunner___FF16w__step_to", (DL_FUNC) &_plant_OdeRunner___FF16w__step_to, 2},
@@ -12205,7 +12205,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_OdeRunner___FF16w__times__get", (DL_FUNC) &_plant_OdeRunner___FF16w__times__get, 1},
     {"_plant_OdeRunner___FF16w__object__get", (DL_FUNC) &_plant_OdeRunner___FF16w__object__get, 1},
     {"_plant_OdeRunner___FF16r__ctor", (DL_FUNC) &_plant_OdeRunner___FF16r__ctor, 2},
-    {"_plant_OdeRunner___FF16r__advance", (DL_FUNC) &_plant_OdeRunner___FF16r__advance, 2},
+    {"_plant_OdeRunner___FF16r__advance_adaptive", (DL_FUNC) &_plant_OdeRunner___FF16r__advance_adaptive, 2},
     {"_plant_OdeRunner___FF16r__advance_fixed", (DL_FUNC) &_plant_OdeRunner___FF16r__advance_fixed, 2},
     {"_plant_OdeRunner___FF16r__step", (DL_FUNC) &_plant_OdeRunner___FF16r__step, 1},
     {"_plant_OdeRunner___FF16r__step_to", (DL_FUNC) &_plant_OdeRunner___FF16r__step_to, 2},
@@ -12216,7 +12216,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_OdeRunner___FF16r__times__get", (DL_FUNC) &_plant_OdeRunner___FF16r__times__get, 1},
     {"_plant_OdeRunner___FF16r__object__get", (DL_FUNC) &_plant_OdeRunner___FF16r__object__get, 1},
     {"_plant_OdeRunner___K93__ctor", (DL_FUNC) &_plant_OdeRunner___K93__ctor, 2},
-    {"_plant_OdeRunner___K93__advance", (DL_FUNC) &_plant_OdeRunner___K93__advance, 2},
+    {"_plant_OdeRunner___K93__advance_adaptive", (DL_FUNC) &_plant_OdeRunner___K93__advance_adaptive, 2},
     {"_plant_OdeRunner___K93__advance_fixed", (DL_FUNC) &_plant_OdeRunner___K93__advance_fixed, 2},
     {"_plant_OdeRunner___K93__step", (DL_FUNC) &_plant_OdeRunner___K93__step, 1},
     {"_plant_OdeRunner___K93__step_to", (DL_FUNC) &_plant_OdeRunner___K93__step_to, 2},
