@@ -1,5 +1,5 @@
 ---
-title: "Numerical methods for solving size- & patch-structured dynamics"
+title: "Solving system dyanmics via the characeristic method"
 bibliography: ../assets/refs.bib
 csl: ../assets/methods-in-ecology-and-evolution.csl
 output: bookdown::html_document2
@@ -9,7 +9,6 @@ output: bookdown::html_document2
 **date**: 2016
 
 ```{r setup, include=FALSE}
-options(rmarkdown.html_vignette.check_title = FALSE)
 library(plant)
 ```
 
@@ -25,7 +24,7 @@ Each of these problems is formulated as an initial-value ODE problem
 (IVP), which can be solved using an ODE stepper.
 
 All of the IVPs outlined below must be stepped through time.
-For this, `plant` uses an embedded implementation of Runge-Kutta Cash-Karp 4-5 algorithm [@Cash-1990], with
+For this, `plant` uses an embedded implementation of Runge-Kutta Cash-Karp 4-5 algorithm [@Cash-1990], adpative time step. The code is built into the model, based on 
 code ported directly from the [GNU Scientific Library](http://www.gnu.org/software/gsl/)
 [@Galassi-2009]. The accuracy of the solver is controlled by two control parameters for relative and absolute accuracy,
 `ode_tol_rel` and `ode_tol_abs`.
