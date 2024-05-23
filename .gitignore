@@ -19,3 +19,19 @@ scrap.R
 doc
 Meta
 *.knit.md
+
+
+# OS generated files #
+######################
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# R
+.Rhistory
+.Rapp.history
+..Rcheck
+.Rproj.user
+.rstudio
+.RData
