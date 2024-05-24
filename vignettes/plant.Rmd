@@ -1,23 +1,18 @@
 ---
 title: "Getting started with the plant model"
-author:
-- Daniel Falster
-- Andrew O'Reilly-Nugent
-- Isaac Towers
-- Fiona Robinson
-- Phil Zylstra
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{plant}
+  %\VignetteIndexEntry{Getting started with the plant model}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
-  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
 options(rmarkdown.html_vignette.check_title = FALSE)
 ```
+
+**authors**: DS Falster, A O'Reilly-Nugent, I Towers, F Robinson
+**date**: 2022
 
 # Background
 
