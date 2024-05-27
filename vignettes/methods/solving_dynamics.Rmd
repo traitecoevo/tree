@@ -1,5 +1,5 @@
 ---
-title: "Solving system dyanmics via the characeristic method"
+title: "Solving system dynamics via the characeristic method"
 bibliography: ../assets/refs.bib
 csl: ../assets/methods-in-ecology-and-evolution.csl
 output: bookdown::html_document2

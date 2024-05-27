@@ -28,7 +28,7 @@ navbar:
           href: articles/demography.html
         - text: "Overview of numerical methods used in `plant`"
           href: articles/methods/numerical_methods.html
-        - text: "Solving system dyanmics via the characteristic method"
+        - text: "Solving system dynamics via the characteristic method"
           href: articles/methods/solving_dynamics.html
         - text: "ODE stepping and control"
           href: articles/methods/ode_solver.html
