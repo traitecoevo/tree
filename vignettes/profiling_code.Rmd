@@ -81,16 +81,19 @@ Mitchell Henry used this on linux <https://www.amd.com/en/developer/uprof.html> 
 
 ## Google’s gperftools
 
-Google has a profiling tool [gperftools](https://github.com/gperftools/gperftools) which can be used to profile code with Rcpp. The following instructions use the package [Rgpertools](https://github.com/bnprks/Rgperftools) which is based on advice from this [blog post](http://minimallysufficient.github.io/r/programming/c++/2018/02/16/profiling-rcpp-packages.html) by Minimally Sufficient.
+Google has a profiling tool [gperftools](https://github.com/gperftools/gperftools) which can be used to profile code with Rcpp. The following instructions use the package [Rgpertools](https://github.com/bnprks/Rgperftools) which is based on advice from this [blog post](http://minimallysufficient.github.io/r/programming/c++/2018/02/16/profiling-rcpp-packages.html) by Minimally Sufficient. 
 
-The package has two functions `start_profiler` and `stop_profiler`, to be used as follows:
+An alternative interface is the [jointprof package](https://github.com/r-prof/jointprof/), but on trying this had some issues with MacOS compatibility (https://github.com/r-prof/jointprof/issues).
+
+Both packages have two functions `start_profiler` and `stop_profiler`, to be used as follows:
+
 ```R
 start_profiler("/tmp/profile.out")
 run_your_cpp_stuff()
 stop_profiler()
 ```
 
-## Installation
+Using the profiler
 
 1. Install the gperftools package, e.g. via homebrew
 
