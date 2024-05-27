@@ -5,7 +5,7 @@
 #include <vector>
 #include <plant/util.h>
 #include <plant/environment.h>
-#include <plant/ode_interface.h>
+#include <plant/ode_solver/ode_interface.h>
 
 namespace plant {
 

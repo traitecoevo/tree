@@ -596,7 +596,7 @@ template <> inline SEXP wrap(const plant::Parameters<plant::FF16_Strategy,plant:
   ret["strategy_default"] = Rcpp::wrap(x.strategy_default);
   ret["node_schedule_times_default"] = Rcpp::wrap(x.node_schedule_times_default);
   ret["node_schedule_times"] = Rcpp::wrap(x.node_schedule_times);
-  ret["node_schedule_ode_times"] = Rcpp::wrap(x.node_schedule_ode_times);
+  ret["ode_times"] = Rcpp::wrap(x.ode_times);
   ret.attr("class") = Rcpp::CharacterVector::create("Parameters<FF16,FF16_Env>", "Parameters");
   return ret;
 }
@@ -625,8 +625,8 @@ template <> inline plant::Parameters<plant::FF16_Strategy,plant::FF16_Environmen
   ret.node_schedule_times_default = Rcpp::as<std::vector<double> >(xl["node_schedule_times_default"]);
   // ret.node_schedule_times = Rcpp::as<decltype(retnode_schedule_times) >(xl["node_schedule_times"]);
   ret.node_schedule_times = Rcpp::as<std::vector<std::vector<double> > >(xl["node_schedule_times"]);
-  // ret.node_schedule_ode_times = Rcpp::as<decltype(retnode_schedule_ode_times) >(xl["node_schedule_ode_times"]);
-  ret.node_schedule_ode_times = Rcpp::as<std::vector<double> >(xl["node_schedule_ode_times"]);
+  // ret.ode_times = Rcpp::as<decltype(retode_times) >(xl["ode_times"]);
+  ret.ode_times = Rcpp::as<std::vector<double> >(xl["ode_times"]);
   ret.validate();
   return ret;
 }
@@ -641,7 +641,7 @@ template <> inline SEXP wrap(const plant::Parameters<plant::TF24_Strategy,plant:
   ret["strategy_default"] = Rcpp::wrap(x.strategy_default);
   ret["node_schedule_times_default"] = Rcpp::wrap(x.node_schedule_times_default);
   ret["node_schedule_times"] = Rcpp::wrap(x.node_schedule_times);
-  ret["node_schedule_ode_times"] = Rcpp::wrap(x.node_schedule_ode_times);
+  ret["ode_times"] = Rcpp::wrap(x.ode_times);
   ret.attr("class") = Rcpp::CharacterVector::create("Parameters<TF24,TF24_Env>", "Parameters");
   return ret;
 }
@@ -670,8 +670,8 @@ template <> inline plant::Parameters<plant::TF24_Strategy,plant::TF24_Environmen
   ret.node_schedule_times_default = Rcpp::as<std::vector<double> >(xl["node_schedule_times_default"]);
   // ret.node_schedule_times = Rcpp::as<decltype(retnode_schedule_times) >(xl["node_schedule_times"]);
   ret.node_schedule_times = Rcpp::as<std::vector<std::vector<double> > >(xl["node_schedule_times"]);
-  // ret.node_schedule_ode_times = Rcpp::as<decltype(retnode_schedule_ode_times) >(xl["node_schedule_ode_times"]);
-  ret.node_schedule_ode_times = Rcpp::as<std::vector<double> >(xl["node_schedule_ode_times"]);
+  // ret.ode_times = Rcpp::as<decltype(retode_times) >(xl["ode_times"]);
+  ret.ode_times = Rcpp::as<std::vector<double> >(xl["ode_times"]);
   ret.validate();
   return ret;
 }
@@ -686,7 +686,7 @@ template <> inline SEXP wrap(const plant::Parameters<plant::FF16w_Strategy,plant
   ret["strategy_default"] = Rcpp::wrap(x.strategy_default);
   ret["node_schedule_times_default"] = Rcpp::wrap(x.node_schedule_times_default);
   ret["node_schedule_times"] = Rcpp::wrap(x.node_schedule_times);
-  ret["node_schedule_ode_times"] = Rcpp::wrap(x.node_schedule_ode_times);
+  ret["ode_times"] = Rcpp::wrap(x.ode_times);
   ret.attr("class") = Rcpp::CharacterVector::create("Parameters<FF16w,FF16_Env>", "Parameters");
   return ret;
 }
@@ -715,8 +715,8 @@ template <> inline plant::Parameters<plant::FF16w_Strategy,plant::FF16_Environme
   ret.node_schedule_times_default = Rcpp::as<std::vector<double> >(xl["node_schedule_times_default"]);
   // ret.node_schedule_times = Rcpp::as<decltype(retnode_schedule_times) >(xl["node_schedule_times"]);
   ret.node_schedule_times = Rcpp::as<std::vector<std::vector<double> > >(xl["node_schedule_times"]);
-  // ret.node_schedule_ode_times = Rcpp::as<decltype(retnode_schedule_ode_times) >(xl["node_schedule_ode_times"]);
-  ret.node_schedule_ode_times = Rcpp::as<std::vector<double> >(xl["node_schedule_ode_times"]);
+  // ret.ode_times = Rcpp::as<decltype(retode_times) >(xl["ode_times"]);
+  ret.ode_times = Rcpp::as<std::vector<double> >(xl["ode_times"]);
   ret.validate();
   return ret;
 }
@@ -731,7 +731,7 @@ template <> inline SEXP wrap(const plant::Parameters<plant::FF16r_Strategy,plant
   ret["strategy_default"] = Rcpp::wrap(x.strategy_default);
   ret["node_schedule_times_default"] = Rcpp::wrap(x.node_schedule_times_default);
   ret["node_schedule_times"] = Rcpp::wrap(x.node_schedule_times);
-  ret["node_schedule_ode_times"] = Rcpp::wrap(x.node_schedule_ode_times);
+  ret["ode_times"] = Rcpp::wrap(x.ode_times);
   ret.attr("class") = Rcpp::CharacterVector::create("Parameters<FF16r,FF16_Env>", "Parameters");
   return ret;
 }
@@ -760,8 +760,8 @@ template <> inline plant::Parameters<plant::FF16r_Strategy,plant::FF16_Environme
   ret.node_schedule_times_default = Rcpp::as<std::vector<double> >(xl["node_schedule_times_default"]);
   // ret.node_schedule_times = Rcpp::as<decltype(retnode_schedule_times) >(xl["node_schedule_times"]);
   ret.node_schedule_times = Rcpp::as<std::vector<std::vector<double> > >(xl["node_schedule_times"]);
-  // ret.node_schedule_ode_times = Rcpp::as<decltype(retnode_schedule_ode_times) >(xl["node_schedule_ode_times"]);
-  ret.node_schedule_ode_times = Rcpp::as<std::vector<double> >(xl["node_schedule_ode_times"]);
+  // ret.ode_times = Rcpp::as<decltype(retode_times) >(xl["ode_times"]);
+  ret.ode_times = Rcpp::as<std::vector<double> >(xl["ode_times"]);
   ret.validate();
   return ret;
 }
@@ -776,7 +776,7 @@ template <> inline SEXP wrap(const plant::Parameters<plant::K93_Strategy,plant::
   ret["strategy_default"] = Rcpp::wrap(x.strategy_default);
   ret["node_schedule_times_default"] = Rcpp::wrap(x.node_schedule_times_default);
   ret["node_schedule_times"] = Rcpp::wrap(x.node_schedule_times);
-  ret["node_schedule_ode_times"] = Rcpp::wrap(x.node_schedule_ode_times);
+  ret["ode_times"] = Rcpp::wrap(x.ode_times);
   ret.attr("class") = Rcpp::CharacterVector::create("Parameters<K93,K93_Env>", "Parameters");
   return ret;
 }
@@ -805,8 +805,8 @@ template <> inline plant::Parameters<plant::K93_Strategy,plant::K93_Environment>
   ret.node_schedule_times_default = Rcpp::as<std::vector<double> >(xl["node_schedule_times_default"]);
   // ret.node_schedule_times = Rcpp::as<decltype(retnode_schedule_times) >(xl["node_schedule_times"]);
   ret.node_schedule_times = Rcpp::as<std::vector<std::vector<double> > >(xl["node_schedule_times"]);
-  // ret.node_schedule_ode_times = Rcpp::as<decltype(retnode_schedule_ode_times) >(xl["node_schedule_ode_times"]);
-  ret.node_schedule_ode_times = Rcpp::as<std::vector<double> >(xl["node_schedule_ode_times"]);
+  // ret.ode_times = Rcpp::as<decltype(retode_times) >(xl["ode_times"]);
+  ret.ode_times = Rcpp::as<std::vector<double> >(xl["ode_times"]);
   ret.validate();
   return ret;
 }

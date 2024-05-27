@@ -5,7 +5,7 @@
 #include <plant/control.h>
 #include <plant/interpolator.h>
 #include <plant/adaptive_interpolator.h>
-#include <plant/ode_interface.h>
+#include <plant/ode_solver/ode_interface.h>
 #include <plant/internals.h>
 #include <plant/util.h>
 #include <unordered_map>

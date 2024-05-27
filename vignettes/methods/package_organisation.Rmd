@@ -1,5 +1,5 @@
 ---
-title: "Organisation of the package"
+title: "Package Organisation and Management"
 output: bookdown::html_document2
 ---
 
@@ -9,25 +9,73 @@ output: bookdown::html_document2
 options(rmarkdown.html_vignette.check_title = FALSE)
 ```
 
+
+
 # Development
+
+
+## Directory structure
+
+The code is organised as follows. This structure reflects structure generally used for R packages including C++ source.
+
+
+```sh
+├── inst
+│   ├── RcppR6_classes.yml    # Used by RCppR6 to generate the interface for Rcpp (C++ classes)
+│   ├── RcppR6_functions.yml  # Used by RCppR6 to generate the interface for Rcpp (C++ function)
+│   ├── include
+│   │   ├── plant.h # THE main header file for package - sources other headers
+│   │   ├── plant 	# header (.h) files for different components, many including implementation
+│   │   └── tk      # simple cubic spline interpolation library
+│   ├── reference_plant_ff16 # Reference plant physiology ff16
+│   ├── docs    		# Tables of variables for models
+│   └── scripts 		# Tools used in package management
+├── man 			  		# R Documentation files (*.Rd)
+├── R 							# R functions
+├── scripts 	  		# R scripts
+├── src 			  		# C++ files with implementation where not included in headers
+├── tests 		  		# Tests
+└── vignettes   		# Vignettes
+```
 
 ## Issues
 
-We use [github issues](https://github.com/traitecoevo/plant/issues/) for feature requests, bug reports and  developer coordination.
+We use 
+
+- [github issues](https://github.com/traitecoevo/plant/issues/) for feature requests, bug reports and  developer coordination.
+- [github projects](https://github.com/orgs/traitecoevo/projects) for planning of work, including roadmaps, milestones and sprint planning. 
 
 ## Gitflow workflow
 
 We use the [Gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) workflow.
-This means we have two main branches:
+
+This means we have at least two main branches always present:
 
 1. a master branch (`master`) for stable releases
 2. a development branch (`develop`) where all development takes place
 
-We also use feature branches which branch from the development branch where we can then introduce new features and then pull them back into the development branch.
+We also use feature branches which branch from the development branch where we can then introduce new features and then pull them back into the development branch. (though we don't usually have a release branch).
+
+![](https://wac-cdn.atlassian.com/dam/jcr:34c86360-8dea-4be4-92f7-6597d4d5bfae/02%20Feature%20branches.svg?cdnVersion=1744)
+
+## Testing
+
+
+## Continuous integration via GH Actions
+
+
 
 ## Compiling
 
-The makefile defines multiple targets in the package build process. These are called by running 
+There are two main ways to compile the package:
+
+1. Via a makefile, which defines a set of targets that can be built via the `make` command in terminal/command line
+2. Directly within R using `pkgbuild::compile_dll(compile_attributes = FALSE, debug=FALSE)`
+3. Directly within R using `devtools::load_all()` (can be slwoer, use with cuation. See below.)
+
+### Makefile
+
+The makefile is defined in the root directory of the package and is called `Makefile`. It defines multiple targets in the package build process. Each rule defines a target and the commands to run to build that target. These are called by running 
 ```
 make target_name
 ```
@@ -45,17 +93,23 @@ where `target_name` is the target to build. Targets are as follows:
 - **`check`**: [Checks](http://r-pkgs.had.co.nz/check.html) plant for common problems
 - **`clean`**: Deletes `*.o` and `*.so` files that were produced when compiling the package
 - **`vignettes`**: Builds the vignettes
-- **`website`**: Makes the website using pkgdown
 
-### Speed and optimisation
+We use R to execute the compiling via `pkgbuild::compile_dll`, evem within the makefile.
 
-Which build method you use can drastically change performance. 
+### devtools::load_all produces a slow binary
 
-If you compile with debug symbols and no optimsation the code runs much slower. By default, `pkgbuild::compile_dll` has argument debug=TRUE which leads causes debug symbols to be included and slow runtime. Using `devtools::load_all()` will aslo be slow.
+Which build method you use to compile can drastically change spped at runtime. In particular, different levels of compiler optimisation are triggered based on the method used to complile the pacakge.
 
-If you compile with optimisation, the code runs much faster. By default, `R CMD INSTALL` and `devtools::install()` compile with optimisation. You will want to clean first. 
+An easy way to compile and load the binary is by running
+```
+devtools::load_all()
+```
 
-When developing, you can make everything faster by compiling as follows. After changing some cpp code, run
+However, this compiles code without optimisation, cuasing the model to run much slower. Similarly, by default, `pkgbuild::compile_dll` has argument debug=TRUE which leads causes debug symbols to be included and slow runtime.
+
+If you compile with optimisation, the code runs much faster. By default, `R CMD INSTALL`, `devtools::install()` or `make` will compile with optimisation. You will want to clean first. 
+
+When developing, you can still get optimisation by compiling as follows. After changing some cpp code, run
 
 ```{r, eval=FALSE}
 pkgbuild::compile_dll(debug=FALSE, compile_attributes = FALSE)
@@ -66,42 +120,38 @@ The first line recompiles with optimisation, and the second line loads the packa
 
 Also, including `compile_attributes = FALSE` in the first line avoids the need to recompile the Rcpp exports.
 
-You'll want to do something different when
+## Profiling
 
-- you've changed the interface so need to recompile the Rcpp exports and or a cpp header file
-- you want to use debug symbols to diagnose a problem
 
-# Design & Structure
+
+# Building/updating the website:
+
+Website mainatined on spereate branch [`gh-pages`](https://github.com/traitecoevo/plant/tree/gh-pages)
+Wesbite built with [pkgdown](http://pkgdown.r-lib.org), drawing on files in package such as
+- Readme
+- News
+- folder `man`: 
+- folder `vignettes`: 
+
+To build and push the website, do as follows:
+
+1. Open up package on develop or master
+2. Clone branch containing the website into folder `gh-pages`, within root of pacakges
+```
+git clone --branch gh-pages --single-branch git@github.com:traitecoevo/plant.git gh-pages
+```
+3. Rebuild the website using `pkgdown::build_site()`
+4. Go into the gh-apges folder, commit and push
+
+If you just want to build the wsbite locally, you only need to complete step 3.
+
+
+
+# Program Design
 
 `plant` is build as an R package using C++ code, linked via [Rcpp](https://cran.r-project.org/package=Rcpp). Rcpp provides "provides R functions as well as C++ classes which offer a seamless integration of R and C++." 
 
 Two common challenges with using Rcpp are 1) that there is a lot of interface code (or "boilerplate") needed, 2) Rcpp "modules" can be slow to load. To overcome these we use the package [RcppR6](https://github.com/richfitz/RcppR6) to generate the interface. The RcppR6 package aims to provide a simple way of generating boilerplate code for exposing C++ classes to R. It is similar in many ways to Rcpp "modules" but without the slow load time. RcppR6 creates an interface using Rcpp's ["attributes"](http://dirk.eddelbuettel.com/code/rcpp/Rcpp-attributes.pdf) facilities to build the actual R/C++ glue. The [R6](https://github.com/wch/R6) R package is the reference class that we use for wrapping the generated class. To achieve the link, class definitions are written into a [YAML](http://en.wikipedia.org/wiki/YAML) file.
-
-
-## Directory Structure
-
-The code is organised as follows. This structure reflects structure generally used for R packages including C++ source.
-
-
-```sh
-├── inst
-│   ├── RcppR6_classes.yml    # Used by RCppR6 to generate the interface for Rcpp (C++ classes)
-│   ├── RcppR6_functions.yml  # Used by RCppR6 to generate the interface for Rcpp (C++ function)
-│   ├── include
-│   │   ├── plant.h # THE main header file for package - sources other headers
-│   │   ├── plant 	# header (.h) files for different components, many including implementation
-│   │   └── tk      # simple cubic spline interpolation library
-│   ├── reference_plant_ff16 # Reference plant physiology ff16
-│   ├── docs    		# Files for building the documentation
-│   ├── scripts 		# Tools used in package management
-│   └── website 		# Reference plant physiology ff16
-├── man 			  		# R Documentation files (*.Rd)
-├── R 							# R functions
-├── scripts 	  		# R scripts
-├── src 			  		# C++ files with implementation where not included in headers
-├── tests 		  		# Tests
-└── vignettes   		# Vignettes
-```
 
 ## Templating
 
@@ -221,52 +271,3 @@ If that works you can then modify the files `src/XX99_strategy.cpp` and `inst/in
 Then recompile and test as above.
 
 After the project compiles, you will notices even more files that have changed, for example in files like `NAMESPACE`, `R/RcppExports.R` etc. These files are auto-generated and therefore modifications are triggered from files listed above.
-
-# Creating the light environment
-
-patch calls `compute_environment`, 
-  - which calls `environment.compute_environment(f, height_max())`, where f = `compute_competiton` 
-    -> compute_competition pass through species 
-      -> in species, compute_competition integrate density over nodes
-        -> in node, `compute_competition = density * individual.compute_competition(height_);` 
-          -> individual passes straight through to strategy
-            -> strategy calculates fraction of `leaf above = k_I * area_leaf(height) * Q(z, height);`
-  - `environment.compute_environment` creates the a spline of light availability, as a function of height
-    - to do this, uses the `ResourceSpline` class. 
-      ->  `ResourceSpline` class uses an adaptive routine to sample across the height range to approximate the function
-        -> the function is ultimatelky approximated with a spline, using the `tk` class 
-    - creating the spline is achieved through calls to `compute_competiton`, as described above
-
-# Using the light environment
-
-- In compute_rates, environment gets passed from Patch -> Species -> Node -> Individual -> Strategy
-  - FF16_strategy `net_mass_production_dt` calls `assimilation`
-    - assimilation uses the object `quadrature::QK function_integrator` to integrate the function `assimilation_leaf(environment.get_environment_at_height(z)) * q(z, height)` over z, where z is depth in the plant. The function is integrated using Gauss-Kronrod quadrature. The number of points used when numerically intergrating the function is defined by the argument `function_integration_rule` (see below), the default number of points is 21.
-      - Previously, we use the QAG (instead of QK) class, to enable adaptive integration of the function. The QAG class uses QK, but icnludes and extra layer to refine the number of points. However, this is slower and isn't noticeably changing the results. The adaptive routine may take twice as long 
-
-# Numerical methods
-
-## tk splines
-
-## Trapezium
-
-trapezium(xx, yy),
-
-## Gauss-Kronrod quadrature
-
-To numerically integration functions, we use the Gauss-Kronrod quadrature method. This is implemented in the `QK` and `QAG` classes. 
-  - General background on the method is available at: https://en.wikipedia.org/wiki/Gaussian_quadrature
-  - The `QK` class is used to numerically integrate functions using Gauss-Kronrod quadrature.
-    - The number of points used when numerically intergrating the function is defined by the control variable `function_integration_rule`. The integration has several "rules", including QK15, QK21, QK31, QK41, QK51, defined in qk_rules.cpp. These determine the numbers of points in the integration. The default number of points is 21.
-    - the QK code was ported from GSL by Rich FitzJohn.
-  - The `QAG` class uses the `QK` class, for adaptive integration  using Gauss-Kronrod quadrature. In the adaptive method, the difference between a Gauss quadrature rule and its Kronrod extension is used as an estimate of the approximation error, from which the need for more points is determined.
-    - The QAG routine is adapted from the "QAG" algorithm in QUADPACK
-    - The `QAG` class call class `QK`, which does the actual integration.
-
-# Website
-
-## Building the website:
-
-To build and push the website to the `gh-pages` branch run `make website`.
-This builds the site with [pkgdown](http://pkgdown.r-lib.org).
-The site is then pushed to the `gh-pages` branch. (https://traitecoevo.github.io/plant)

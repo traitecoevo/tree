@@ -66,7 +66,7 @@ test_that("Ode runner behaves", {
   expect_equal(lo2$ode_state, y)
 
   t1 <- 1.0
-  sys$advance(t1)
+  sys$advance_adaptive(t1)
 
   ## State has changed:
   expect_true(all(sys$state != y))
@@ -104,8 +104,8 @@ test_that("OdeR interface", {
 
   sol2 <- OdeRunner("Lorenz")(lo)
 
-  sol$advance(pi)
-  sol2$advance(pi)
+  sol$advance_adaptive(pi)
+  sol2$advance_adaptive(pi)
   expect_equal(sol$times, sol2$times)
   expect_equal(sol$state, sol2$state)
 

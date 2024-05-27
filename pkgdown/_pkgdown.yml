@@ -26,10 +26,20 @@ navbar:
         - text: "Theory"
         - text: "Demography of individuals, patches, and metacommunities"
           href: articles/demography.html
-        - text: "Numerical methods for solving equations"
+        - text: "Overview of numerical methods used in `plant`"
+          href: articles/methods/numerical_methods.html
+        - text: "Solving system dynamics via the characteristic method"
           href: articles/methods/solving_dynamics.html
+        - text: "ODE stepping and control"
+          href: articles/methods/ode_solver.html
         - text: "The node spacing algorithm"
-          href: articles/blog/node_spacing.html
+          href: articles/methods/node_spacing.html
+        - text: -------
+        - text: "Developer Notes"
+        - text: "Package Organisation and Management"
+          href: articles/package_organisation.html
+        - text: "Implementing a new strategy"
+          href: articles/strategy_new.html
         - text: -------
         - text: "Models"
         - text: "The TF24 model"
@@ -54,12 +64,7 @@ navbar:
           href: articles/emergent.html
         - text: "Utilising Extrinsic Drivers"
           href: articles/extrinsic_drivers.html
-        - text: -------
-        - text: "Developer Notes"
-        - text: "Organisation of the package"
-          href: articles/package_organisation.html
-        - text: "Implementing a new strategy"
-          href: articles/strategy_new.html
+
     - text: "Blog"
       icon: fa-terminal
       desc: >
@@ -112,10 +117,10 @@ reference:
 
 - title: Manipulating outputs
   contents:
-  - tidy_env
-  - tidy_individual
   - tidy_patch
+  - tidy_env
   - tidy_species
+  - tidy_individual
   - integrate_over_size_distribution
   - interpolate_to_heights
   - interpolate_to_times
@@ -136,7 +141,6 @@ reference:
   contents:
   - contains("FF16w_")
 
-
 - title: K93 model
   desc:  Functions for runnign the K93 model
   contents:
@@ -153,7 +157,7 @@ reference:
   - validate
 
 - title: Helpers
-  desc:  Small function used in vignettes. Remove from package?
+  desc:  Small function used in vignettes. (Remove from package or make private?)
   contents:
   - bounds
   - clamp_domain
@@ -163,7 +167,7 @@ reference:
   - splinefun_log
 
 - title: Numerical methods
-  desc: You're unlikely to run these unless you're diving deep into the code
+  desc: You're unlikely to run these unless you're diving deep into the code. (Do these need to be exposed? Should they be private?)
   contents:
   - environment_type
   - Internals

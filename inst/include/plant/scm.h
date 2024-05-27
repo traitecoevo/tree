@@ -3,7 +3,7 @@
 #define PLANT_PLANT_SCM_H_
 
 #include <plant/node_schedule.h>
-#include <plant/ode_solver.h>
+#include <plant/ode_solver/ode_solver.h>
 #include <plant/patch.h>
 #include <plant/scm_utils.h>
 
@@ -112,7 +112,7 @@ template <typename T, typename E> std::vector<size_t> SCM<T, E>::run_next() {
   if (use_ode_times) {
     solver.advance_fixed(patch, e.times);
   } else {
-    solver.advance(patch, e.time_end());
+    solver.advance_adaptive(patch, e.time_end());
   }
 
   return ret;

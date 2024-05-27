@@ -5,7 +5,7 @@
 
 #include <plant/interpolator.h>
 #include <plant/adaptive_interpolator.h>
-#include <plant/ode_interface.h>
+#include <plant/ode_solver/ode_interface.h>
 #include <plant/util.h>
 
 using namespace Rcpp;
