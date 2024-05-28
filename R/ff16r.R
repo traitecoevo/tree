@@ -37,7 +37,7 @@ FF16r_make_environment <- function(light_availability_spline_rescale_usually = T
 ##' @param n_strategies number of strategies for test environment
 ##' @rdname FF16r_test_environment
 ##' @examples
-##' environment <- FF16r_test_environment(10)
+##' environment <- plant:::FF16r_test_environment(10)
 FF16r_test_environment <- function(height, n=101, light_env=NULL,
                              n_strategies=1) {
   hh <- seq(0, height, length.out=n)

@@ -71,7 +71,7 @@ K93_fixed_environment <- function(e=1.0, height_max = 300.0) {
 ##' @export
 ##' @rdname K93_test_environment
 ##' @examples
-##' environment <- K93_test_environment(10)
+##' environment <- plant:::K93_test_environment(10)
 K93_test_environment <- function(height, n=101, light_env=NULL,
                              n_strategies=1) {
   hh <- seq(0, height, length.out=n)
