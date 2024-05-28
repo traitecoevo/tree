@@ -102,15 +102,6 @@ validate <- function(x, ...) {
   get(constructor, plant, inherits=FALSE)(x)
 }
 
-loop <- function(X, FUN, ..., parallel=FALSE) {
-  if (parallel) {
-    parallel::mclapply(X, FUN, ..., mc.preschedule=FALSE)
-  } else {
-    lapply(X, FUN, ...)
-  }
-}
-
-
 ##' Spline interpolation in log-x space
 ##' @title Spline interpolation in log-x space
 ##' @param x,y Vectors giving coordinates of points to be
