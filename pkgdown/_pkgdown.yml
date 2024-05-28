@@ -161,7 +161,6 @@ reference:
   - bounds
   - clamp_domain
   - seq_log
-  - rbind_list
   - make_transparent
   - splinefun_log
 
@@ -174,7 +173,6 @@ reference:
   - OdeControl
   - NodeSchedule
   - QK
-  - nlsolve
 
 - title: Review if still needed
   contents:

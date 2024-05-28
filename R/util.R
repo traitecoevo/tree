@@ -110,18 +110,6 @@ loop <- function(X, FUN, ..., parallel=FALSE) {
   }
 }
 
-##' Create a matrix from a list by rbinding all columns together
-##' @title Create matrices from lists
-##' @param x A list, or something coercable to a list
-##' @export
-rbind_list <- function(x) {
-  do.call("rbind", as.list(x))
-}
-##' @export
-##' @rdname rbind_list
-cbind_list <- function(x) {
-  do.call("cbind", as.list(x))
-}
 
 ##' Spline interpolation in log-x space
 ##' @title Spline interpolation in log-x space

@@ -13,7 +13,7 @@ drain_schedule <- function(sched) {
     if (!all(sapply(cmp, length) == 5)) {
       stop("Expected exactly five elements for each schedule")
     }
-    cmp <- rbind_list(cmp)
+    cmp <- do.call("rbind", as.list(cmp))
   }
   cmp
 }
