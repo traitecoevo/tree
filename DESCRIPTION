@@ -36,6 +36,7 @@ Imports:
     purrr
 Suggests:
     testthat,
+    rprojroot,
     pkgdown,
     here,
     deSolve,

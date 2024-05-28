@@ -181,7 +181,5 @@ reference:
   contents:
   - make_scm_integrate
   - node_schedule_times_default
-  - make_reference_plant
-  - make_reference_plant_FF16
   - make_patch
 

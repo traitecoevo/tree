@@ -1,3 +1,10 @@
+
+source(
+  file.path(
+    rprojroot::find_testthat_root_file(),
+    "FF16_reference", "make_reference_plant.R")
+)
+
 test_ode_make_system <- function(obj) {
   make_derivs <- function(obj) {
     if (is.null(obj$set_ode_state)) {
