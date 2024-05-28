@@ -41,7 +41,6 @@ Suggests:
     here,
     deSolve,
     numDeriv,
-    parallel,
     RcppR6 (>= 0.2.3),
     knitr,
     rmarkdown,
