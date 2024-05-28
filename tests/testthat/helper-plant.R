@@ -67,11 +67,11 @@ get_list_of_hyperpar_functions <- function() {
 
 test_environment <- function(type, ...) {
   switch(type,
-    FF16=FF16_test_environment(...),
-    TF24=TF24_test_environment(...),
-    FF16w=FF16w_test_environment(...),
-    FF16r=FF16_test_environment(...),
-    K93=K93_test_environment(...),
+    FF16=plant:::FF16_test_environment(...),
+    TF24=plant:::TF24_test_environment(...),
+    FF16w=plant:::FF16w_test_environment(...),
+    FF16r=plant:::FF16_test_environment(...),
+    K93=plant:::K93_test_environment(...),
     stop("Unknown type ", type))
 }
 
