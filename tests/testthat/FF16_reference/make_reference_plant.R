@@ -32,11 +32,13 @@ make_reference_plant <- function(type="FF16") {
 ##' @export
 make_reference_plant_FF16 <- function() {
 
-  path <- system.file("reference_plant_ff16", package=.packageName)
+  path <- file.path(
+    rprojroot::find_testthat_root_file(),
+    "FF16_reference")
 
   e <- new.env()
-  source(file.path(path, "R/params.r"), local=e)
-  source(file.path(path, "R/growthModel.r"), local=e)
+  source(file.path(path, "params.r"), local=e)
+  source(file.path(path, "growthModel.r"), local=e)
 
   e$traits <- list(lma=1.11E-01, rho=608, hmat=20, omega=3.8e-5)
   ## Reset a few parameters to revert back to C++ defaults
