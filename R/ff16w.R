@@ -89,7 +89,7 @@ FF16w_fixed_environment <- function(e=1.0, height_max = 150.0) {
 ##' @param n_strategies number of strategies for test environment
 ##' @rdname FF16w_test_environment
 ##' @examples
-##' environment <- FF16w_test_environment(10)
+##' environment <- plant:::FF16w_test_environment(10)
 FF16w_test_environment <- function(height,
                                    n = 101,
                                    light_env = NULL,

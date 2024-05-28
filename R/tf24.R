@@ -68,7 +68,7 @@ TF24_fixed_environment <- function(e=1.0, height_max = 150.0) {
 ##' @export
 ##' @rdname TF24_test_environment
 ##' @examples
-##' environment <- TF24_test_environment(10)
+##' environment <- plant:::TF24_test_environment(10)
 TF24_test_environment <- function(height, n=101, light_env=NULL,
                                   n_strategies=1) {
   
