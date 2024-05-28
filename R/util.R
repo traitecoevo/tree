@@ -88,11 +88,10 @@ seq_range <- function(r, length.out) {
 ##' @title Validate an object
 ##' @param x Object
 ##' @param ... Additional arguments to be passed to methods
-##' @export
 validate <- function(x, ...) {
   UseMethod("validate")
 }
-##' @export
+
 `validate.Parameters` <- function(x, ...) {
   plant <- parent.env(environment())
   ## TODO: This uses an implementation detail of RcppR6 that is not

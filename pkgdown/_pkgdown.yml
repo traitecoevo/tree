@@ -154,7 +154,6 @@ reference:
 - title: Development & testing
   contents:
   - run_plant_benchmarks
-  - validate
 
 - title: Helpers
   desc:  Small function used in vignettes. (Remove from package or make private?)
