@@ -14,51 +14,8 @@ FF16r_Individual <- function(s=FF16r_Strategy()) {
 
 ##' @export
 ##' @rdname FF16r
-FF16r_Node <- function(s=FF16r_Strategy()) {
-  Node("FF16r", "FF16_Env")(s)
-}
-
-##' @export
-##' @rdname FF16r
-FF16r_Species <- function(s=FF16r_Strategy()) {
-  Species("FF16r", "FF16_Env")(s)
-}
-
-##' @export
-##' @rdname FF16r
 FF16r_Parameters <- function() {
   Parameters("FF16r","FF16_Env")()
-}
-
-##' @export
-##' @rdname FF16r
-##' @param p A \code{Parameters<FF16r,FF16_Env>} object
-FF16r_Patch <- function(p) {
-  Patch("FF16r", "FF16_Env")(p)
-}
-
-##' @export
-##' @rdname FF16r
-FF16r_SCM <- function(p) {
-  SCM("FF16r", "FF16_Env")(p)
-}
-
-##' @export
-##' @rdname FF16r
-FF16r_StochasticSpecies <- function(s=FF16r_Strategy()) {
-  StochasticSpecies("FF16r", "FF16_Env")(s)
-}
-
-##' @export
-##' @rdname FF16r
-FF16r_StochasticPatch <- function(p) {
-  StochasticPatch("FF16r", "FF16_Env")(p)
-}
-
-##' @export
-##' @rdname FF16r
-FF16r_StochasticPatchRunner <- function(p) {
-  StochasticPatchRunner("FF16r", "FF16_Env")(p)
 }
 
 ## Helper:
@@ -78,7 +35,6 @@ FF16r_make_environment <- function(light_availability_spline_rescale_usually = T
 ##' @param n number of points
 ##' @param light_env function for light environment in test object
 ##' @param n_strategies number of strategies for test environment
-##' @export
 ##' @rdname FF16r_test_environment
 ##' @examples
 ##' environment <- FF16r_test_environment(10)

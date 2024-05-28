@@ -12,51 +12,8 @@ FF16_Individual <- function(s=FF16_Strategy()) {
 
 ##' @export
 ##' @rdname FF16
-FF16_Node <- function(s=FF16_Strategy()) {
-  Node("FF16", "FF16_Env")(s)
-}
-
-##' @export
-##' @rdname FF16
-FF16_Species <- function(s=FF16_Strategy()) {
-  Species("FF16", "FF16_Env")(s)
-}
-
-##' @export
-##' @rdname FF16
 FF16_Parameters <- function() {
   Parameters("FF16","FF16_Env")()
-}
-
-##' @export
-##' @rdname FF16
-##' @param p A \code{Parameters<FF16,FF16_Env>} object
-FF16_Patch <- function(p) {
-  Patch("FF16", "FF16_Env")(p)
-}
-
-##' @export
-##' @rdname FF16
-FF16_SCM <- function(p) {
-  SCM("FF16", "FF16_Env")(p)
-}
-
-##' @export
-##' @rdname FF16
-FF16_StochasticSpecies <- function(s=FF16_Strategy()) {
-  StochasticSpecies("FF16", "FF16_Env")(s)
-}
-
-##' @export
-##' @rdname FF16
-FF16_StochasticPatch <- function(p) {
-  StochasticPatch("FF16", "FF16_Env")(p)
-}
-
-##' @export
-##' @rdname FF16
-FF16_StochasticPatchRunner <- function(p) {
-  StochasticPatchRunner("FF16", "FF16_Env")(p)
 }
 
 
@@ -108,7 +65,6 @@ FF16_fixed_environment <- function(e=1.0, height_max = 150.0) {
 ##' @param n number of points
 ##' @param light_env function for light environment in test object
 ##' @param n_strategies number of strategies for test environment
-##' @export
 ##' @rdname FF16_test_environment
 ##' @examples
 ##' environment <- FF16_test_environment(10)
