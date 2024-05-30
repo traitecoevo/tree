@@ -580,7 +580,6 @@ OdeRunner <- function(T) {
 
 ##' Schedule of node introduction times
 ##' @param n_species number of species
-##' @export
 `NodeSchedule` <- function(n_species) {
   NodeSchedule__ctor(n_species)
 }
@@ -700,7 +699,6 @@ OdeRunner <- function(T) {
 ##' @title ODE Control parameters
 ##' @param ...,values Values to initialise the struct with (either as
 ##' variadic arguments, or as a list, but not both).
-##' @export
 `OdeControl` <- function(..., values=list(...)) {
   ret <- OdeControl__ctor()
   if (length(values) > 0L) {
