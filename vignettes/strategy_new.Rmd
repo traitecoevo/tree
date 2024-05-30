@@ -492,7 +492,7 @@ p1$seed_rain <- 20
 data1 <- run_scm_collect(p1)
 
 matplot(data1$time, data1$species[[1]]["height", , ],
-        lty=1, col=make_transparent("black", 0.25), type="l",
+        lty=1, col=util_colour_set_opacity("black", 0.25), type="l",
         las=1, xlab="Time (years)", ylab="Height (m)")
 ```
 

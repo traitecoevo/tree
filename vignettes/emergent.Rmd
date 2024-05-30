@@ -58,7 +58,7 @@ to be the state of the system at a given time):
 ```{r}
 density <- exp(log_density)
 matplot(height, density, type="l", lty=1,
-        col=make_transparent("black", 0.15),
+        col=util_colour_set_opacity("black", 0.15),
         xlab="Height (m)", ylab="Density (1 / m / m2)", las=1,
         log="y")
 ```
@@ -75,7 +75,7 @@ highlighted.
 ```{r}
 xlim <- c(0, max(height, na.rm=TRUE) * 1.05)
 matplot(height, density, type="l", lty=1,
-        col=make_transparent("black", 0.15),
+        col=util_colour_set_opacity("black", 0.15),
         xlab="Height (m)", ylab="Density (1 / m / m2)", las=1,
         log="y", xlim=xlim)
 matlines(height[, i], density[, i], col=cols, lty=1, type="l")
@@ -234,7 +234,7 @@ Add this average to the plot (red line):
 ```{r}
 xlim <- c(0, max(height, na.rm=TRUE) * 1.05)
 matplot(height, density, type="l", lty=1,
-        col=make_transparent("black", 0.15),
+        col=util_colour_set_opacity("black", 0.15),
         xlab="Height (m)", ylab="Density (1 / m / m2)", las=1,
         log="y", xlim=xlim)
 matlines(height[, i], density[, i], col=cols, lty=1, type="l")

@@ -159,7 +159,7 @@ reference:
   desc:  Small function used in vignettes. (Remove from package or make private?)
   contents:
   - seq_log
-  - make_transparent
+  - util_colour_set_opacity
 
 - title: Numerical methods
   desc: You're unlikely to run these unless you're diving deep into the code. (Do these need to be exposed? Should they be private?)

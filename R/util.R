@@ -124,9 +124,9 @@ vcapply <- function(X, FUN, ...) {
 ##' @export
 ##' @importFrom grDevices col2rgb rgb
 ##' @examples
-##' make_transparent("red", seq(0, 1, length.out=6))
-##' make_transparent(c("red", "blue"), .5)
-make_transparent <- function(col, opacity=.5) {
+##' util_colour_set_opacity("red", seq(0, 1, length.out=6))
+##' util_colour_set_opacity(c("red", "blue"), .5)
+util_colour_set_opacity <- function(col, opacity=.5) {
   alpha <- opacity
   if (length(alpha) > 1 && any(is.na(alpha))) {
     n <- max(length(col), length(alpha))
@@ -134,7 +134,7 @@ make_transparent <- function(col, opacity=.5) {
     col <- rep(col, length.out=n)
     ok <- !is.na(alpha)
     ret <- rep(NA, length(col))
-    ret[ok] <- make_transparent(col[ok], alpha[ok])
+    ret[ok] <- util_colour_set_opacity(col[ok], alpha[ok])
     ret
   } else {
     tmp <- col2rgb(col)/255
