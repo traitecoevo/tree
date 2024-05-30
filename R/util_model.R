@@ -15,6 +15,7 @@
 ##' varying birth rates will also have \code{strategy$birth_rate_x} and
 ##  \code{`is_variable_bithrate = TRUE`}
 ##'
+##' @export
 strategy_list <- function(x, parameters, hyperpar=param_hyperpar(parameters), birth_rate_list) {
   if (!is.matrix(x)) {
     stop("Invalid type x -- expected a matrix")
@@ -43,8 +44,6 @@ strategy_list <- function(x, parameters, hyperpar=param_hyperpar(parameters), bi
   strategies <- mapply(f, matrix_to_list(x), birth_rate_list, SIMPLIFY = FALSE)
   return(strategies)
 }
-
-
 
 ##' Helper function to create trait matrices suitable for
 ##' \code{\link{strategy_list}}.

@@ -158,25 +158,27 @@ reference:
 - title: Helpers
   desc:  Small function used in vignettes. (Remove from package or make private?)
   contents:
-  - bounds
-  - clamp_domain
   - seq_log
   - make_transparent
-  - splinefun_log
 
 - title: Numerical methods
   desc: You're unlikely to run these unless you're diving deep into the code. (Do these need to be exposed? Should they be private?)
   contents:
   - environment_type
-  - Internals
   - Interpolator
-  - OdeControl
-  - NodeSchedule
-  - QK
 
 - title: Review if still needed
   contents:
   - make_scm_integrate
   - node_schedule_times_default
   - make_patch
+
+- title: Internal functions (for developers/advanced users only)
+  contents:
+  - NodeSchedule
+  - OdeControl
+  - QK
+  - validate
+  - Internals
+
 
