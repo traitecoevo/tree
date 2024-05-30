@@ -266,7 +266,7 @@ optimise_individual_rate_at_size_by_trait <- function(
     set_state_directly = FALSE) {
   
    # can't handle situations yet where bounds are outside of positive growth, not working for K93
-  bounds <- check_bounds(bounds)
+#  bounds <- check_bounds(bounds)
 
   traits <- rownames(bounds)
 
@@ -367,3 +367,4 @@ solve_max_worker <- function(bounds, f, tol = 1e-3, outcome) {
   }
   return(ret)
 }
+
