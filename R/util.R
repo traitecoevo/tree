@@ -88,6 +88,7 @@ seq_range <- function(r, length.out) {
 ##' @title Validate an object
 ##' @param x Object
 ##' @param ... Additional arguments to be passed to methods
+##' @keywords internal
 validate <- function(x, ...) {
   UseMethod("validate")
 }

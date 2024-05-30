@@ -3,6 +3,13 @@
 strategy_types <- get_list_of_strategy_types()
 environment_types <- get_list_of_environment_types()
 
+bounds <- function(...) {
+  x <- list(...)
+  ret <- do.call("rbind", as.list(x))
+  colnames(ret) <- c("lower", "upper")
+  ret
+}
+
 for (x in names(strategy_types)) {
 
   context(sprintf("Individual-%s",x))
@@ -139,7 +146,7 @@ for (x in names(strategy_types)) {
 
   test_that("Maximise individual rate", {
   if(x %in% c("FF16", "FF16r")) {
-    
+
     #set bounds
     bounds = bounds(lma=c(0.01, 3))
     

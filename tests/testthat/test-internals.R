@@ -22,7 +22,7 @@ test_that("Creation and defaults", {
   expect_equal(internals$state_size, 0)
   expect_equal(internals$aux_size, 0)
   n = 10
-  ints = plant:::s_size = n, a_size = n)
+  ints = plant:::Internals(s_size = n, a_size = n)
   expect_equal(all(is.na(ints$rates)),TRUE)
   expect_identical(ints$states, rep(0.0, n))
 })

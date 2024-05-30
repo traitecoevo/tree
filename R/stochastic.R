@@ -3,7 +3,7 @@
 ## Generate a vector of arrival times.
 ##
 ## This will be slow, but fairly easy to get right.
-##' @importFrom stats rexp rpois runif
+##' @importFrom stats rexp rpois runif splinefun
 stochastic_arrival_times <- function(max_time, species, delta_t = 0.1, patch_area = 1) {
   ret <- numeric(0)
   t0 <- 0.0
