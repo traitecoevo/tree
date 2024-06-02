@@ -3,7 +3,7 @@
 #define PLANT_PLANT_PLANT_MINIMAL_H_
 
 #include <memory> // std::shared_ptr
-#include <plant/ode_interface.h>
+#include <plant/ode_solver/ode_interface.h>
 #include <vector>
 #include <plant/internals.h>
 #include <plant/uniroot.h>
@@ -52,15 +52,24 @@ public:
   double aux(std::string name) const {
     return vars.aux(strategy->aux_index.at(name));
   }
-  double aux(int i) const { return vars.aux(i); } 
+  double aux(int i) const { return vars.aux(i); }
+
+  // set # consumable resources based on env. variables
+  void resize_consumption_rates(int i) {
+    vars.resize_consumption_rates(i);
+  }
+  double consumption_rate(int i) const { return vars.consumption_rate(i); }
 
   double compute_competition(double z) const {
     return strategy->compute_competition(z, state(HEIGHT_INDEX)); // aux("competition_effect"));
   }
 
-  void compute_rates(const environment_type &environment,
-                         bool reuse_intervals = false) {
-    strategy->compute_rates(environment, reuse_intervals, vars);
+  void compute_rates(const environment_type& environment) {
+    if (vars.resource_size != environment.ode_size()) {
+      // handles when Individual hasn't been instantiated in a Patch (ie with an environment)
+      vars.resize_consumption_rates(environment.ode_size());
+    }
+    strategy->compute_rates(environment, vars);
   }
   
   double establishment_probability(const environment_type &environment) {
@@ -76,25 +85,33 @@ public:
   static size_t ode_size() { return strategy_type::state_size(); }
   static std::vector<std::string> ode_names() { return strategy_type::state_names(); }
 
-  size_t aux_size() { return strategy->aux_size(); }
+  // why doesn't strategy->aux_size() also need to be const-qualified? is it because strategy is a pointer?
+  size_t aux_size() const { return strategy->aux_size(); }
   std::vector<std::string> aux_names() { return strategy->aux_names(); }
 
   ode::const_iterator set_ode_state(ode::const_iterator it) {
-    for (int i = 0; i < vars.state_size; i++) {
+    for (size_t i = 0; i < vars.state_size; i++) {
       vars.states[i] = *it++;
       strategy->update_dependent_aux(i, vars);
     }
     return it;
   }
   ode::iterator ode_state(ode::iterator it) const {
-    for (int i = 0; i < vars.state_size; i++) {
+    for (size_t i = 0; i < vars.state_size; i++) {
       *it++ = vars.states[i];
     }
     return it;
   }
   ode::iterator ode_rates(ode::iterator it) const {
-    for (int i = 0; i < vars.state_size; i++) {
+    for (size_t i = 0; i < vars.state_size; i++) {
       *it++ = vars.rates[i];
+    }
+    return it;
+  }
+
+  ode::iterator ode_aux(ode::iterator it) const {
+    for (size_t i = 0; i < vars.aux_size; i++) {
+      *it++ = vars.auxs[i];
     }
     return it;
   }
@@ -106,15 +123,13 @@ public:
   
   void reset_mortality() { set_state("mortality", 0.0); }
 
-  // TODO: Eventually change to growth rate given size
   double growth_rate_given_height(double height, const environment_type& environment) {
     set_state("height", height);
-    compute_rates(environment, true);
+    compute_rates(environment);
     return rate("height");
   }
 
-  // TODO recame lcp_whole_plant to competition_compensation_point
-  double lcp_whole_plant() {
+  double resource_compensation_point() {
     environment_type env = environment_type();
 
     auto target = [&] (double x) mutable -> double {
@@ -127,8 +142,8 @@ public:
     if (f1 < 0.0) {
       return NA_REAL;
     } else {
-      const double tol = control().plant_seed_tol;
-      const size_t max_iterations = control().plant_seed_iterations;
+      const double tol = control().offspring_production_tol;
+      const size_t max_iterations = control().offspring_production_iterations;
       return util::uniroot(target, 0.0, 1.0, tol, max_iterations);
     }
   }

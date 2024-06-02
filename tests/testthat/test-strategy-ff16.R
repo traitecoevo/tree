@@ -33,8 +33,12 @@ test_that("Defaults", {
     omega  = 3.8e-5,
     theta  = 1.0/4669,
     k_I = 0.5,
+    recruitment_decay = 0,
     control = Control(),
-    collect_all_auxillary = FALSE)
+    collect_all_auxiliary = FALSE,
+    birth_rate_x = numeric(0), # empty
+    birth_rate_y = c(1.0), 
+    is_variable_birth_rate = FALSE)
 
   keys <- sort(names(expected))
 
@@ -45,7 +49,7 @@ test_that("Defaults", {
   expect_identical(unclass(s)[keys], expected[keys])
 })
 
-test_that("FF16 collect_all_auxillary option", {
+test_that("FF16 collect_all_auxiliary option", {
 
   s <- FF16_Strategy()
   p <- FF16_Individual(s)
@@ -56,8 +60,8 @@ test_that("FF16 collect_all_auxillary option", {
     "net_mass_production_dt"
   ))
 
-  s <- FF16_Strategy(collect_all_auxillary=TRUE)
-  expect_true(s$collect_all_auxillary)
+  s <- FF16_Strategy(collect_all_auxiliary=TRUE)
+  expect_true(s$collect_all_auxiliary)
   p <- FF16_Individual(s)
   expect_equal(p$aux_size, 3)
   expect_equal(length(p$internals$auxs), 3)
@@ -164,32 +168,58 @@ test_that("narea calculation", {
   x <- c(1.38, 3.07, 2.94)
   p0 <- FF16_Parameters()
   m <- trait_matrix(x, "hmat")
-  expect_silent(sl <- strategy_list(m, p0, FF16_hyperpar))
+  expect_silent(sl <- plant:::strategy_list(m, p0, FF16_hyperpar, birth_rate_list=1.0))
 
-  cmp <- lapply(x, function(xi) strategy(trait_matrix(xi, "hmat"), p0, FF16_hyperpar))
+  cmp <- lapply(x, function(xi) strategy_list(trait_matrix(xi, "hmat"), p0, FF16_hyperpar, birth_rate_list=1.0)[[1]])
   expect_equal(sl, cmp)
 })
 
-# integration test - runs a full patch metapopultaion
-# the seed rain produced integrates all demographic behaviours
+# integration test - runs a full patch meta-population
+# the offspring arrival produced integrates all demographic behaviours
 
-test_that("seed rain", {
+test_that("offspring arrival", {
 
   p0 <- scm_base_parameters("FF16")
-
+  env <- make_environment("FF16")
+  ctrl <- scm_base_control()
+  
   # one species
-  p1 <- expand_parameters(trait_matrix(0.0825, "lma"), p0, FF16_hyperpar,FALSE)
+  p1 <- expand_parameters(trait_matrix(0.0825, "lma"), p0, FF16_hyperpar, 
+                           birth_rate_list = list(20))
 
-  p1$seed_rain <- 20
-  out <- run_scm(p1)
-  expect_equal(out$seed_rains, 16.88946, tolerance=1e-5)
-  expect_equal( out$ode_times[c(10, 100)], c(0.000070, 4.216055), tolerance=1e-5)
+  out <- run_scm(p1, env, ctrl)
+  expect_equal(out$offspring_production, 16.88946, tolerance=1e-5)
+  expect_equal(out$ode_times[c(10, 100)], c(0.000070, 4.216055), tolerance=1e-5)
 
   # two species
-  p2 <- expand_parameters(trait_matrix(0.2625, "lma"), p1, FF16_hyperpar, FALSE)
-  p2$seed_rain <- c(11.99177, 16.51006)
-  out <- run_scm(p2)
-  expect_equal(out$seed_rains, c(11.99529, 16.47519), tolerance=1e-5)
+  p2 <- expand_parameters(trait_matrix(c(0.0825, 0.2625), "lma"), p0, FF16_hyperpar, 
+                           birth_rate_list = list(11.99177, 16.51006))
+  
+  out <- run_scm(p2, env, ctrl)
+  expect_equal(out$offspring_production, c(11.99529, 16.47519), tolerance=1e-5)
   expect_equal(length(out$ode_times), 297)
 })
 
+test_that("Report generation", {
+
+  p0 <- scm_base_parameters("FF16")
+  env <- make_environment("FF16")
+  ctrl <- scm_base_control()
+  
+  p2 <- expand_parameters(trait_matrix(c(0.0825, 0.2625), "lma"), p0,   FF16_hyperpar, 
+                           birth_rate_list = list(11.99177, 16.51006))
+
+  # test report generation
+  out <- run_scm_collect(p2, env, ctrl)
+
+  unlink("tmp", recursive = TRUE)
+  expect_message(FF16_generate_stand_report(out, "tmp/tmp.html", overwrite = TRUE), "Report for FF16 stand saved at tmp/tmp.html")
+  expect_true(file.exists("tmp/tmp.html"))
+
+  # don't overwrite output if already exists 
+  expect_message(FF16_generate_stand_report(out, "tmp/tmp.html", overwrite = FALSE), "Report for FF16 stand already exists at tmp/tmp.html")  
+  expect_true(file.exists("tmp/tmp.html"))
+
+  unlink("tmp", recursive = TRUE)
+
+})

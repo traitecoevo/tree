@@ -3,7 +3,7 @@
 #define PLANT_PLANT_CONTROL_H_
 
 #include <plant/qag.h>
-#include <plant/ode_control.h>
+#include <plant/ode_solver/ode_control.h>
 #include <string>
 
 // The `Control` object holds all the non-biological control
@@ -18,35 +18,19 @@
 // Because Control is essentially a dumb set of parameters that has no
 // real functionality, we don't export it as a reference class, but
 // instead use RcppR6's "list" export ability.
-//
-// TODO: Eventually I need to make sure that the numbers here are
-// reasonable, and probably shepherd the translation from int to
-// size_t.
 namespace plant {
-
 struct Control {
   Control();
-  void initialize();
 
-  bool   plant_assimilation_adaptive;
+  size_t function_integration_rule;
 
-  bool   plant_assimilation_over_distribution;
-  double plant_assimilation_tol;
-  size_t plant_assimilation_iterations;
-  size_t plant_assimilation_rule;
+  double offspring_production_tol;
+  size_t offspring_production_iterations;
 
-  double plant_seed_tol;
-  size_t plant_seed_iterations;
-
-  double cohort_gradient_eps;
-  int    cohort_gradient_direction;
-  bool   cohort_gradient_richardson;
-  size_t cohort_gradient_richardson_depth;
-
-  double environment_light_tol;
-  size_t environment_light_nbase;
-  size_t environment_light_max_depth;
-  bool   environment_rescale_usually;
+  double node_gradient_eps;
+  int    node_gradient_direction;
+  bool   node_gradient_richardson;
+  size_t node_gradient_richardson_depth;
 
   double ode_step_size_initial;
   double ode_step_size_min;
@@ -59,20 +43,8 @@ struct Control {
   size_t schedule_nsteps;
   double schedule_eps;
   bool   schedule_verbose;
-  double schedule_patch_survival;
 
-  size_t equilibrium_nsteps;
-  double equilibrium_eps;
-  double equilibrium_large_seed_rain_change;
-  bool   equilibrium_verbose;
-  std::string equilibrium_solver_name;
-  double equilibrium_extinct_seed_rain;
-  size_t equilibrium_nattempts;
-  bool   equilibrium_solver_logN;
-  bool   equilibrium_solver_try_keep;
-
-  // Things derived from this:
-  quadrature::QAG integrator;
+  bool   save_RK45_cache;
 };
 
 inline ode::OdeControl make_ode_control(const Control& control) {

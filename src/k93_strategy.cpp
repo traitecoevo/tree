@@ -1,11 +1,6 @@
 // Built from  src/ff16r_strategy.cpp on Wed Aug 12 15:46:38 2020 using the scaffolder, from the strategy:  FF16r
 // Built from  src/ff16_strategy.cpp on Fri Jul  3 08:14:35 2020 using the scaffolder, from the strategy:  FF16
-#include <plant/uniroot.h>
-#include <plant/qag.h>
-#include <plant/models/assimilation.h>
-#include <plant/models/ff16_environment.h>
 #include <plant/models/k93_strategy.h>
-#include <RcppCommon.h> // NA_REAL
 
 namespace plant {
 
@@ -54,7 +49,7 @@ double K93_Strategy::compute_competition(double z, double size) const {
 
   // Competition only felt if plant bigger than target size z
   return k_I * size_to_basal_area(size) * Q(z, size);
- };
+ }
 
 double K93_Strategy::establishment_probability(const K93_Environment& environment){
   //TODO: may want to make this dependent on achieving positive growth rate
@@ -62,8 +57,7 @@ double K93_Strategy::establishment_probability(const K93_Environment& environmen
 }
 
 double K93_Strategy::net_mass_production_dt(const K93_Environment& environment,
-                                            double height, double area_leaf_,
-                                            bool reuse_intervals) {
+                                            double height, double area_leaf_) {
   // TODO: there was no return value here - added 0.0
   return 1.0;
 }
@@ -74,18 +68,16 @@ void K93_Strategy::refresh_indices () {
   aux_index   = std::map<std::string,int>();
   std::vector<std::string> aux_names_vec = aux_names();
   std::vector<std::string> state_names_vec = state_names();
-  for (int i = 0; i < state_names_vec.size(); i++) {
+  for (size_t i = 0; i < state_names_vec.size(); i++) {
     state_index[state_names_vec[i]] = i;
   }
-  for (int i = 0; i < aux_names_vec.size(); i++) {
+  for (size_t i = 0; i < aux_names_vec.size(); i++) {
     aux_index[aux_names_vec[i]] = i;
   }
 }
 
 // i.e. setting rates of ode vars from the state and updating aux vars
-void K93_Strategy::compute_rates(const K93_Environment& environment,
-                              bool reuse_intervals,
-                              Internals& vars) {
+void K93_Strategy::compute_rates(const K93_Environment& environment, Internals& vars) {
 
   double height = vars.state(HEIGHT_INDEX);
 
@@ -148,10 +140,13 @@ double K93_Strategy::mortality_dt(double cumulative_basal_area,
   }
 }
 
-
+// useful for pre-computing expensive objects
 void K93_Strategy::prepare_strategy() {
-  // Set up the integrator
-  control.initialize();
+  if (is_variable_birth_rate) {
+    extrinsic_drivers.set_variable("birth_rate", birth_rate_x, birth_rate_y);
+  } else {
+    extrinsic_drivers.set_constant("birth_rate", birth_rate_y[0]);
+  }
 }
 
 K93_Strategy::ptr make_strategy_ptr(K93_Strategy s) {

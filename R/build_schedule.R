@@ -1,4 +1,4 @@
-##' Build an appropriately refined schedule.
+##' Build an appropriately refined schedule for node introduction.
 ##'
 ##' There are control options (within the \code{Parameters} object)
 ##' that affect how this function runs, in particular
@@ -6,26 +6,31 @@
 ##' the schedule will end up, and \code{schedule_verbose} controls if
 ##' details are printed to the screen during construction.
 ##'
-##' @title Build Cohort Schedule
+##' @title Build Node Schedule
 ##' @param p Parameters object
+##' @param env Environment object
+##' @param ctrl Control object
 ##' @return A Parameters object, with schedule components set.  The
-##' output seed rain is also available as an attribute
-##' \code{seed_rain}.
+##' output offspring produced is also available as an attribute
+##' \code{birth_rate}.
 ##' @author Rich FitzJohn
 ##' @export
-build_schedule <- function(p) {
+build_schedule <- function(p, env = make_environment(parameters = p),
+                           ctrl = scm_base_control()) {
   p <- validate(p)
 
   n_spp <- length(p$strategies)
-  if (n_spp == 0L || !any(p$is_resident)) {
+  if (n_spp == 0L) {
     stop("Can't build a schedule with no residents")
   }
-  control <- p$control
-  eps <- control$schedule_eps
 
-  for (i in seq_len(control$schedule_nsteps)) {
-    res <- run_scm_error(p)
-    seed_rain_out <- res[["seed_rain"]]
+  eps <- ctrl$schedule_eps
+
+  for (i in seq_len(ctrl$schedule_nsteps)) {
+    
+    res <- run_scm_error(p, env, ctrl)
+    offspring_production <- res[["offspring_production"]]
+    
     split <- lapply(res$err$total, function(x) x > eps)
 
     if (!any(unlist(split), na.rm=TRUE)) {
@@ -33,11 +38,11 @@ build_schedule <- function(p) {
     }
 
     ## Prepare for the next iteration:
-    times <- p$cohort_schedule_times
+    times <- p$node_schedule_times
     for (idx in seq_len(n_spp)) {
       times[[idx]] <- split_times(times[[idx]], split[[idx]])
     }
-    p$cohort_schedule_times <- times
+    p$node_schedule_times <- times
 
     msg <- sprintf("%d: Splitting {%s} times (%s)",
                    i,
@@ -46,10 +51,10 @@ build_schedule <- function(p) {
     plant_log_debug(msg, routine="schedule", event="split", round=i)
   }
 
-  p$cohort_schedule_ode_times <- res$ode_times
-  ## Useful to record the last seed rain out:
-  attr(p, "seed_rain_out") <- seed_rain_out
+  p$ode_times <- res$ode_times
+  ## Useful to record the last offspring produced:
 
+  attr(p, "offspring_production") <- offspring_production
   p
 }
 

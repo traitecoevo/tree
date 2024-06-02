@@ -1,11 +1,11 @@
 // -*-c++-*-
-#ifndef PLANT_PLANT_STOCHASTIC_SPECIES_H_
-#define PLANT_PLANT_STOCHASTIC_SPECIES_H_
+#ifndef STOCHASTIC_SPECIES
+#define STOCHASTIC_SPECIES
 
 #include <vector>
 #include <plant/util.h>
 #include <plant/environment.h>
-#include <plant/ode_interface.h>
+#include <plant/ode_solver/ode_interface.h>
 
 namespace plant {
 
@@ -17,11 +17,11 @@ namespace plant {
 // first.  We'll see.
 
 // The main difference between this and the deterministic version is that:
-// * don't use Cohort<T,E> for storage
+// * don't use Node<T,E> for storage
 // * support for non-deterministic deaths
 // * stochastic birth survival (?)
 
-// Eventually we might need to support things like stochastic cohorts
+// Eventually we might need to support things like stochastic nodes
 // to support:
 // * discrete multiple arrivals in a single time
 // * tracking birth times
@@ -42,21 +42,21 @@ public:
   StochasticSpecies(strategy_type s);
 
   size_t size() const;
-  size_t size_plants() const {return plants.size();}
+  size_t size_individuals() const {return individuals.size();}
   void clear();
-  void add_seed();
-  void add_seed(const E& environment);
+  void introduce_new_node();
+  void introduce_new_node(const E& environment);
 
   double height_max() const;
   double compute_competition(double height) const;
   void compute_rates(const E& environment);
-  std::vector<double> seeds() const;
+  std::vector<double> net_reproduction_ratio_by_node() const;
 
   // This is totally new, relative to the deterministic model; this
   // will destructively modify the species by removing individuals.
   size_t deaths();
   double establishment_probability(const E& environment) {
-    return seed.establishment_probability(environment);
+    return offspring.establishment_probability(environment);
   }
 
   // * ODE interface
@@ -72,24 +72,24 @@ public:
   std::vector<bool> r_is_alive() const {return is_alive;}
   std::vector<double> r_heights() const;
   void r_set_heights(std::vector<double> heights);
-  const individual_type& r_seed() const {return seed;}
-  std::vector<individual_type> r_plants() const {return plants;}
-  const individual_type& r_plant_at(util::index idx) const {
-    return plants[idx.check_bounds(size_plants())];
+  const individual_type& r_new_node() const {return offspring;}
+  std::vector<individual_type> r_individuals() const {return individuals;}
+  const individual_type& r_individual_at(util::index idx) const {
+    return individuals[idx.check_bounds(size_individuals())];
   }
 
 private:
   const Control& control() const {return strategy->get_control();}
   strategy_type_ptr strategy;
-  individual_type seed;
-  std::vector<individual_type> plants;
+  individual_type offspring;
+  std::vector<individual_type> individuals;
   std::vector<bool>       is_alive;
 };
 
 template <typename T, typename E>
 StochasticSpecies<T,E>::StochasticSpecies(strategy_type s)
   : strategy(make_strategy_ptr(s)),
-    seed(strategy) {
+    offspring(strategy) {
 }
 
 template <typename T, typename E>
@@ -100,24 +100,24 @@ size_t StochasticSpecies<T,E>::size() const {
 
 template <typename T, typename E>
 void StochasticSpecies<T,E>::clear() {
-  plants.clear();
+  individuals.clear();
   is_alive.clear();
-  // Reset the seed to a blank seed, too.
-  seed = individual_type(strategy);
+  // Reset the offspring to a blank offspring, too.
+  offspring = individual_type(strategy);
 }
 
 // Note that this does not do establishment probability; suggest that
 // this is best to do in the StochasticPatch perhaps?
 template <typename T, typename E>
-void StochasticSpecies<T,E>::add_seed() {
-  plants.push_back(seed);
+void StochasticSpecies<T,E>::introduce_new_node() {
+  individuals.push_back(offspring);
   is_alive.push_back(true);
 }
 
 template <typename T, typename E>
-void StochasticSpecies<T,E>::add_seed(const E& environment) {
-  add_seed();
-  plants.back().compute_rates(environment);
+void StochasticSpecies<T,E>::introduce_new_node(const E& environment) {
+  introduce_new_node();
+  individuals.back().compute_rates(environment);
 }
 
 
@@ -126,9 +126,9 @@ void StochasticSpecies<T,E>::add_seed(const E& environment) {
 // individual (always the first in the list).
 template <typename T, typename E>
 double StochasticSpecies<T,E>::height_max() const {
-  for (size_t i = 0; i < size_plants(); ++i) {
+  for (size_t i = 0; i < size_individuals(); ++i) {
     if (is_alive[i]) {
-      return plants[i].state(HEIGHT_INDEX);
+      return individuals[i].state(HEIGHT_INDEX);
     }
   }
   return 0.0;
@@ -157,10 +157,10 @@ double StochasticSpecies<T,E>::compute_competition(double height) const {
   double tot = 0.0;
   // TODO: Here, and elsewhere, consider using a
   // boost::filter_iterator, which is in BH
-  for (size_t i = 0; i < size_plants(); ++i) {
+  for (size_t i = 0; i < size_individuals(); ++i) {
     if (is_alive[i]) {
-      if (plants[i].state(HEIGHT_INDEX) > height) {
-        tot += plants[i].compute_competition(height);
+      if (individuals[i].state(HEIGHT_INDEX) > height) {
+        tot += individuals[i].compute_competition(height);
       } else {
         break;
       }
@@ -173,16 +173,16 @@ double StochasticSpecies<T,E>::compute_competition(double height) const {
 // through the ode stepper.
 template <typename T, typename E>
 void StochasticSpecies<T,E>::compute_rates(const E& environment) {
-  for (size_t i = 0; i < size_plants(); ++i) {
+  for (size_t i = 0; i < size_individuals(); ++i) {
     if (is_alive[i]) {
-      plants[i].compute_rates(environment);
+      individuals[i].compute_rates(environment);
     }
   }
 }
 
 // TODO: This is going to change...
 template <typename T, typename E>
-std::vector<double> StochasticSpecies<T,E>::seeds() const {
+std::vector<double> StochasticSpecies<T,E>::net_reproduction_ratio_by_node() const {
   std::vector<double> ret;
   ret.reserve(size());
   // I don't think that this is quite right; is it fecundity that we
@@ -191,7 +191,7 @@ std::vector<double> StochasticSpecies<T,E>::seeds() const {
   // basically - I think I need to take the floor here or something?
   //
   // NOTE: dead plants count here!
-  for (auto& p : plants) {
+  for (auto& p : individuals) {
     ret.push_back(p.state(FECUNDITY_INDEX));
   }
   return ret;
@@ -200,13 +200,13 @@ std::vector<double> StochasticSpecies<T,E>::seeds() const {
 template <typename T, typename E>
 size_t StochasticSpecies<T,E>::deaths() {
   size_t died = 0;
-  for (size_t i = 0; i < size_plants(); ++i) {
+  for (size_t i = 0; i < size_individuals(); ++i) {
     if (is_alive[i]) {
-      if (unif_rand() < plants[i].mortality_probability()) {
+      if (unif_rand() < individuals[i].mortality_probability()) {
         is_alive[i] = false;
         died++;
       } else {
-        plants[i].reset_mortality();
+        individuals[i].reset_mortality();
       }
     }
   }
@@ -221,9 +221,9 @@ size_t StochasticSpecies<T,E>::ode_size() const {
 
 template <typename T, typename E>
 ode::const_iterator StochasticSpecies<T,E>::set_ode_state(ode::const_iterator it) {
-  for (size_t i = 0; i < size_plants(); ++i) {
+  for (size_t i = 0; i < size_individuals(); ++i) {
     if (is_alive[i]) {
-      it = plants[i].set_ode_state(it);
+      it = individuals[i].set_ode_state(it);
     }
   }
   return it;
@@ -231,9 +231,9 @@ ode::const_iterator StochasticSpecies<T,E>::set_ode_state(ode::const_iterator it
 
 template <typename T, typename E>
 ode::iterator StochasticSpecies<T,E>::ode_state(ode::iterator it) const {
-  for (size_t i = 0; i < size_plants(); ++i) {
+  for (size_t i = 0; i < size_individuals(); ++i) {
     if (is_alive[i]) {
-      it = plants[i].ode_state(it);
+      it = individuals[i].ode_state(it);
     }
   }
   return it;
@@ -241,9 +241,9 @@ ode::iterator StochasticSpecies<T,E>::ode_state(ode::iterator it) const {
 
 template <typename T, typename E>
 ode::iterator StochasticSpecies<T,E>::ode_rates(ode::iterator it) const {
-  for (size_t i = 0; i < size_plants(); ++i) {
+  for (size_t i = 0; i < size_individuals(); ++i) {
     if (is_alive[i]) {
-      it = plants[i].ode_rates(it);
+      it = individuals[i].ode_rates(it);
     }
   }
   return it;
@@ -255,9 +255,9 @@ std::vector<double> StochasticSpecies<T,E>::r_heights() const {
   std::vector<double> ret;
   ret.reserve(size());
   // TODO: also simplify r_heights for Species?
-  for (size_t i = 0; i < size_plants(); ++i) {
+  for (size_t i = 0; i < size_individuals(); ++i) {
     if (is_alive[i]) {
-      ret.push_back(plants[i].state(HEIGHT_INDEX));
+      ret.push_back(individuals[i].state(HEIGHT_INDEX));
     }
   }
   return ret;
@@ -269,13 +269,13 @@ void StochasticSpecies<T,E>::r_set_heights(std::vector<double> heights) {
   if (!util::is_decreasing(heights.begin(), heights.end())) {
     util::stop("height must be decreasing (ties allowed)");
   }
-  for (size_t i = 0; i < size_plants(); ++i) {
+  for (size_t i = 0; i < size_individuals(); ++i) {
     if (is_alive[i]) {
-      plants[i].set_state("height", heights[i]);
+      individuals[i].set_state("height", heights[i]);
     }
   }
 }
 
 }
 
-#endif
+#endif /* STOCHASTIC_SPECIES */

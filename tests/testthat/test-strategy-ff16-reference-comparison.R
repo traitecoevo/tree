@@ -1,4 +1,6 @@
+# Check C++ implemnetation againsyt indenpendent implementation in R
 context("Reference Comparison-FF16")
+
 
 test_that("FF16_Strategy parameters agree with reference model", {
   cmp <- make_reference_plant("FF16")
@@ -8,11 +10,11 @@ test_that("FF16_Strategy parameters agree with reference model", {
 
   ## Expect that all parameters in the R version are found in the C++
   ## version, *except* for n_area
-  v <- setdiff(names(cmp_pars), "n_area")
+  v <- setdiff(names(cmp_pars), c("n_area"))
   expect_true(all(v %in% names(s)))
 
   ## And v.v., except for a few additions:
-  extra <- c("control", "S_D", "collect_all_auxillary")
+  extra <- c("control", "S_D", "collect_all_auxiliary", "recruitment_decay", "birth_rate_x", "birth_rate_y", "is_variable_birth_rate")
   common <- setdiff(names(s), extra)
   expect_true(all(extra %in% names(s)))
   expect_true(all(common %in% names(cmp_pars)))
@@ -42,7 +44,7 @@ test_that("Reference comparison", {
   p$set_state("height", h0)
 
   expect_identical(p$state("height"), h0)
-  # testing set auxillary state as well as area_leaf/competition_effect depends on height only
+  # testing set auxiliary state as well as area_leaf/competition_effect depends on height only
   expect_equal(p$aux("competition_effect"), cmp$LeafArea(h0))
   # expect_equal(p$state("mass_leaf"), cmp$LeafMass(cmp$traits$lma, cmp$LeafArea(h0)))
   # expect_equal(p$state("mass_sapwood"), cmp$SapwoodMass(cmp$traits$rho, cmp$LeafArea(h0), h0))

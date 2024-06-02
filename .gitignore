@@ -1,5 +1,5 @@
-vignettes/*
 inst/website
+gh-pages
 *Rproj*
 *.Rhistory*
 ^plant.Rcheck$
@@ -9,7 +9,13 @@ src/symbols.rds
 src/*.o.tmp
 src/*.o
 src/*.so
+src/*.dll
 tmp*
 .vscode
+.idea
 scrap.R
-
+.RData
+*.html
+doc
+Meta
+*.knit.md

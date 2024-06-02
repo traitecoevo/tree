@@ -9,56 +9,56 @@ test_that("Run SCM", {
     s <- strategy_types[[x]]()
     e <- environment_types[[x]]
     plant <- Individual(x, e)(s)
-    cohort <- Cohort(x, e)(s)
+    node <- Node(x, e)(s)
 
     p <- Parameters(x, e)(strategies=list(s),
-                          seed_rain=pi/2,
-                          patch_area=10,
-                          is_resident=TRUE)
+                          patch_area=10)
+    
+    env <- make_environment(x)
+    ctrl <- Control()
 
-    expect_error(scm <- SCM(x, e)(p), "Patch area must be exactly 1 for the SCM")
+    expect_error(scm <- SCM(x, e)(p, env, ctrl), "Patch area must be exactly 1 for the SCM")
 
     p$patch_area <- 1.0
-    scm <- SCM(x, e)(p)
+    scm <- SCM(x, e)(p, env, ctrl)
     expect_is(scm, sprintf("SCM<%s,%s>", x, e))
 
     ## NOTE: I'm not sure where these are only equal and not identical.
     expect_equal(scm$parameters, p)
 
-    ## Check that the underlying Patch really is a Patch<CohortTop>:
+    ## Check that the underlying Patch really is a Patch<NodeTop>:
     expect_is(scm$patch, sprintf("Patch<%s,%s>", x, e))
     expect_equal(length(scm$patch$species), 1)
     expect_is(scm$patch$species[[1]], sprintf("Species<%s,%s>",x,e))
-    expect_is(scm$patch$species[[1]]$seed, sprintf("Cohort<%s,%s>",x,e))
+    expect_is(scm$patch$species[[1]]$new_node, sprintf("Node<%s,%s>",x,e))
     expect_identical(scm$patch$time, 0.0)
 
-    sched <- scm$cohort_schedule
-    cmp_sched <- make_cohort_schedule(p)
+    sched <- scm$node_schedule
+    cmp_sched <- make_node_schedule(p)
     expect_equal(sched$size, cmp_sched$size)
     expect_equal(sched$all_times, cmp_sched$all_times)
 
     ## If the schedule is for the wrong number of species, it should cause
     ## an error...
-    sched2 <- CohortSchedule(sched$n_species + 1)
-    expect_error(scm$cohort_schedule <- sched2, "Incorrect length input; expected 1, received 2")
+    sched2 <- plant:::NodeSchedule(sched$n_species + 1)
+    expect_error(scm$node_schedule <- sched2, "Incorrect length input; expected 1, received 2")
 
     ## Build a schedule for 14 introductions from t=0 to t=5
     t <- seq(0, 5, length.out=14)
     sched$set_times(t, 1)
     sched$max_time <- max(t) + diff(t)[[1]]
-    scm$cohort_schedule <- sched
+    scm$node_schedule <- sched
 
-    expect_identical(scm$cohort_schedule$all_times, sched$all_times)
+    expect_identical(scm$node_schedule$all_times, sched$all_times)
     ## Parameters has been updated:
-    expect_identical(scm$parameters$cohort_schedule_times, sched$all_times)
+    expect_identical(scm$parameters$node_schedule_times, sched$all_times)
 
     ## Will be helpful for checking that things worked:
     times <- data.frame(start=t, end=c(t[-1], sched$max_time))
 
     ## Before starting, check that the SCM is actually empty
     expect_equal(scm$time, 0.0)
-    expect_equal(scm$patch$ode_size, 0)
-    expect_equal(scm$patch$ode_size, 0)
+    expect_equal(scm$patch$node_ode_size, 0)
     expect_false(scm$complete)
 
     ## TODO: The unlist here is annoying...
@@ -67,38 +67,38 @@ test_that("Run SCM", {
     ## to make those work).
     i <- scm$run_next()
 
-    ode_size <- Cohort(x, e)(strategy_types[[x]]())$ode_size
+    ode_size <- Node(x, e)(strategy_types[[x]]())$ode_size
 
-    expect_equal(scm$cohort_schedule$remaining, length(t) - 1)
+    expect_equal(scm$node_schedule$remaining, length(t) - 1)
     expect_false(scm$complete)
     expect_equal(i, 1)
     ## Note that this is the *second* time; the time of the next
     ## introduction, and the end time of the first introduction.
     expect_identical(scm$time, times$end[1])
     expect_identical(scm$time, times$start[2])
-    expect_equal(scm$patch$ode_size, ode_size)
+    expect_equal(scm$patch$node_ode_size, ode_size)
 
     ## Trying to set schedule for partly run scm fails
-    expect_error(scm$cohort_schedule <- sched, "Cannot set schedule without resetting first")
+    expect_error(scm$node_schedule <- sched, "Cannot set schedule without resetting first")
 
     i <- unlist(scm$run_next())
     expect_equal(i, 1)
     ## SCM ran successfully:
-    expect_equal(scm$cohort_schedule$remaining, length(t) - 2)
+    expect_equal(scm$node_schedule$remaining, length(t) - 2)
     expect_false(scm$complete)
     expect_identical(scm$time, times$end[2])
     expect_identical(scm$time, times$start[3])
-    expect_equal(scm$patch$ode_size, ode_size * 2)
+    expect_equal(scm$patch$node_ode_size, ode_size * 2)
 
     ## Reset everything
     ## "SCM reset successful"
     scm$reset()
     expect_equal(scm$time, 0.0)
     expect_equal(scm$time, 0.0)
-    expect_equal(scm$patch$ode_size, 0)
-    expect_equal(scm$cohort_schedule$remaining, length(t))
+    expect_equal(scm$patch$node_ode_size, 0)
+    expect_equal(scm$node_schedule$remaining, length(t))
 
-    ## At this point, and possibly before scm$seed_rains is corrupt.
+    ## At this point, and possibly before scm$net_reproduction_ratio is corrupt.
 
     ## This is stalling really badly, but it's not totally clear why.
     ## It's *not* the ODE system thrashing (thankfully) because the
@@ -130,18 +130,18 @@ test_that("Run SCM", {
     ## Next, Run the whole schedule using the SCM.
     res_e_1 <- run_scm_test(scm)
 
-    ## Then, check that resetting the cohort allows rerunning easily:
+    ## Then, check that resetting the node allows rerunning easily:
     ## SCM can be rerun successfully:
     scm$reset()
     res_e_2 <- run_scm_test(scm)
     expect_identical(res_e_2, res_e_1)
 
     ## Pull the times out of the SCM and set them in the schedule:
-    sched <- scm$cohort_schedule
+    sched <- scm$node_schedule
     sched$ode_times <- scm$ode_times
     sched$use_ode_times <- TRUE
     scm$reset() # must reset
-    scm$cohort_schedule <- sched
+    scm$node_schedule <- sched
 
     ## So; this does not actually produce *exactly* the same output, which
     ## is very surprising.  It's definitely "close enough" but not exactly
@@ -162,43 +162,43 @@ test_that("Run SCM", {
 })
 
 test_that("schedule setting", {
-  for (x in names(strategy_types)) { 
+  for (x in names(strategy_types)) {
     e <- environment_types[[x]]
     p <- Parameters(x, e)(
       strategies=list(strategy_types[[x]]()),
-      seed_rain=pi/2,
-      is_resident=TRUE,
-      cohort_schedule_max_time=5.0)
-    scm <- SCM(x, e)(p)
+      max_patch_lifetime=5.0)
+    env <- make_environment(x)
+    ctrl <- scm_base_control()
+    scm <- SCM(x, e)(p, env, ctrl)
 
-    ## Then set a cohort schedule:
+    ## Then set a node schedule:
     ## Build a schedule for 14 introductions from t=0 to t=5
-    sched <- scm$cohort_schedule
+    sched <- scm$node_schedule
     t <- seq(0, sched$max_time, length.out=14)
-    scm$set_cohort_schedule_times(list(t))
+    scm$set_node_schedule_times(list(t))
 
     ## Did set in the SCM:
-    expect_identical(scm$cohort_schedule$all_times, list(t))
+    expect_identical(scm$node_schedule$all_times, list(t))
 
     ## And updated in the parameters:
     p2 <- scm$parameters
-    expect_identical(p2$cohort_schedule_max_time, sched$max_time)
-    expect_identical(p2$cohort_schedule_times, list(t))
+    expect_identical(p2$max_patch_lifetime, sched$max_time)
+    expect_identical(p2$node_schedule_times, list(t))
 
     ## Remake the schedule:
-    sched2 <- make_cohort_schedule(p2)
+    sched2 <- make_node_schedule(p2)
     expect_identical(sched2$max_time, sched$max_time)
     expect_identical(sched2$all_times, list(t))
 
-    scm2 <- SCM(x, e)(p2)
-    expect_identical(scm2$cohort_schedule$max_time, sched2$max_time)
-    expect_identical(scm2$cohort_schedule$all_times, sched2$all_times)
+    scm2 <- SCM(x, e)(p2, env, ctrl)
+    expect_identical(scm2$node_schedule$max_time, sched2$max_time)
+    expect_identical(scm2$node_schedule$all_times, sched2$all_times)
   }
 })
 
   ## ## TODO: This is a fairly inadequate set of tests; none of the failure
   ## ## conditions are tested, and it's undefined what will happen if we
-  ## ## set a cohort schedule that leaves us between introduction points.
+  ## ## set a node schedule that leaves us between introduction points.
   ## test_that("State get/set works", {
   ##   ## Next, try and partly run the SCM, grab its state and push it into a
   ##   ## second copy.
@@ -226,7 +226,7 @@ test_that("schedule setting", {
   ##   times2 <- sort(c(times, 0.5*(times[-1] + times[-length(times)])))
   ##   scm$set_times(times2, 1)
   ##   expect_identical(scm$times(1), times2)
-  ##   expect_identical(scm$cohort_schedule$times(1), times2)
+  ##   expect_identical(scm$node_schedule$times(1), times2)
   ##   scm$run_next()
   ##   expect_error(scm$set_times(times, 1))
   ##   scm$reset()
@@ -234,30 +234,33 @@ test_that("schedule setting", {
   ##   expect_identical(scm$times(1), times)
   ## })
 
-test_that("Seed rain & error calculations correct", {
+test_that("Offspring production & error calculations correct", {
   for (x in c("FF16")) {
     context(sprintf("SCM-%s", x))
     e <- environment_types[[x]]
     p0 <- scm_base_parameters(x)
-    p1 <- expand_parameters(trait_matrix(0.08, "lma"), p0, mutant=FALSE)
+    p1 <- expand_parameters(trait_matrix(0.08, "lma"), p0, birth_rate_list=1.0)
+    
+    env <- make_environment(x)
+    ctrl <- scm_base_control()
 
-    scm <- run_scm(p1)
+    scm <- run_scm(p1, env, ctrl)
     expect_is(scm, sprintf("SCM<%s,%s>", x, e))
 
-    seed_rain_R <- function(scm, error=FALSE) {
-      a <- scm$cohort_schedule$times(1)
-      d <- scm$patch$environment$disturbance_regime
-      pa <- d$density(a)
-      p <- scm$parameters
-      scale <- scm$parameters$strategies[[1]]$S_D * p$seed_rain
-      seeds <- pa * scm$patch$species[[1]]$seeds * scale
-      total <- trapezium(a, seeds)
-      if (error) local_error_integration(a, seeds, total) else total
+    net_reproduction_ratio_R <- function(scm, error=FALSE) {
+      a <- scm$node_schedule$times(1)
+      net_reproduction_ratio_by_node_weighted <- scm$patch$density(a) *
+        scm$patch$species[[1]]$net_reproduction_ratio_by_node *
+        scm$parameters$strategies[[1]]$S_D
+      total <- trapezium(a, net_reproduction_ratio_by_node_weighted)
+      if (error)
+        local_error_integration(a, net_reproduction_ratio_by_node_weighted, total)
+      else total
     }
 
-    expect_equal(scm$seed_rain(1), seed_rain_R(scm))
-    expect_equal(scm$seed_rains, seed_rain_R(scm))
-    expect_equal(scm$seed_rain_error[[1]], seed_rain_R(scm, error=TRUE))
+    expect_equal(scm$net_reproduction_ratio_for_species(1), net_reproduction_ratio_R(scm))
+    expect_equal(scm$net_reproduction_ratios, net_reproduction_ratio_R(scm))
+    expect_equal(scm$net_reproduction_ratio_errors[[1]], net_reproduction_ratio_R(scm, error=TRUE))
 
     lae_cmp <-
       scm$patch$species[[1]]$competition_effects_error(scm$patch$compute_competition(0))
@@ -265,12 +268,12 @@ test_that("Seed rain & error calculations correct", {
 
     int <- make_scm_integrate(scm)
     S_D <- scm$parameters$strategies[[1]]$S_D
-    expect_equal(int("seeds_survival_weighted") * S_D, scm$seed_rain(1))
+    expect_equal(int("offspring_produced_survival_weighted") * S_D, scm$net_reproduction_ratio_for_species(1))
 
-    res <- run_scm_collect(p1)
+    res <- run_scm_collect(p1, env, ctrl)
     int2 <- make_scm_integrate(res)
 
-    expect_equal(int2("seeds_survival_weighted"), int("seeds_survival_weighted"))
+    expect_equal(int2("offspring_produced_survival_weighted"), int("offspring_produced_survival_weighted"))
     expect_equal(int2("height"), int("height"))
     expect_equal(int2("mortality"), int("mortality"))
     expect_equal(int2("fecundity"), int("fecundity"))
@@ -282,13 +285,16 @@ test_that("Can create empty SCM", {
   for (x in names(strategy_types)) {
     e <- environment_types[[x]]
     p <- Parameters(x, e)()
-    scm <- SCM(x, e)(p)
+    env <- make_environment(x)
+    ctrl <- scm_base_control()
+    scm <- SCM(x, e)(p, env, ctrl)
 
     ## Check light environment is empty:
     env <- scm$patch$environment
     patch <- scm$patch
-    # This is no longer zero:
-    # expect_equal(env$canopy$canopy_interpolator$size, 0)
-    expect_equal(env$canopy_openness(0), 1.0)
+
+    expect_equal(env$light_availability$spline$size, 0)
+    expect_equal(env$get_environment_at_height(0), 1.0)
   }
 })
+

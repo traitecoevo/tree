@@ -6,56 +6,61 @@
 ##' @param base An optional \code{Control} object.  If omitted, the
 ##' defaults are used.
 fast_control <- function(base=Control()) {
-  base$environment_rescale_usually <- TRUE
-  base$environment_light_tol <- 1e-4
-
-  base$plant_assimilation_adaptive <- FALSE
-  base$plant_assimilation_rule <- 21
-  base$plant_assimilation_over_distribution <- FALSE
-  base$plant_assimilation_tol <- 1e-4
+  base$function_integration_rule <- 21
 
   base$ode_tol_rel <- 1e-4
   base$ode_tol_abs <- 1e-4
   base$ode_step_size_max <- 5
 
-  base$cohort_gradient_direction <- -1
-  base$cohort_gradient_richardson <- FALSE
+  base$node_gradient_direction <- -1
+  base$node_gradient_richardson <- FALSE
 
   base
 }
 
-##' Control parameters for \code{\link{equilibrium_seed_rain}} that
-##' make progress noisier.  This is just a convenience function.
-##'
-##' @title Noisy Parameters for Equilibrium Finding
+##' Hopefully sensible set of parameters for use with the SCM.  Turns
+##' accuracy down a bunch, makes it noisy, sets up the
+##' hyperparameterisation that we most often use.
+##' @title Sensible, fast (ish) SCM control settings
+##' @author Rich FitzJohn
 ##' @export
-##' @param base An optional \code{Control} object.  If omitted, the
-##' defaults are used.
-equilibrium_verbose <- function(base=Control()) {
-  base$schedule_verbose <- TRUE
-  base$equilibrium_verbose <- TRUE
-  base
+scm_base_control <- function() {
+  ctrl <- fast_control()
+  ctrl$schedule_eps <- 0.005
+  return(ctrl)
 }
+
+
+##' Basic default settings for a given strategy, environment only really
+##' used for templating initially and will be overloaded later by passing
+##' an environment to the SCM API (suggesting perhaps the template could be
+##' removed).
+##' @title Basic default parameters for a given strategy
+##' @author Rich FitzJohn
+##' @param type Any strategy name as a string, e.g.: \code{"FF16"}.
+##' @param env And environment object
 ##' @export
-##' @rdname equilibrium_verbose
-equilibrium_quiet <- function(base=Control()) {
-  base$schedule_verbose <- FALSE
-  base$equilibrium_verbose <- FALSE
-  base
+scm_base_parameters <- function(type = NA, env = environment_type(type)) {
+  
+   Parameters(type, env)(patch_area=1.0)
 }
+
 
 ##' Run the SCM, returning the SCM object for interrogation
 ##'
 ##' This is the simplest way of using the SCM, probably.
 ##' @title Run SCM
 ##' @param p Parameters object
+##' @param env Environment object (defaults to FF16_Environment)
+##' @param ctrl Control object
 ##' @param use_ode_times Should ODE times be used?
 ##' @return A \code{SCM} object.
 ##' @author Rich FitzJohn
 ##' @export
-run_scm <- function(p, use_ode_times=FALSE) {
+run_scm <- function(p, env = make_environment(parameters = p), 
+                    ctrl = scm_base_control(), use_ode_times=FALSE) {
   types <- extract_RcppR6_template_types(p, "Parameters")
-  scm <- do.call('SCM', types)(p)
+  scm <- do.call('SCM', types)(p, env, ctrl)
   if (use_ode_times) {
     scm$use_ode_times <- TRUE
   }
@@ -63,21 +68,8 @@ run_scm <- function(p, use_ode_times=FALSE) {
   scm
 }
 
-##' Hopefully sensible set of parameters for use with the SCM.  Turns
-##' accuracy down a bunch, makes it noisy, sets up the
-##' hyperparameterisation that we most often use.
-##' @title Sensible, fast (ish) SCM parameters
-##' @author Rich FitzJohn
-##' @param type Name of model (defaults to FF16 but any strategy name is valid).
-##' @export
-scm_base_parameters <- function(type="FF16") {
-  ctrl <- equilibrium_verbose(fast_control())
-  ctrl$schedule_eps <- 0.005
-  ctrl$equilibrium_eps <- 1e-3
-  Parameters(type, environment_type(type))(patch_area=1.0, control=ctrl)
-}
 
-##' Run the SCM model, given a Parameters and CohortSchedule
+##' Run the SCM model, given a Parameters and NodeSchedule
 ##'
 ##' This is mostly a simple wrapper around some of the SCM functions.
 ##' Not sure if this is how we will generally want to do this.
@@ -85,30 +77,28 @@ scm_base_parameters <- function(type="FF16") {
 ##'
 ##' @title Run the SCM, Collecting Output
 ##' @param p A \code{Parameters} object
-##' @param include_competition_effect Include total leaf area (will change; see
-##' issue #138)
+##' @param env Environment object (defaults to FF16_Environment)
+##' @param ctrl Control object
+##' @param collect_auxiliary_variables Return additional strategy variables (eg
+##' competition_effect)
 ##' @author Rich FitzJohn
 ##' @export
-run_scm_collect <- function(p, include_competition_effect=FALSE) {
+run_scm_collect <- function(p, env = make_environment(parameters = p), 
+                            ctrl = scm_base_control(),
+                            collect_auxiliary_variables=FALSE) {
   collect_default <- function(scm) {
     scm$state
   }
-  collect_competition_effect <- function(scm) {
+  collect_aux <- function(scm) {
     ret <- scm$state
-    competition_effect <- numeric(length(ret$species))
-    for (i in seq_along(ret$species)) {
-      ## ret$species[[i]] <- rbind(
-      ##   ret$species[[i]]
-      ##   competition_effect=c(scm$patch$species[[i]]$competition_effects, 0.0))
-      competition_effect[i] <- scm$patch$species[[i]]$compute_competition(0.0)
-    }
-    ret$competition_effect <- competition_effect
+    aux <- scm$aux
+    ret$species <- mapply(rbind, ret$species, aux$species, SIMPLIFY=FALSE)
     ret
   }
-  collect <- if (include_competition_effect) collect_competition_effect else collect_default
+  collect <- if (collect_auxiliary_variables) collect_aux else collect_default
   types <- extract_RcppR6_template_types(p, "Parameters")
-
-  scm <- do.call('SCM', types)(p)
+  
+  scm <- do.call('SCM', types)(p, env, ctrl)
   res <- list(collect(scm))
 
   while (!scm$complete) {
@@ -120,8 +110,8 @@ run_scm_collect <- function(p, include_competition_effect=FALSE) {
   env <- lapply(res, "[[", "env")
   species <- lapply(res, "[[", "species")
   ## The aperm() here means that dimensions are
-  ## [variable,time,cohort], so that taking species[[1]]["height",,]
-  ## gives a matrix that has time down rows and cohorts across columns
+  ## [variable,time,node], so that taking species[[1]]["height",,]
+  ## gives a matrix that has time down rows and nodes across columns
   ## (so is therefore plottable with matplot)
   species <- lapply(seq_along(species[[1]]), function(i)
                     aperm(pad_list_to_array(lapply(species, "[[", i)),
@@ -129,35 +119,33 @@ run_scm_collect <- function(p, include_competition_effect=FALSE) {
   ## Drop the boundary condition; we do this mostly because it cannot
   ## be compared against the reference output, which does not contain
   ## this.  This does have the nice property of giving a non-square
-  ## matrix, so the difference between time and cohort becomes a
+  ## matrix, so the difference between time and node becomes a
   ## little more obvious.
   species <- lapply(species, function(m) m[,,-dim(m)[[3]]])
 
-  patch_density <- scm$patch$environment$disturbance_regime$density(time)
+  patch_density <- scm$patch$density(time)
 
   ret <- list(time=time, species=species,
               env=env,
-              seed_rain=scm$seed_rains,
+              offspring_production=scm$offspring_production,
               patch_density=patch_density,
               p=p)
-
-  if (include_competition_effect) {
-    ret$competition_effect <- do.call("rbind", lapply(res, "[[", "competition_effect"))
-  }
-
-  ret
 }
 
 ##' Functions for reconstructing a Patch from an SCM
 ##' @title Reconstruct a patch
 ##' @param state State object created by \code{scm_state}
 ##' @param p Parameters object
+##' @param env Environment object (defaults to FF16_Environment)
+##' @param ctrl Control object
 ##' @export
-make_patch <- function(state, p) {
+make_patch <- function(state, p, env = make_environment(parameters = p),
+                       ctrl = scm_base_control()) {
+
   types <- extract_RcppR6_template_types(p, "Parameters")
   n <- viapply(state$species, ncol)
-  patch <- do.call('Patch', types)(p)
-  patch$set_state(state$time, unlist(state$species), n, state$env)
+  patch <- do.call('Patch', types)(p, env, ctrl)
+  patch$set_state(state$time, unlist(state$species), n, state$env$light_availability)
   patch
 }
 
@@ -180,9 +168,10 @@ scm_patch <- function(i, x) {
   make_patch(scm_state(i, x), x$p)
 }
 
-run_scm_error <- function(p) {
+run_scm_error <- function(p, env = make_environment(parameters = p),
+                          ctrl = scm_base_control()) {
   types <- extract_RcppR6_template_types(p, "Parameters")
-  scm <- do.call('SCM', types)(p)
+  scm <- do.call('SCM', types)(p, env, ctrl)
   n_spp <- length(p$strategies)
 
   lai_error <- rep(list(NULL), n_spp)
@@ -194,63 +183,20 @@ run_scm_error <- function(p) {
     }
   }
 
+  rbind_list <- function(x) do.call("rbind", as.list(x))
+
   lai_error <- lapply(lai_error, function(x) rbind_list(pad_matrix(x)))
-  seed_rain_error <- scm$seed_rain_error
+  average_fecundity_error <- scm$average_fecundity_error
   f <- function(m) {
     suppressWarnings(apply(m, 2, max, na.rm=TRUE))
   }
   total <- lapply(seq_len(n_spp), function(idx)
-                  f(rbind(lai_error[[idx]], seed_rain_error[[idx]])))
-
-  list(seed_rain=scm$seed_rains,
-       err=list(lai=lai_error, seed_rain=seed_rain_error, total=total),
+                  f(rbind(lai_error[[idx]], average_fecundity_error[[idx]])))
+  list(offspring_production=scm$offspring_production,
+       err=list(lai=lai_error, offspring_production=average_fecundity_error, total=total),
        ode_times=scm$ode_times)
 }
 
-##' Helper function for creating parameter objects suitable for an
-##' assembly.
-##' @title Helper function for creating parameter objects
-##' @param ... Named set of parameters
-##' @param pars A list of parameters
-##' @param base_parameters_fn Function for creating base parameter set (default scm_base_parameters)
-##' @param make_hyperpar_fn Function for creating hyperparameterisation (default make_FF16_hyperpar)
-##' @export
-assembly_parameters <- function(..., pars=NULL, base_parameters_fn = scm_base_parameters,
-                                make_hyperpar_fn = make_FF16_hyperpar) {
-
-  p <- base_parameters_fn()
-
-  ## These are nice to have:
-  p$control$equilibrium_solver_name <- "hybrid"
-  p$control$equilibrium_nsteps <- 60
-
-  if (is.null(pars)) {
-    pars <- list(...)
-  } else if (length(list(...)) > 0L) {
-    stop("Do not provide both ... and pars")
-  }
-
-  if (length(pars) > 0L) {
-    assert_named_if_not_empty(pars)
-
-    excl <- c("control", "strategy_default", "hyperpar")
-    pos <- setdiff(c(names(formals(make_hyperpar_fn)),
-                     names(p),
-                     names(p$control),
-                     names(p$strategy_default)),
-                   excl)
-    unk <- setdiff(names(pars), pos)
-    if (length(unk) > 0L) {
-      stop("Unknown parameters: ", paste(unk, collapse=", "))
-    }
-
-    nms_hyper <- intersect(names(pars), names(formals(make_hyperpar_fn)))
-    p                  <- modify_list(p,                  pars)
-    p$control          <- modify_list(p$control,          pars)
-    p$strategy_default <- modify_list(p$strategy_default, pars)
-  }
-  p
-}
 
 scm_to_internals <- function(obj, use_environment=TRUE) {
   dat <- lapply(seq_along(obj$time), function(i)
@@ -269,13 +215,13 @@ patch_to_internals <- function(x, use_environment=TRUE) {
 
 species_to_internals <- function(sp, environment=NULL) {
   # Aggregate and extract plants
-  sp_p <- lapply(sp$cohorts, function(x) x$plant ) 
+  sp_p <- lapply(sp$nodes, function(x) x$individual )
   new_names <- c(sp_p[[1]]$ode_names, paste0(sp_p[[1]]$ode_names, '_dt'), sp_p[[1]]$aux_names)
   ints <- do.call("rbind", lapply(sp_p, function(x) c(x$internals$states, x$internals$rates, x$internals$auxs)))
   colnames(ints) <- new_names
   cbind(ints,
         log_density=sp$log_densities,
-        seeds_survival_weighted=sp$seeds)
+        offspring_produced_survival_weighted=sp$net_reproduction_ratio_by_node)
 }
 
 ##' Create a function that allows integrating aggregate properties of
@@ -299,14 +245,18 @@ make_scm_integrate <- function(obj) {
   if (inherits(obj, "SCM")) {
     internals <- patch_to_internals(obj$patch)
     n <- length(internals)
-    sched <- obj$cohort_schedule
+    sched <- obj$node_schedule
     a <- lapply(seq_len(n), sched$times)
-    pa <- lapply(a, obj$patch$environment$disturbance_regime$density)
+    pa <- lapply(a, obj$patch$density)
   } else {
     internals <- patch_to_internals(scm_patch(length(obj$time), obj))
     n <- length(internals)
-    a <- obj$p$cohort_schedule_times
-    pa <- lapply(a, Disturbance(obj$p$disturbance_mean_interval)$density)
+    a <- obj$p$node_schedule_times
+    if(obj$p$patch_type == 'meta-population')
+      d = Weibull_Disturbance_Regime(obj$p$max_patch_lifetime)
+    else
+      d = No_Disturbance()
+    pa = lapply(a, d$density)
   }
 
   if (n == 0L) {
@@ -332,4 +282,3 @@ make_scm_integrate <- function(obj) {
     vnapply(seq_len(n), f1, name, error)
   }
 }
-

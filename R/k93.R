@@ -1,11 +1,7 @@
 # Built from  R/ff16.R on Fri Jul 24 10:23:19 2020 using the scaffolder, from the strategy:  FF16
 
-## We can probably actually do better than this with an S3 method on
-## the actual strategy?  That would need to be organised by the
-## templating though and that's stretched to the limit.
-
-##' Create a K93 Individual or Cohort
-##' @title Create a K93 Individual or Cohort
+##' Create a K93 Individual or Node
+##' @title Create a K93 Individual or Node
 ##' @param s A \code{\link{K93_Strategy}} object
 ##' @export
 ##' @rdname K93
@@ -18,72 +14,48 @@ K93_Individual <- function(s=K93_Strategy()) {
 
 ##' @export
 ##' @rdname K93
-K93_Cohort <- function(s=K93_Strategy()) {
-  Cohort("K93", "K93_Env")(s)
-}
-
-##' @export
-##' @rdname K93
-K93_Species <- function(s=K93_Strategy()) {
-  Species("K93", "K93_Env")(s)
-}
-
-##' @export
-##' @rdname K93
 K93_Parameters <- function() {
   Parameters("K93","K93_Env")()
 }
 
-##' @export
-##' @rdname K93
-##' @param p A \code{Parameters<K93,K93_Env>} object
-K93_Patch <- function(p) {
-  Patch("K93", "K93_Env")(p)
-}
 
+## Helper to create K93_environment object. Useful for running individuals
+##' create K93_environment object
+##' @param light_availability_spline_tol
+##' @param light_availability_spline_nbase
+##' @param light_availability_spline_max_depth
+##' @param light_availability_spline_rescale_usually
+##'
 ##' @export
-##' @rdname K93
-K93_SCM <- function(p) {
-  SCM("K93", "K93_Env")(p)
-}
-
-##' @export
-##' @rdname K93
-K93_StochasticSpecies <- function(s=K93_Strategy()) {
-  StochasticSpecies("K93", "K93_Env")(s)
-}
-
-##' @export
-##' @rdname K93
-K93_StochasticPatch <- function(p) {
-  StochasticPatch("K93", "K93_Env")(p)
-}
-
-##' @export
-##' @rdname K93
-K93_StochasticPatchRunner <- function(p) {
-  StochasticPatchRunner("K93", "K93_Env")(p)
-}
-
-
-## Helper:
-##' @export
-##' @rdname K93_Environment
-##' @param p A Parameters object
-K93_make_environment <- function(p) {
-  K93_Environment(p$disturbance_mean_interval, p$seed_rain, p$control)
+##' @rdname K93_make_environment
+K93_make_environment <- function(light_availability_spline_tol = 1e-4, 
+                                 light_availability_spline_nbase = 17,
+                                 light_availability_spline_max_depth = 16, 
+                                 light_availability_spline_rescale_usually = TRUE) {
+  
+  # for reasons unknown, we can't add arguments to the K93 constructor
+  # as it causes the FF16 StochasticPatch tests to fail 🙃  opted to hard-code
+  # these defaults into the K93_Environment
+  
+  e <- K93_Environment()
+  
+  e$light_availability <- ResourceSpline(light_availability_spline_tol, 
+                     light_availability_spline_nbase, 
+                     light_availability_spline_max_depth, 
+                     light_availability_spline_rescale_usually)
+  
+  return(e)
 }
 
 ##' Construct a fixed environment for K93 strategy
 ##'
 ##' @param e Value of environment (default=1.0)
-##' @param p A Parameters object
-##' @param height_max = 150.0 maximum possible height in environment
+##' @param height_max = 300.0 maximum possible height in environment
 ##' @rdname K93_Environment
 ##'
 ##' @export
-K93_fixed_environment <- function(e=1.0, p = K93_Parameters(), height_max = 300.0) {
-  env <- K93_make_environment(p)
+K93_fixed_environment <- function(e=1.0, height_max = 300.0) {
+  env <- K93_make_environment()
   env$set_fixed_environment(e, height_max)
   env
 }
@@ -96,20 +68,16 @@ K93_fixed_environment <- function(e=1.0, p = K93_Parameters(), height_max = 300.
 ##' @param n number of points
 ##' @param light_env function for light environment in test object
 ##' @param n_strategies number of strategies for test environment
-##' @param seed_rain seed_rain for test environment
 ##' @export
 ##' @rdname K93_test_environment
 ##' @examples
-##' environment <- K93_test_environment(10)
+##' environment <- plant:::K93_test_environment(10)
 K93_test_environment <- function(height, n=101, light_env=NULL,
-                             n_strategies=1, seed_rain=0) {
-  if (length(seed_rain) == 1) {
-    seed_rain <- rep(seed_rain, length.out=n_strategies)
-  }
+                             n_strategies=1) {
   hh <- seq(0, height, length.out=n)
   if (is.null(light_env)) {
     light_env <- function(x) {
-      # arbitary function. aiming to produce values of -log(light_env)/0.01 
+      # arbitary function. aiming to produce values of -log(light_env)/0.01
       # in range 0:100
       exp(x/(height*2)) - (exp(.5) - 1)
     }
@@ -118,13 +86,12 @@ K93_test_environment <- function(height, n=101, light_env=NULL,
   interpolator <- Interpolator()
   interpolator$init(hh, ee)
 
-  parameters <- K93_Parameters()
-  parameters$strategies <- rep(list(K93_Strategy()), n_strategies)
-  parameters$seed_rain <- seed_rain
-  parameters$is_resident <- rep(TRUE, n_strategies)
+  # parameters <- K93_Parameters()
+  # parameters$strategies <- rep(list(K93_Strategy()), n_strategies)
+  # 
 
-  ret <- K93_make_environment(parameters)
-  ret$canopy$canopy_interpolator <- interpolator
+  ret <- K93_make_environment()
+  ret$light_availability$spline <- interpolator
   attr(ret, "light_env") <- light_env
   ret
 }
@@ -138,6 +105,8 @@ K93_test_environment <- function(height, n=101, light_env=NULL,
 ##' @param c_1 Mortality suppression rate m2.cm-2.year-1
 ##' @param d_0 Recruitment rate (cm2.year-1)
 ##' @param d_1 Recruitment suppression rate (m2.cm-2)
+##' @param eta Crown shape parameter
+##' @param k_I Extinction coefficient used when estimating competitive effect
 ##' @export
 ##' @rdname make_K93_hyperpar
 make_K93_hyperpar <- function(
@@ -172,7 +141,7 @@ make_K93_hyperpar <- function(
       rep_len(if (name %in% colnames(m)) m[, name] else default_value,
               nrow(m))
     }
-    
+
     m
   }
 
@@ -183,7 +152,7 @@ make_K93_hyperpar <- function(
 ##' @title Hyperparameter function for K93 physiological model
 ##' @param m A matrix of trait values, as returned by \code{trait_matrix}
 ##' @param s A strategy object
-##' @param filter A flag indicating whether to filter columns. If TRUE, any numbers 
+##' @param filter A flag indicating whether to filter columns. If TRUE, any numbers
 ##' that are within eps of the default strategy are not replaced.
 ##' @rdname K93_hyperpar
 ##' @export

@@ -2,46 +2,18 @@
 % Please edit documentation in r/ff16r.R
 \name{FF16r_Individual}
 \alias{FF16r_Individual}
-\alias{lcp_whole_plant.Plant<FF16r>}
-\alias{FF16r_Cohort}
-\alias{FF16r_Species}
 \alias{FF16r_Parameters}
-\alias{FF16r_Patch}
-\alias{FF16r_SCM}
-\alias{FF16r_StochasticSpecies}
-\alias{FF16r_StochasticPatch}
-\alias{FF16r_StochasticPatchRunner}
-\title{Create a FF16r Plant or Cohort}
+\title{Create a FF16r Plant or Node}
 \usage{
 FF16r_Individual(s = FF16r_Strategy())
 
-\method{lcp_whole_plant}{`Plant<FF16r>`}(p, ...)
-
-FF16r_Cohort(s = FF16r_Strategy())
-
-FF16r_Species(s = FF16r_Strategy())
-
 FF16r_Parameters()
-
-FF16r_Patch(p)
-
-FF16r_SCM(p)
-
-FF16r_StochasticSpecies(s = FF16r_Strategy())
-
-FF16r_StochasticPatch(p)
-
-FF16r_StochasticPatchRunner(p)
 }
 \arguments{
 \item{s}{A \code{\link{FF16r_Strategy}} object}
-
-\item{p}{A \code{Parameters<FF16r,FF16_Env>} object}
-
-\item{...}{Arguments!}
 }
 \description{
-Create a FF16r Plant or Cohort
+Create a FF16r Plant or Node
 }
 \examples{
 pl <- FF16r_Individual()

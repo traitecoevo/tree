@@ -17,10 +17,11 @@ template <typename T, typename E>
 class StochasticPatch {
 public:
   typedef T                      strategy_type;
-  typedef Individual<T,E>             individual_type;
+  typedef E                      environment_type;
+  typedef Individual<T,E>        individual_type;
   typedef StochasticSpecies<T,E> species_type;
   typedef Parameters<T,E>        parameters_type;
-  StochasticPatch(parameters_type p);
+  StochasticPatch(parameters_type p, environment_type e, Control c);
   void reset();
 
   size_t size() const {return species.size();}
@@ -32,16 +33,13 @@ public:
   // [eqn 11] Canopy openness at `height`
   double compute_competition(double height) const;
 
-  bool add_seed(size_t species_index);
-  void add_seedling(size_t species_index);
+  bool introduce_new_node(size_t species_index);
+  void introduce_new_node_and_update(size_t species_index);
 
   std::vector<size_t> deaths();
 
   const species_type& at(size_t species_index) const {
     return species[species_index];
-  }
-  const Disturbance& disturbance_regime() const {
-    return environment.disturbance_regime;
   }
 
   // * ODE interface
@@ -63,38 +61,39 @@ public:
                    const std::vector<size_t>& n);
   // TODO: No support here for setting *vectors* of species.  Might
   // want to supoprt that?
-  bool r_add_seed(util::index species_index) {
-    return add_seed(species_index.check_bounds(size()));
+  bool r_introduce_new_node(util::index species_index) {
+    return introduce_new_node(species_index.check_bounds(size()));
   }
-  void r_add_seedling(util::index species_index) {
-    add_seedling(species_index.check_bounds(size()));
+  void r_introduce_new_node_and_update(util::index species_index) {
+    introduce_new_node_and_update(species_index.check_bounds(size()));
   }
 
   species_type r_at(util::index species_index) const {
     at(species_index.check_bounds(size()));
   }
   // These are only here because they wrap private functions.
-  void r_compute_environment() {compute_environment();}
+  void r_compute_environment() {compute_environment(false);}
   void r_compute_rates() {compute_rates();}
 private:
-  void compute_environment();
-  void rescale_environment();
+  void compute_environment(bool rescale);
   void compute_rates();
 
   parameters_type parameters;
-  std::vector<bool> is_resident;
+
   E environment;
   std::vector<species_type> species;
+  Control control;
 };
 
 template <typename T, typename E>
-StochasticPatch<T,E>::StochasticPatch(parameters_type p)
+StochasticPatch<T,E>::StochasticPatch(parameters_type p, environment_type e, Control c)
   : parameters(p),
     area(p.patch_area),
-    is_resident(p.is_resident) {
+    environment(e),
+    control(c) {
   parameters.validate();
-  environment = p.environment;
   for (auto s : parameters.strategies) {
+    s.control = control;
     species.push_back(species_type(s));
   }
   reset();
@@ -106,7 +105,7 @@ void StochasticPatch<T,E>::reset() {
     s.clear();
   }
   environment.clear();
-  compute_environment();
+  compute_environment(false);
   compute_rates();
 }
 
@@ -114,9 +113,7 @@ template <typename T, typename E>
 double StochasticPatch<T,E>::height_max() const {
   double ret = 0.0;
   for (size_t i = 0; i < species.size(); ++i) {
-    if (is_resident[i]) {
       ret = std::max(ret, species[i].height_max());
-    }
   }
   return ret;
 }
@@ -125,61 +122,48 @@ template <typename T, typename E>
 double StochasticPatch<T,E>::compute_competition(double height) const {
   double tot = 0.0;
   for (size_t i = 0; i < species.size(); ++i) {
-    if (is_resident[i]) {
-      tot += species[i].compute_competition(height) / area;
-    }
+    tot += species[i].compute_competition(height) / area;
   }
   return tot;
 }
 
 template <typename T, typename E>
-void StochasticPatch<T,E>::compute_environment() {
-  if (parameters.n_residents() > 0 & height_max() > 0.0) {
+void StochasticPatch<T,E>::compute_environment(bool rescale) {
+  if (height_max() > 0.0) {
     auto f = [&] (double x) -> double {return compute_competition(x);};
-    environment.compute_environment(f, height_max());
+    environment.compute_environment(f, height_max(), rescale);
   } else {
     environment.clear_environment();
   }
 }
 
-template <typename T, typename E>
-void StochasticPatch<T,E>::rescale_environment() {
-  if (parameters.n_residents() > 0 & height_max() > 0.0) {
-    auto f = [&] (double x) -> double {return compute_competition(x);};
-    environment.rescale_environment(f, height_max());
-  }
-}
 
 template <typename T, typename E>
 void StochasticPatch<T,E>::compute_rates() {
   for (size_t i = 0; i < size(); ++i) {
-    // NOTE: No need for this, but other bits will change...
-    // environment.set_seed_rain_index(i);
     species[i].compute_rates(environment);
   }
 }
 
-// In theory, this could be done more efficiently by, in the add_seed
-// case, using the values stored in the species seed.  But we don't
-// really get that here.  It might be better to move add_seed /
-// add_seedling within Species, given this.
+// In theory, this could be done more efficiently by, in the introdudce_new_node
+// case, using the values stored in the species offspring.  But we don't
+// really get that here.  It might be better to move introdudce_new_node /
+// introduce_new_node_and_update within Species, given this.
 template <typename T, typename E>
-void StochasticPatch<T,E>::add_seedling(size_t species_index) {
-  // Add a seed, setting ODE variables based on the *current* light environment
-  species[species_index].add_seed(environment);
+void StochasticPatch<T,E>::introduce_new_node_and_update(size_t species_index) {
+  // Add a offspring, setting ODE variables based on the *current* light environment
+  species[species_index].introduce_new_node(environment);
   // Then we update the light environment.
-  if (parameters.is_resident[species_index]) {
-    compute_environment();
-  }
+  compute_environment(false);
 }
 
 template <typename T, typename E>
-bool StochasticPatch<T,E>::add_seed(size_t species_index) {
+bool StochasticPatch<T,E>::introduce_new_node(size_t species_index) {
   const double pr_germinate =
     species[species_index].establishment_probability(environment);
   const bool added = unif_rand() < pr_germinate;
   if (added) {
-    add_seedling(species_index);
+    introduce_new_node_and_update(species_index);
   }
   return added;
 }
@@ -195,7 +179,7 @@ std::vector<size_t> StochasticPatch<T,E>::deaths() {
     recompute = recompute || n_deaths > 0;
   }
   if (recompute) {
-    compute_environment();
+    compute_environment(false);
     compute_rates();
   }
   return ret;
@@ -214,7 +198,7 @@ void StochasticPatch<T,E>::r_set_state(double time,
   reset();
   for (size_t i = 0; i < n_species; ++i) {
     for (size_t j = 0; j < n[i]; ++j) {
-      species[i].add_seed();
+      species[i].introduce_new_node();
     }
   }
   util::check_length(state.size(), ode_size());
@@ -235,13 +219,15 @@ double StochasticPatch<T,E>::ode_time() const {
 template <typename T, typename E>
 ode::const_iterator StochasticPatch<T,E>::set_ode_state(ode::const_iterator it,
                                                       double time) {
+  
+  // set ode sates
   it = ode::set_ode_state(species.begin(), species.end(), it);
   environment.time = time;
-  if (parameters.control.environment_rescale_usually) {
-    rescale_environment();
-  } else {
-    compute_environment();
-  }
+
+  // pre-compute resources avaialability and competion, as defined by residents
+  compute_environment(true);
+
+  // compute rates of changes
   compute_rates();
   return it;
 }

@@ -1,7 +1,7 @@
 # Built from  R/ff16.R on Wed Aug 12 11:12:34 2020 using the scaffolder, from the strategy:  FF16
 
-##' Create a FF16r Plant or Cohort
-##' @title Create a FF16r Plant or Cohort
+##' Create a FF16r Plant or Node
+##' @title Create a FF16r Plant or Node
 ##' @param s A \code{\link{FF16r_Strategy}} object
 ##' @export
 ##' @rdname FF16r
@@ -14,60 +14,19 @@ FF16r_Individual <- function(s=FF16r_Strategy()) {
 
 ##' @export
 ##' @rdname FF16r
-FF16r_Cohort <- function(s=FF16r_Strategy()) {
-  Cohort("FF16r", "FF16_Env")(s)
-}
-
-##' @export
-##' @rdname FF16r
-FF16r_Species <- function(s=FF16r_Strategy()) {
-  Species("FF16r", "FF16_Env")(s)
-}
-
-##' @export
-##' @rdname FF16r
 FF16r_Parameters <- function() {
   Parameters("FF16r","FF16_Env")()
-}
-
-##' @export
-##' @rdname FF16r
-##' @param p A \code{Parameters<FF16r,FF16_Env>} object
-FF16r_Patch <- function(p) {
-  Patch("FF16r", "FF16_Env")(p)
-}
-
-##' @export
-##' @rdname FF16r
-FF16r_SCM <- function(p) {
-  SCM("FF16r", "FF16_Env")(p)
-}
-
-##' @export
-##' @rdname FF16r
-FF16r_StochasticSpecies <- function(s=FF16r_Strategy()) {
-  StochasticSpecies("FF16r", "FF16_Env")(s)
-}
-
-##' @export
-##' @rdname FF16r
-FF16r_StochasticPatch <- function(p) {
-  StochasticPatch("FF16r", "FF16_Env")(p)
-}
-
-##' @export
-##' @rdname FF16r
-FF16r_StochasticPatchRunner <- function(p) {
-  StochasticPatchRunner("FF16r", "FF16_Env")(p)
 }
 
 ## Helper:
 ##' @export
 ##' @rdname FF16_Environment
-##' @param p A Parameters object
-FF16r_make_environment <- function(p) {
-  FF16_Environment(p$disturbance_mean_interval, p$seed_rain, p$control)
+##' @param light_availability_spline_rescale_usually turns on environment rescaling (default = TRUE)
+FF16r_make_environment <- function(light_availability_spline_rescale_usually = TRUE) {
+  
+  FF16_make_environment(light_availability_spline_rescale_usually)
 }
+
 
 ##' This makes a pretend light environment over the plant height,
 ##' slightly concave up, whatever.
@@ -76,16 +35,11 @@ FF16r_make_environment <- function(p) {
 ##' @param n number of points
 ##' @param light_env function for light environment in test object
 ##' @param n_strategies number of strategies for test environment
-##' @param seed_rain seed_rain for test environment
-##' @export
 ##' @rdname FF16r_test_environment
 ##' @examples
-##' environment <- FF16r_test_environment(10)
+##' environment <- plant:::FF16r_test_environment(10)
 FF16r_test_environment <- function(height, n=101, light_env=NULL,
-                             n_strategies=1, seed_rain=0) {
-  if (length(seed_rain) == 1) {
-    seed_rain <- rep(seed_rain, length.out=n_strategies)
-  }
+                             n_strategies=1) {
   hh <- seq(0, height, length.out=n)
   if (is.null(light_env)) {
     light_env <- function(x) {
@@ -96,13 +50,8 @@ FF16r_test_environment <- function(height, n=101, light_env=NULL,
   interpolator <- Interpolator()
   interpolator$init(hh, ee)
 
-  parameters <- FF16r_Parameters()
-  parameters$strategies <- rep(list(FF16r_Strategy()), n_strategies)
-  parameters$seed_rain <- seed_rain
-  parameters$is_resident <- rep(TRUE, n_strategies)
-
-  ret <- FF16r_make_environment(parameters)
-  ret$canopy$canopy_interpolator <- interpolator
+  ret <- FF16r_make_environment()
+  ret$light_availability$spline <- interpolator
   attr(ret, "light_env") <- light_env
   ret
 }
@@ -309,7 +258,7 @@ make_FF16r_hyperpar <- function(
 ##' @title Hyperparameter function for FF16r physiological model
 ##' @param m A matrix of trait values, as returned by \code{trait_matrix}
 ##' @param s A strategy object
-##' @param filter A flag indicating whether to filter columns. If TRUE, any numbers 
+##' @param filter A flag indicating whether to filter columns. If TRUE, any numbers
 ##' that are within eps of the default strategy are not replaced.
 ##' @export
 FF16r_hyperpar <- make_FF16r_hyperpar()
