@@ -46,6 +46,7 @@ Suggests:
     rmarkdown,
     markdown,
     bench,
+    dplyr,
     ggplot2,
     ggridges,
     patchwork,
