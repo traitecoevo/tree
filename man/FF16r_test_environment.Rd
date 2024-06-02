@@ -20,5 +20,5 @@ This makes a pretend light environment over the plant height,
 slightly concave up, whatever.
 }
 \examples{
-environment <- FF16r_test_environment(10)
+environment <- plant:::FF16r_test_environment(10)
 }

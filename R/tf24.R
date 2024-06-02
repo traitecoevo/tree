@@ -13,53 +13,9 @@ TF24_Individual <- function(s=TF24_Strategy()) {
 
 ##' @export
 ##' @rdname TF24
-TF24_Node <- function(s=TF24_Strategy()) {
-  Node("TF24", "TF24_Env")(s)
-}
-
-##' @export
-##' @rdname TF24
-TF24_Species <- function(s=TF24_Strategy()) {
-  Species("TF24", "TF24_Env")(s)
-}
-
-##' @export
-##' @rdname TF24
 TF24_Parameters <- function() {
   Parameters("TF24","TF24_Env")()
 }
-
-##' @export
-##' @rdname TF24
-##' @param p A \code{Parameters<TF24,TF24_Env>} object
-TF24_Patch <- function(p) {
-  Patch("TF24", "TF24_Env")(p)
-}
-
-##' @export
-##' @rdname TF24
-TF24_SCM <- function(p) {
-  SCM("TF24", "TF24_Env")(p)
-}
-
-##' @export
-##' @rdname TF24
-TF24_StochasticSpecies <- function(s=TF24_Strategy()) {
-  StochasticSpecies("TF24", "TF24_Env")(s)
-}
-
-##' @export
-##' @rdname TF24
-TF24_StochasticPatch <- function(p) {
-  StochasticPatch("TF24", "TF24_Env")(p)
-}
-
-##' @export
-##' @rdname TF24
-TF24_StochasticPatchRunner <- function(p) {
-  StochasticPatchRunner("TF24", "TF24_Env")(p)
-}
-
 
 ## Helper to create TF24_environment object. Useful for running individuals
 ##' @title create TF24_environment object
@@ -112,7 +68,7 @@ TF24_fixed_environment <- function(e=1.0, height_max = 150.0) {
 ##' @export
 ##' @rdname TF24_test_environment
 ##' @examples
-##' environment <- TF24_test_environment(10)
+##' environment <- plant:::TF24_test_environment(10)
 TF24_test_environment <- function(height, n=101, light_env=NULL,
                                   n_strategies=1) {
   

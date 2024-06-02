@@ -183,6 +183,8 @@ run_scm_error <- function(p, env = make_environment(parameters = p),
     }
   }
 
+  rbind_list <- function(x) do.call("rbind", as.list(x))
+
   lai_error <- lapply(lai_error, function(x) rbind_list(pad_matrix(x)))
   average_fecundity_error <- scm$average_fecundity_error
   f <- function(m) {

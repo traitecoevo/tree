@@ -41,7 +41,6 @@ Suggests:
     here,
     deSolve,
     numDeriv,
-    parallel,
     RcppR6 (>= 0.2.3),
     knitr,
     rmarkdown,
@@ -57,4 +56,4 @@ Remotes:
 VignetteBuilder: knitr
 URL: https://github.com/traitecoevo/plant
 BugReports: https://github.com/traitecoevo/plant/issues
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1

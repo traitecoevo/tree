@@ -266,7 +266,7 @@ optimise_individual_rate_at_size_by_trait <- function(
     set_state_directly = FALSE) {
   
    # can't handle situations yet where bounds are outside of positive growth, not working for K93
-  bounds <- check_bounds(bounds)
+#  bounds <- check_bounds(bounds)
 
   traits <- rownames(bounds)
 
@@ -281,7 +281,7 @@ optimise_individual_rate_at_size_by_trait <- function(
   ## Define function to optimise
   f <- function(x) {
     # create a strategy object
-    s <- strategy(ff(trait_matrix(x, rownames(bounds))), parameters = params, hyperpar = hyperpars, birth_rate_list = 1)
+    s <- strategy_list(ff(trait_matrix(x, rownames(bounds))), parameters = params, hyperpar = hyperpars, birth_rate_list = 1)[[1]]
 
     # Create an individual object
     types <- extract_RcppR6_template_types(params, "Parameters")
@@ -367,3 +367,4 @@ solve_max_worker <- function(bounds, f, tol = 1e-3, outcome) {
   }
   return(ret)
 }
+

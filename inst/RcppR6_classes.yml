@@ -132,7 +132,6 @@ OdeControl:
     @title ODE Control parameters
     @param ...,values Values to initialise the struct with (either as
     variadic arguments, or as a list, but not both).
-    @export
   list:
     - tol_abs: double
     - tol_rel: double
@@ -302,7 +301,6 @@ Internals:
       @title Extract Internals from plant object
       @param s_size ???
       @param a_size ???
-      @export
   active:
     state_size: {type: size_t, access: field}
     aux_size: {type: size_t, access: field}

@@ -3,7 +3,7 @@
 ## Generate a vector of arrival times.
 ##
 ## This will be slow, but fairly easy to get right.
-##' @importFrom stats rexp rpois runif
+##' @importFrom stats rexp rpois runif splinefun
 stochastic_arrival_times <- function(max_time, species, delta_t = 0.1, patch_area = 1) {
   ret <- numeric(0)
   t0 <- 0.0
@@ -44,7 +44,7 @@ stochastic_schedule <- function(p) {
   max_time  <- p$max_patch_lifetime
   n_species <- length(p$strategies)
 
-  sched <- NodeSchedule(n_species)
+  sched <- plant:::NodeSchedule(n_species)
   sched$max_time <- max_time
 
   for (i in 1:n_species) {
