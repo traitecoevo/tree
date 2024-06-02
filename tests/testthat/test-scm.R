@@ -40,7 +40,7 @@ test_that("Run SCM", {
 
     ## If the schedule is for the wrong number of species, it should cause
     ## an error...
-    sched2 <- NodeSchedule(sched$n_species + 1)
+    sched2 <- plant:::NodeSchedule(sched$n_species + 1)
     expect_error(scm$node_schedule <- sched2, "Incorrect length input; expected 1, received 2")
 
     ## Build a schedule for 14 introductions from t=0 to t=5

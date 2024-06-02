@@ -11,53 +11,9 @@ FF16w_Individual <- function(s=FF16w_Strategy()) {
   Individual("FF16w", "FF16_Env")(s)
 }
 
-##' @export
-##' @rdname FF16w
-FF16w_Node <- function(s=FF16w_Strategy()) {
-  Node("FF16w", "FF16_Env")(s)
-}
-
-##' @export
-##' @rdname FF16w
-FF16w_Species <- function(s=FF16w_Strategy()) {
-  Species("FF16w", "FF16_Env")(s)
-}
-
-##' @export
 ##' @rdname FF16w
 FF16w_Parameters <- function() {
   Parameters("FF16w","FF16_Env")()
-}
-
-##' @export
-##' @rdname FF16w
-##' @param p A \code{Parameters<FF16w,FF16_Env>} object
-FF16w_Patch <- function(p) {
-  Patch("FF16w", "FF16_Env")(p)
-}
-
-##' @export
-##' @rdname FF16w
-FF16w_SCM <- function(p) {
-  SCM("FF16w", "FF16_Env")(p)
-}
-
-##' @export
-##' @rdname FF16w
-FF16w_StochasticSpecies <- function(s=FF16w_Strategy()) {
-  StochasticSpecies("FF16w", "FF16_Env")(s)
-}
-
-##' @export
-##' @rdname FF16w
-FF16w_StochasticPatch <- function(p) {
-  StochasticPatch("FF16w", "FF16_Env")(p)
-}
-
-##' @export
-##' @rdname FF16w
-FF16w_StochasticPatchRunner <- function(p) {
-  StochasticPatchRunner("FF16w", "FF16_Env")(p)
 }
 
 
@@ -131,10 +87,9 @@ FF16w_fixed_environment <- function(e=1.0, height_max = 150.0) {
 ##' @param n number of points
 ##' @param light_env function for light environment in test object
 ##' @param n_strategies number of strategies for test environment
-##' @export
 ##' @rdname FF16w_test_environment
 ##' @examples
-##' environment <- FF16w_test_environment(10)
+##' environment <- plant:::FF16w_test_environment(10)
 FF16w_test_environment <- function(height,
                                    n = 101,
                                    light_env = NULL,

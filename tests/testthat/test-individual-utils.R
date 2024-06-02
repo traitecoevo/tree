@@ -57,22 +57,9 @@ test_that("strategy_list", {
   for (x in c("FF16", "FF16r")) {
     e <- environment_types[[x]]
     p <- Parameters(x, e)()
-    s <- strategy_list(trait_matrix(1, "lma"), p, make_hyperpar(x)(), 1.0)
+    s <- plant:::strategy_list(trait_matrix(1, "lma"), p, make_hyperpar(x)(), 1.0)
     expect_equal(length(s), 1)
     expect_is(s, "list")
     expect_is(s[[1]], sprintf("%s_Strategy", x))
-  }
-})
-
-test_that("individual_list", {
-  for (x in names(strategy_types)) {
-    e <- environment_types[[x]]
-    p <- Parameters(x, e)()
-    
-    obj <- individual_list(trait_matrix(1, "lma"), p, make_hyperpar(x)(), 1.0)
-    expect_equal(length(obj), 1)
-    expect_is(obj, "list")
-    expect_is(obj[[1]], "Individual")
-    expect_is(obj[[1]], sprintf("Individual<%s,%s>", x, e))
   }
 })

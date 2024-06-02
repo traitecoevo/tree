@@ -169,9 +169,9 @@ test_that("narea calculation", {
   x <- c(1.38, 3.07, 2.94)
   p0 <- TF24_Parameters()
   m <- trait_matrix(x, "hmat")
-  expect_silent(sl <- strategy_list(m, p0, TF24_hyperpar, birth_rate_list=1.0))
+  expect_silent(sl <- plant:::strategy_list(m, p0, TF24_hyperpar, birth_rate_list=1.0))
 
-  cmp <- lapply(x, function(xi) strategy(trait_matrix(xi, "hmat"), p0, TF24_hyperpar, birth_rate_list=1.0))
+  cmp <- lapply(x, function(xi) strategy_list(trait_matrix(xi, "hmat"), p0, TF24_hyperpar, birth_rate_list=1.0)[[1]])
   expect_equal(sl, cmp)
 })
 

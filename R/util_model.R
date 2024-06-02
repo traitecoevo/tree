@@ -45,32 +45,6 @@ strategy_list <- function(x, parameters, hyperpar=param_hyperpar(parameters), bi
   return(strategies)
 }
 
-##' @export
-##' @rdname strategy_list
-strategy_default <- function(parameters, hyperpar=param_hyperpar(parameters)) {
-  strategy(trait_matrix(1, "a")[, -1, drop=FALSE], parameters, hyperpar)
-}
-
-##' @export
-##' @rdname strategy_list
-strategy <- function(x, parameters, hyperpar=param_hyperpar(parameters), birth_rate_list) {
-  if (nrow(x) != 1L) {
-    stop("Expected a single type")
-  }
-  strategy_list(x, parameters, hyperpar, birth_rate_list)[[1]]
-}
-
-##' @rdname strategy_list
-##' @export
-individual_list <- function(x, parameters, hyperpar=param_hyperpar(parameters), birth_rate_list) {
-
-  if (!inherits(parameters, "Parameters")) {
-    stop("parameters must be a 'Parameters' object")
-  }
-  types <- extract_RcppR6_template_types(parameters, "Parameters")
-  lapply(strategy_list(x, parameters, hyperpar, birth_rate_list), do.call('Individual', types))
-}
-
 ##' Helper function to create trait matrices suitable for
 ##' \code{\link{strategy_list}}.
 ##'
@@ -86,7 +60,7 @@ trait_matrix <- function(x, trait_name) {
 }
 
 ##' The functions expand_parameters and mutant_parameters convert trait values into parametr objects for the model. By default, expand_parameters adds an extra strategy to existing.
-
+##'
 ##' @title Setup parameters to run resindets or mutants
 ##' @param trait_matrix A matrix of traits corresponding to the
 ##' new types to introduce.
@@ -107,7 +81,7 @@ expand_parameters <- function(trait_matrix, p, hyperpar=param_hyperpar(p), birth
   if(nrow(trait_matrix) != length(birth_rate_list)) {
     stop("Must provide exactly one birth rate input for each species")
   }
-  extra <- strategy_list(trait_matrix, p, hyperpar, birth_rate_list)
+  extra <- plant:::strategy_list(trait_matrix, p, hyperpar, birth_rate_list)
   n_extra <- length(extra)
 
   ret <- p <- validate(p) # Ensure times are set up correctly.
@@ -140,8 +114,6 @@ expand_parameters <- function(trait_matrix, p, hyperpar=param_hyperpar(p), birth
 mutant_parameters <- function(..., keep_existing_strategies = FALSE) {
   expand_parameters(..., keep_existing_strategies = keep_existing_strategies)
 }
-
-
 
 remove_residents <- function(p) {
   if (length(p$strategies) > 0L) {

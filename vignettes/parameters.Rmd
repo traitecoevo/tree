@@ -120,7 +120,7 @@ This is the Strategy object that all others will be built from by
 difference.  Running
 
 ```{r}
-s <- strategy(trait_matrix(0.1, "lma"), p, birth_rate_list = 1)
+s <- strategy_list(trait_matrix(0.1, "lma"), p, birth_rate_list = 1)[[1]]
 ```
 
 will create a strategy `s` where lma is set but also all the
@@ -144,15 +144,6 @@ sapply(ss, function(x) x$lma)
 sapply(ss, function(x) x$k_l)
 sapply(ss, function(x) x$a_p1)
 sapply(ss, function(x) x$r_l)
-```
-
-There's a convenience function `plant_list` that returns a set of
-*plants* based on a vector of traits:
-
-```{r}
-pp <- individual_list(lma, p, birth_rate_list = rep(1, 5))
-
-sapply(pp, function(p) p$compute_competition(0))
 ```
 
 In addition to the physiological parameters there are large number
