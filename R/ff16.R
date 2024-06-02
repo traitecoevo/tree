@@ -1,9 +1,5 @@
-## We can probably actually do better than this with an S3 method on
-## the actual strategy?  That would need to be organised by the
-## templating though and that's stretched to the limit.
-
-##' Create a FF16 Plant or Cohort
-##' @title Create a FF16 Plant or Cohort
+##' Create a FF16 Plant or Node
+##' @title Create a FF16 Plant or Node
 ##' @param s A \code{\link{FF16_Strategy}} object
 ##' @export
 ##' @rdname FF16
@@ -14,18 +10,10 @@ FF16_Individual <- function(s=FF16_Strategy()) {
   Individual("FF16", "FF16_Env")(s)
 }
 
-#' Compute the whole plant light compensation point for a single
-#' plant with FF16 strategy. Called via general function in plant.R
 ##' @export
 ##' @rdname FF16
-`lcp_whole_plant.Plant<FF16>` <- function(p, ...) {
-  FF16_lcp_whole_plant(p, ...)
-}
-
-##' @export
-##' @rdname FF16
-FF16_Cohort <- function(s=FF16_Strategy()) {
-  Cohort("FF16", "FF16_Env")(s)
+FF16_Node <- function(s=FF16_Strategy()) {
+  Node("FF16", "FF16_Env")(s)
 }
 
 ##' @export
@@ -36,7 +24,6 @@ FF16_Species <- function(s=FF16_Strategy()) {
 
 ##' @export
 ##' @rdname FF16
-##' @param ... Arguments!
 FF16_Parameters <- function() {
   Parameters("FF16","FF16_Env")()
 }
@@ -73,36 +60,61 @@ FF16_StochasticPatchRunner <- function(p) {
 }
 
 
-## Helper:
+## Helper to create FF16_environment object. Useful for running individuals
+##' @title create FF16_environment object
+##' @param light_availability_spline_tol 
+##'
+##' @param light_availability_spline_nbase 
+##' @param light_availability_spline_max_depth 
+##' @param light_availability_spline_rescale_usually 
+##'
 ##' @export
-##' @rdname FF16_Environment
-##' @param p A Parameters object
-FF16_make_environment <- function(p) {
-  FF16_Environment(p$disturbance_mean_interval, p$seed_rain, p$k_I, p$control)
+##' @rdname FF16_make_environment
+FF16_make_environment <- function(light_availability_spline_tol = 1e-4, 
+                                  light_availability_spline_nbase = 17,
+                                  light_availability_spline_max_depth = 16, 
+                                  light_availability_spline_rescale_usually = TRUE) {
+  
+  e <- FF16_Environment(light_availability_spline_rescale_usually, 
+                        soil_number_of_depths = 0)
+  
+  # Shading defaults have lower tolerance which are overwritten for speed
+  e$light_availability <- ResourceSpline(light_availability_spline_tol, 
+                     light_availability_spline_nbase, 
+                     light_availability_spline_max_depth, 
+                     light_availability_spline_rescale_usually)
+  
+  return(e)
 }
 
 ##' Construct a fixed environment for FF16 strategy
 ##'
-##' @param e=1.0 Value of environment 
-##' @param p A Parameters object
+##' @param e Value of environment (deafult  = 1.0)
 ##' @param height_max = 150.0 maximum possible height in environment
 ##' @rdname FF16_Environment
 ##'
 ##' @export
-FF16_fixed_environment <- function(e=1.0, p = FF16_Parameters(), height_max = 150.0) {
-  env <- FF16_make_environment(p)
+FF16_fixed_environment <- function(e=1.0, height_max = 150.0) {
+  env <- FF16_make_environment()
   env$set_fixed_environment(e, height_max)
   env
 }
 
 
-## This makes a pretend light environment over the plant height,
-## slightly concave up, whatever.
+##' This makes a pretend light environment over the plant height,
+##' slightly concave up, whatever.
+##' @title Create a test environment for FF16 startegy
+##' @param height top height of environment object
+##' @param n number of points
+##' @param light_env function for light environment in test object
+##' @param n_strategies number of strategies for test environment
+##' @export
+##' @rdname FF16_test_environment
+##' @examples
+##' environment <- FF16_test_environment(10)
 FF16_test_environment <- function(height, n=101, light_env=NULL,
-                             n_strategies=1, seed_rain=0) {
-  if (length(seed_rain) == 1) {
-    seed_rain <- rep(seed_rain, length.out=n_strategies)
-  }
+                                  n_strategies=1) {
+  
   hh <- seq(0, height, length.out=n)
   if (is.null(light_env)) {
     light_env <- function(x) {
@@ -113,15 +125,64 @@ FF16_test_environment <- function(height, n=101, light_env=NULL,
   interpolator <- Interpolator()
   interpolator$init(hh, ee)
 
-  parameters <- FF16_Parameters()
-  parameters$strategies <- rep(list(FF16_Strategy()), n_strategies)
-  parameters$seed_rain <- seed_rain
-  parameters$is_resident <- rep(TRUE, n_strategies)
-
-  ret <- FF16_make_environment(parameters)
-  ret$environment_interpolator <- interpolator
+  ret <- FF16_make_environment()
+  ret$light_availability$spline <- interpolator
   attr(ret, "light_env") <- light_env
   ret
+}
+
+##' Generates a report on stand grown with FF16 strategy
+##'
+##' Builds a detailed report on stand grown with FF16 strategy, based on the template Rmd file provided.  The reports are
+##' rendered as html files and saved in the specified output folder.
+##'
+##' @param results results of runnning \code{run_scm_collect}
+##' @param output_file name of output file
+##' @param overwrite logical value to determine whether to overwrite existing report
+##' @param target_ages Patches ages at which to make plots
+##' @param input_file report script (.Rmd) file to build study report
+##' @param quiet An option to suppress printing during rendering from knitr, pandoc command line and others.
+##'
+##' @rdname FF16_generate_stand_report
+##' @return html file of the rendered report located in the specified output folder.
+##' @export
+FF16_generate_stand_report <- function(results,
+                                    output_file = "FF16_report.html",
+                                    overwrite = FALSE,
+                                    target_ages = NA,
+                                    input_file = system.file("reports", "FF16_report.Rmd", package = "plant"),
+                                    quiet = TRUE) {
+  
+
+  output_dir <- dirname(output_file)
+  
+  if (!file.exists(output_dir)) {
+    dir.create(output_dir, FALSE, TRUE)
+  }
+  
+  #output_file <- basename(output_file)
+
+  if (overwrite | !file.exists(output_file)) {
+    # knit and render. Note, call render directly
+    # in preference to knit, then render, as leaflet widget
+    # requires this to work
+    result <-
+      rmarkdown::render(
+        input_file,
+        output_dir = output_dir,
+        output_file = output_file,
+        quiet = quiet,
+        params = list(
+          results = results,
+          target_ages = target_ages
+        )
+    )
+
+    # remove temporary Rmd
+    message(sprintf("Report for FF16 stand saved at %s", output_file))
+  } else {
+    message(sprintf("Report for FF16 stand already exists at %s", output_file))
+  }
 }
 
 ##' Hyperparameters for FF16 physiological model
@@ -195,8 +256,6 @@ make_FF16_hyperpar <- function(
   assert_scalar(B_lf5)
   assert_scalar(k_I)
   assert_scalar(latitude)
-
-  ## TODO: k_I should actually be in default parameter set, so perhaps don't pass into function?
 
   function(m, s, filter=TRUE) {
     with_default <- function(name, default_value=s[[name]]) {
@@ -295,6 +354,12 @@ make_FF16_hyperpar <- function(
            paste(overlap, collapse=", "))
     }
 
+    ## Check for infitinte values - these cause issues
+    if(any(is.infinite(extra))) {
+      stop("Attempt to use infinite value in derived parameters: ",
+           paste(colnames(extra)[is.infinite(extra)], collapse=", "))
+    }
+
     ## Filter extra so that any column where all numbers are with eps
     ## of the default strategy are not replaced:
     if (filter) {
@@ -326,7 +391,7 @@ make_FF16_hyperpar <- function(
 ##' @title Hyperparameter function for FF16 physiological model
 ##' @param m A matrix of trait values, as returned by \code{trait_matrix}
 ##' @param s A strategy object
-##' @param filter A flag indicating whether to filter columns. If TRUE, any numbers 
+##' @param filter A flag indicating whether to filter columns. If TRUE, any numbers
 ##' that are within eps of the default strategy are not replaced.
 ##' @export
 FF16_hyperpar <- make_FF16_hyperpar()

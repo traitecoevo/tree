@@ -24,7 +24,9 @@ OdeRunner:
       - ["Lorenz": "plant::ode::test::Lorenz"]
       - ["OdeR":   "plant::ode::test::OdeR"]
       - ["FF16": "plant::tools::IndividualRunner<plant::FF16_Strategy, plant::FF16_Environment>"]
-      - ["FF16r": "plant::tools::IndividualRunner<plant::FF16r_Strategy, plant::FF16r_Environment>"]
+      - ["TF24": "plant::tools::IndividualRunner<plant::TF24_Strategy, plant::TF24_Environment>"]
+      - ["FF16w": "plant::tools::IndividualRunner<plant::FF16w_Strategy, plant::FF16_Environment>"]
+      - ["FF16r": "plant::tools::IndividualRunner<plant::FF16r_Strategy, plant::FF16_Environment>"]
       - ["K93": "plant::tools::IndividualRunner<plant::K93_Strategy, plant::K93_Environment>"]
   constructor:
     args: [obj: T, control: "plant::ode::OdeControl=OdeControl()"]
@@ -34,15 +36,15 @@ OdeRunner:
     times: {type: "std::vector<double>", access: member}
     object: {type: T, access: member}
   methods:
-    advance: {return_type: void, args: [time: double]}
+    advance_adaptive: {return_type: void, args: [time: double]}
     advance_fixed: {return_type: void, args: [time: "std::vector<double>"]}
     step: {return_type: void}
     step_to: {return_type: void, args: [time: double]}
     set_state: {return_type: void, args: [y: "plant::ode::state_type", time: double]}
     set_state_from_system: {return_type: void}
 
-CohortScheduleEvent:
-  name_cpp: "plant::CohortScheduleEvent"
+NodeScheduleEvent:
+  name_cpp: "plant::NodeScheduleEvent"
   constructor:
     args: [introduction: double, species_index: "plant::util::index"]
   active:
@@ -52,18 +54,18 @@ CohortScheduleEvent:
     time_end: {type: double, access: member}
     species_index_raw: {type: "size_t", access: member, name_cpp: species_index_raw}
 
-CohortSchedule:
-  name_cpp: "plant::CohortSchedule"
+NodeSchedule:
+  name_cpp: "plant::NodeSchedule"
   constructor:
     roxygen: |
-      Schedule of cohort introduction times
+      Schedule of node introduction times
       @param n_species number of species
       @export
     args: [n_species: size_t]
   active:
     size: {type: size_t, access: member}
     n_species: {type: size_t, access: member, name_cpp: get_n_species}
-    next_event: {type: "plant::CohortScheduleEvent", access: member}
+    next_event: {type: "plant::NodeScheduleEvent", access: member}
     remaining: {type: size_t, access: member}
     max_time: {type: double, access: member, name_cpp: get_max_time, name_cpp_set: r_set_max_time}
     ode_times: {type: "std::vector<double>", access: member, name_cpp: r_ode_times, name_cpp_set: r_set_ode_times}
@@ -71,7 +73,7 @@ CohortSchedule:
     all_times: {type: SEXP, access: member, name_cpp: r_all_times, name_cpp_set: r_set_all_times}
   methods:
     expand:
-      return_type: "plant::CohortSchedule"
+      return_type: "plant::NodeSchedule"
       args: [n_extra: size_t, times: "std::vector<double>"]
     clear_times:
       return_type: void
@@ -92,33 +94,8 @@ CohortSchedule:
     pop:
       return_type: void
     copy:
-      return_type: "plant::CohortSchedule"
+      return_type: "plant::NodeSchedule"
       name_cpp: r_copy
-
-Disturbance:
-  name_cpp: "plant::Disturbance"
-  constructor:
-    roxygen: |
-      Disturbance control object
-      @param mean_interval Mean disturbance interval in years
-      @export
-    args: [mean_interval: double]
-  methods:
-    density:
-      args: [time: "std::vector<double>"]
-      return_type: "std::vector<double>"
-      name_cpp: r_density
-    pr_survival:
-      args: [time: double]
-      return_type: double
-    pr_survival_conditional:
-      args: [time: double, time_start: double]
-      return_type: double
-    cdf:
-      args: [time: double]
-      return_type: double
-  active:
-    mean_interval: {type: double, access: member, name_cpp: r_mean_interval}
 
 Control:
   name_cpp: "plant::Control"
@@ -129,21 +106,13 @@ Control:
     variadic arguments, or as a list, but not both).
     @export
   list:
-    - plant_assimilation_adaptive: bool
-    - plant_assimilation_over_distribution: bool
-    - plant_assimilation_tol: double
-    - plant_assimilation_iterations: size_t
-    - plant_assimilation_rule: size_t
-    - plant_seed_tol: double
-    - plant_seed_iterations: int
-    - cohort_gradient_eps: double
-    - cohort_gradient_direction: int
-    - cohort_gradient_richardson: bool
-    - cohort_gradient_richardson_depth: size_t
-    - environment_light_tol: double
-    - environment_light_nbase: size_t
-    - environment_light_max_depth: size_t
-    - environment_rescale_usually: bool
+    - function_integration_rule: size_t
+    - offspring_production_tol: double
+    - offspring_production_iterations: int
+    - node_gradient_eps: double
+    - node_gradient_direction: int
+    - node_gradient_richardson: bool
+    - node_gradient_richardson_depth: size_t
     - ode_step_size_initial: double
     - ode_step_size_min: double
     - ode_step_size_max: double
@@ -154,16 +123,7 @@ Control:
     - schedule_nsteps: size_t
     - schedule_eps: double
     - schedule_verbose: bool
-    - schedule_patch_survival: double
-    - equilibrium_nsteps: size_t
-    - equilibrium_eps: double
-    - equilibrium_large_seed_rain_change: double
-    - equilibrium_verbose: bool
-    - equilibrium_solver_name: "std::string"
-    - equilibrium_extinct_seed_rain: double
-    - equilibrium_nattempts: int
-    - equilibrium_solver_logN: bool
-    - equilibrium_solver_try_keep: bool
+    - save_RK45_cache: bool
 
 OdeControl:
   name_cpp: "plant::ode::OdeControl"
@@ -230,6 +190,7 @@ QAG:
     last_intervals: {type: "plant::quadrature::intervals_type", access: member, name_cpp: get_last_intervals}
     is_adaptive: {type: bool, access: member}
 
+
 Interpolator:
   name_cpp: "plant::interpolator::Interpolator"
   constructor:
@@ -244,6 +205,9 @@ Interpolator:
       return_type: "std::vector<double>"
       args: [x: "std::vector<double>"]
       name_cpp: r_eval
+    set_extrapolate:
+      return_type: void
+      args: [e: bool]
   active:
     x: {type: "std::vector<double>", access: member, name_cpp: get_x}
     y: {type: "std::vector<double>", access: member, name_cpp: get_y}
@@ -258,7 +222,9 @@ Individual:
     parameters: [T,E]
     concrete:
       - ["FF16": "plant::FF16_Strategy", "FF16_Env": "plant::FF16_Environment"]
-      - ["FF16r": "plant::FF16r_Strategy", "FF16r_Env": "plant::FF16r_Environment"]
+      - ["TF24": "plant::TF24_Strategy", "TF24_Env": "plant::TF24_Environment"]
+      - ["FF16w": "plant::FF16w_Strategy", "FF16_Env": "plant::FF16_Environment"]
+      - ["FF16r": "plant::FF16r_Strategy", "FF16_Env": "plant::FF16_Environment"]
       - ["K93": "plant::K93_Strategy", "K93_Env": "plant::K93_Environment"]
   constructor:
     args: [s: T]
@@ -306,7 +272,7 @@ Individual:
       return_type: double
     reset_mortality:
       return_type: void
-    lcp_whole_plant:
+    resource_compensation_point:
       args: []
       return_type: double
 
@@ -316,21 +282,26 @@ IndividualRunner:
     parameters: [T,E]
     concrete:
       - ["FF16": "plant::FF16_Strategy", "FF16_Env": "plant::FF16_Environment"]
-      - ["FF16r": "plant::FF16r_Strategy", "FF16r_Env": "plant::FF16r_Environment"]
+      - ["TF24": "plant::TF24_Strategy", "TF24_Env": "plant::TF24_Environment"]
+      - ["FF16w": "plant::FF16w_Strategy", "FF16_Env": "plant::FF16_Environment"]
+      - ["FF16r": "plant::FF16r_Strategy", "FF16_Env": "plant::FF16_Environment"]
       - ["K93": "plant::K93_Strategy", "K93_Env": "plant::K93_Environment"]
   constructor:
     name_cpp: "plant::tools::IndividualRunner<T,E>"
-    args: [plant: "plant::Individual<T,E>", environment: E]
+    args: [individual: "plant::Individual<T,E>", environment: E]
   active:
-    plant: {access: field, type: "plant::Individual<T,E>"}
+    individual: {access: field, type: "plant::Individual<T,E>"}
 
 Internals:
   name_cpp: "plant::Internals"
   constructor:
     args: [s_size: size_t, a_size: size_t]
     roxygen: |
-      Internals class holding vectors of states, thier associated rates and auxiliary (aux) state 
+      Internals class holding vectors of states, thier associated rates and auxiliary (aux) state
       which is calculated from the state through running compute_rates
+      @title Extract Internals from plant object
+      @param s_size ???
+      @param a_size ???
       @export
   active:
     state_size: {type: size_t, access: field}
@@ -368,45 +339,38 @@ Parameters:
     parameters: [T, E]
     concrete:
       - ["FF16": "plant::FF16_Strategy", "FF16_Env": "plant::FF16_Environment"]
-      - ["FF16r": "plant::FF16r_Strategy", "FF16r_Env": "plant::FF16r_Environment"]
+      - ["TF24": "plant::TF24_Strategy", "TF24_Env": "plant::TF24_Environment"]
+      - ["FF16w": "plant::FF16w_Strategy", "FF16_Env": "plant::FF16_Environment"]
+      - ["FF16r": "plant::FF16r_Strategy", "FF16_Env": "plant::FF16_Environment"]
       - ["K93": "plant::K93_Strategy", "K93_Env": "plant::K93_Environment"]
-  # TODO: This is broken:
-  # roxygen: |
-  #   Strategy parameters that tune various aspects of the biological model.
-  #   @title Strategy parameters
-  #   @param ...,values Values to initialise the struct with (either as
-  #   variadic arguments, or as a list, but not both).
-  #   @export
   validator:
     name_cpp: validate
   list:
-    - k_I: double
     - patch_area: double
     - n_patches: size_t
-    - disturbance_mean_interval: double
+    - patch_type: "std::string"
+    - max_patch_lifetime: double
     - strategies: "std::vector<T>"
-    - seed_rain: "std::vector<double>"
-    - is_resident: "std::vector<bool>"
-    - control: "plant::Control"
     - strategy_default: "T"
-    - cohort_schedule_max_time: double
-    - cohort_schedule_times_default: "std::vector<double>"
-    - cohort_schedule_times: "std::vector<std::vector<double> >"
-    - cohort_schedule_ode_times: "std::vector<double>"
+    - node_schedule_times_default: "std::vector<double>"
+    - node_schedule_times: "std::vector<std::vector<double> >"
+    - ode_times: "std::vector<double>"
 
-Cohort:
-  name_cpp: "plant::Cohort<T,E>"
+Node:
+  name_cpp: "plant::Node<T,E>"
   templates:
     parameters: [T,E]
     concrete:
       - ["FF16": "plant::FF16_Strategy", "FF16_Env": "plant::FF16_Environment"]
-      - ["FF16r": "plant::FF16r_Strategy", "FF16r_Env": "plant::FF16r_Environment"]
+      - ["TF24": "plant::TF24_Strategy", "TF24_Env": "plant::TF24_Environment"]
+      - ["FF16w": "plant::FF16w_Strategy", "FF16_Env": "plant::FF16_Environment"]
+      - ["FF16r": "plant::FF16r_Strategy", "FF16_Env": "plant::FF16_Environment"]
       - ["K93": "plant::K93_Strategy", "K93_Env": "plant::K93_Environment"]
   constructor:
-    name_cpp: "plant::make_cohort<T,E>"
+    name_cpp: "plant::make_node<T,E>"
     args: [strategy: T]
   active:
-    plant: {type: "plant::Individual<T,E>", access: field, readonly: true}
+    individual: {type: "plant::Individual<T,E>", access: field, readonly: true}
     height: {type: double, access: member}
     log_density: {type: double, access: member, name_cpp: get_log_density}
     competition_effect: {type: double, access: member}
@@ -425,10 +389,10 @@ Cohort:
       args: [environment: E]
     compute_rates:
       return_type: void
-      args: [environment: E]
+      args: [environment: E, pr_patch_survival: double]
     compute_initial_conditions:
       return_type: void
-      args: [environment: E]
+      args: [environment: E, pr_patch_survival: double, birth_rate: double]
 
 # For now, also not templated
 Species:
@@ -437,19 +401,22 @@ Species:
     parameters: [T,E]
     concrete:
       - ["FF16": "plant::FF16_Strategy", "FF16_Env": "plant::FF16_Environment"]
-      - ["FF16r": "plant::FF16r_Strategy", "FF16r_Env": "plant::FF16r_Environment"]
+      - ["TF24": "plant::TF24_Strategy", "TF24_Env": "plant::TF24_Environment"]
+      - ["FF16w": "plant::FF16w_Strategy", "FF16_Env": "plant::FF16_Environment"]
+      - ["FF16r": "plant::FF16r_Strategy", "FF16_Env": "plant::FF16_Environment"]
       - ["K93": "plant::K93_Strategy", "K93_Env": "plant::K93_Environment"]
   constructor:
     args: [strategy: T]
   active:
     size: {type: size_t, access: member}
-    seed: {type: "plant::Cohort<T,E>", access: member, name_cpp: r_seed}
+    new_node: {type: "plant::Node<T,E>", access: member, name_cpp: r_new_node}
     height_max: {type: double, access: member, readonly: true}
     heights: {type: "std::vector<double>", access: member, name_cpp: r_heights, name_cpp_set: r_set_heights}
     log_densities: {type: "std::vector<double>", access: member, name_cpp: r_log_densities}
-    cohorts: {type: "std::vector<plant::Cohort<T,E> >", access: member, name_cpp: r_cohorts}
-    seeds: {type: "std::vector<double>", access: member}
+    nodes: {type: "std::vector<plant::Node<T,E> >", access: member, name_cpp: r_nodes}
+    net_reproduction_ratio_by_node: {type: "std::vector<double>", access: member}
     competition_effects: {type: "std::vector<double>", access: member, name_cpp: r_competition_effects}
+    extrinsic_drivers: {type: "plant::ExtrinsicDrivers", access: member, name_cpp: extrinsic_drivers}
     ## ODE interface:
     ode_size: {type: size_t, access: member}
     ode_state: {type: "plant::ode::state_type", access: function, name_cpp: "plant::ode::r_ode_state", name_cpp_set: "plant::ode::r_set_ode_state"}
@@ -459,16 +426,16 @@ Species:
       return_type: void
     compute_rates:
       return_type: void
-      args: [environment: E]
+      args: [environment: E, pr_patch_survival: double, birth_rate: double]
     compute_competition:
       return_type: double
       args: [height: double]
-    add_seed:
+    introduce_new_node:
       return_type: void
-    cohort_at:
-      return_type: "plant::Cohort<T,E>"
+    node_at:
+      return_type: "plant::Node<T,E>"
       args: [index: "plant::util::index"]
-      name_cpp: r_cohort_at
+      name_cpp: r_node_at
     competition_effects_error:
       return_type: "std::vector<double>"
       args: [scal: double=1]
@@ -480,10 +447,15 @@ Patch:
     parameters: [T, E]
     concrete:
       - ["FF16": "plant::FF16_Strategy", "FF16_Env": "plant::FF16_Environment"]
-      - ["FF16r": "plant::FF16r_Strategy", "FF16r_Env": "plant::FF16r_Environment"]
+      - ["TF24": "plant::TF24_Strategy", "TF24_Env": "plant::TF24_Environment"]
+      - ["FF16w": "plant::FF16w_Strategy", "FF16_Env": "plant::FF16_Environment"]
+      - ["FF16r": "plant::FF16r_Strategy", "FF16_Env": "plant::FF16_Environment"]
       - ["K93": "plant::K93_Strategy", "K93_Env": "plant::K93_Environment"]
   constructor:
-    args: [parameters: "plant::Parameters<T,E>"]
+    args:
+      - parameters: "plant::Parameters<T,E>"
+      - environment: "E"
+      - control: "plant::Control"
   active:
     time: {type: double, access: member}
     size: {type: size_t, access: member}
@@ -496,24 +468,24 @@ Patch:
     ode_time: {type: double, access: function, name_cpp: "plant::ode::r_ode_time"}
     ode_state: {type: "plant::ode::state_type", access: function, name_cpp: "plant::ode::r_ode_state"}
     ode_rates: {type: "plant::ode::state_type", access: function, name_cpp: "plant::ode::r_ode_rates"}
+    ode_aux: {type: "plant::ode::state_type", access: function, name_cpp: "plant::ode::r_ode_aux"}
+    node_ode_size: {type: size_t, access: member}
   methods:
-    compute_competition: {return_type: double, args: [height: double]}
-    add_seed:
+    introduce_new_node:
       return_type: void
       args: [species_index: "plant::util::index"]
-      name_cpp: r_add_seed
+      name_cpp: r_introduce_new_node
     compute_environment:
       return_type: void
       name_cpp: r_compute_environment
     compute_rates:
       return_type: void
       name_cpp: r_compute_rates
-    # TODO: Not 100% sure this is needed from R:
     reset:
       return_type: void
     # Because we now care about time, we need to make sure that the
     # setter function passes time along, so can't be done via the
-    # active binding (unlike Species, Cohort, etc).
+    # active binding (unlike Species, Node, etc).
     set_ode_state:
       return_type: void
       access: function
@@ -524,10 +496,21 @@ Patch:
       access: function
       name_cpp: "plant::ode::r_derivs"
       args: [y: "const plant::ode::state_type&", time: double]
+    set_time:
+      args: [time: double]
+      name_cpp: r_set_time
+      return_type: void
     set_state:
       args: [time: double, state: "const std::vector<double>&", n: "const std::vector<size_t>&", env: "const std::vector<double>&"]
       name_cpp: r_set_state
       return_type: void
+    # Disturbance interface
+    density: {return_type: "std::vector<double>", args: [time: "std::vector<double>"], name_cpp: r_density}
+    pr_survival: {return_type: double, args: [time: double], name_cpp: r_pr_survival}
+    disturbance_mean_interval: {return_type: double, name_cpp: r_disturbance_mean_interval}
+    survival_weighting_cdf: {return_type: double, args: [time: double], name_cpp: r_survival_weighting_cdf}
+    survival_weighting_icdf: {return_type: double, args: [prob: double], name_cpp: r_survival_weighting_icdf}
+    compute_competition: {return_type: double, args: [height: double]}
 
 SCM:
   name_cpp: "plant::SCM<T,E>"
@@ -535,50 +518,55 @@ SCM:
     parameters: [T, E]
     concrete:
       - ["FF16": "plant::FF16_Strategy", "FF16_Env": "plant::FF16_Environment"]
-      - ["FF16r": "plant::FF16r_Strategy", "FF16r_Env": "plant::FF16r_Environment"]
+      - ["TF24": "plant::TF24_Strategy", "TF24_Env": "plant::TF24_Environment"]
+      - ["FF16w": "plant::FF16w_Strategy", "FF16_Env": "plant::FF16_Environment"]
+      - ["FF16r": "plant::FF16r_Strategy", "FF16_Env": "plant::FF16_Environment"]
       - ["K93": "plant::K93_Strategy", "K93_Env": "plant::K93_Environment"]
   constructor:
-    args: [parameters: "plant::Parameters<T,E>"]
+    args:
+      - parameters: "plant::Parameters<T,E>"
+      - environment: "E"
+      - control: "plant::Control"
   methods:
     run:
+      return_type: void
+    run_mutant:
+      args: [p: "plant::Parameters<T,E>"]
       return_type: void
     run_next:
       return_type: "std::vector<plant::util::index>"
       name_cpp: r_run_next
     reset:
       return_type: void
-    seed_rain:
+    net_reproduction_ratio_for_species:
       args: [species_index: "plant::util::index"]
       return_type: double
-      name_cpp: r_seed_rain
-    seed_rain_cohort:
-      args: [species_index: "plant::util::index"]
-      return_type: "std::vector<double>"
-      name_cpp: r_seed_rain_cohort
+      name_cpp: r_net_reproduction_ratio_for_species
     competition_effect_error:
       args: [species_index: "plant::util::index"]
       return_type: "std::vector<double>"
       name_cpp: r_competition_effect_error
-    set_cohort_schedule_times:
-      args: [times: "std::vector<std::vector<double> >"]
+    set_node_schedule_times:
+      args: [times: "std::vector<std::vector<double>>"]
       return_type: void
-      name_cpp: r_set_cohort_schedule_times
+      name_cpp: r_set_node_schedule_times
     # times
     # set_times
   active:
     complete: {type: bool, access: member}
     time: {type: double, access: member}
-    seed_rains: {type: "std::vector<double>", access: member}
+    net_reproduction_ratios: {type: "std::vector<double>", access: member}
+    offspring_production: {type: "std::vector<double>", access: member}
     parameters: {type: "plant::Parameters<T,E>", access: member, name_cpp: r_parameters}
     patch:
       type: "plant::Patch<T,E>"
       access: member
       name_cpp: r_patch
-    cohort_schedule:
-      type: "plant::CohortSchedule"
+    node_schedule:
+      type: "plant::NodeSchedule"
       access: member
-      name_cpp: r_cohort_schedule
-      name_cpp_set: r_set_cohort_schedule
+      name_cpp: r_node_schedule
+      name_cpp_set: r_set_node_schedule
     ode_times:
       type: "std::vector<double>"
       access: member
@@ -587,15 +575,20 @@ SCM:
       type: "Rcpp::List"
       access: function
       name_cpp: "plant::get_state"
+    aux:
+      type: "Rcpp::List"
+      access: function
+      name_cpp: "plant::get_aux"
     use_ode_times:
       type: bool
       access: member
       name_cpp: r_use_ode_times
       name_cpp_set: r_set_use_ode_times
-    seed_rain_error:
-      type: "std::vector<std::vector<double> >"
+    net_reproduction_ratio_errors:
+      type: "std::vector<std::vector<double>>"
       access: member
-      name_cpp: r_seed_rain_error
+      name_cpp: r_net_reproduction_ratio_errors
+
 
 StochasticSpecies:
   name_cpp: "plant::StochasticSpecies<T,E>"
@@ -603,19 +596,21 @@ StochasticSpecies:
     parameters: [T,E]
     concrete:
       - ["FF16": "plant::FF16_Strategy", "FF16_Env": "plant::FF16_Environment"]
-      - ["FF16r": "plant::FF16r_Strategy", "FF16r_Env": "plant::FF16r_Environment"]
+      - ["TF24": "plant::TF24_Strategy", "TF24_Env": "plant::TF24_Environment"]
+      - ["FF16w": "plant::FF16w_Strategy", "FF16_Env": "plant::FF16_Environment"]
+      - ["FF16r": "plant::FF16r_Strategy", "FF16_Env": "plant::FF16_Environment"]
       - ["K93": "plant::K93_Strategy", "K93_Env": "plant::K93_Environment"]
   constructor:
     args: [strategy: "T"]
   active:
     size: {type: size_t, access: member}
-    size_plants: {type: size_t, access: member}
-    seed: {type: "plant::Individual<T,E>", access: member, name_cpp: r_seed}
+    size_individuals: {type: size_t, access: member}
+    new_node: {type: "plant::Individual<T,E>", access: member, name_cpp: r_new_node}
     height_max: {type: double, access: member, readonly: true}
     heights: {type: "std::vector<double>", access: member, name_cpp: r_heights, name_cpp_set: r_set_heights}
-    plants: {type: "std::vector<plant::Individual<T,E> >", access: member, name_cpp: r_plants}
+    individuals: {type: "std::vector<plant::Individual<T,E> >", access: member, name_cpp: r_individuals}
     is_alive: {type: "std::vector<bool>", access: member, name_cpp: r_is_alive}
-    seeds: {type: "std::vector<double>", access: member}
+    net_reproduction_ratio_by_node: {type: "std::vector<double>", access: member}
     ## ODE interface:
     ode_size: {type: size_t, access: member}
     ode_state: {type: "plant::ode::state_type", access: function, name_cpp: "plant::ode::r_ode_state", name_cpp_set: "plant::ode::r_set_ode_state"}
@@ -629,12 +624,12 @@ StochasticSpecies:
     compute_competition:
       return_type: double
       args: [height: double]
-    add_seed:
+    introduce_new_node:
       return_type: void
-    plant_at:
+    individual_at:
       return_type: "plant::Individual<T,E>"
       args: [index: "plant::util::index"]
-      name_cpp: r_plant_at
+      name_cpp: r_individual_at
     deaths:
       return_type: size_t
     establishment_probability:
@@ -647,10 +642,15 @@ StochasticPatch:
     parameters: [T,E]
     concrete:
       - ["FF16": "plant::FF16_Strategy", "FF16_Env": "plant::FF16_Environment"]
-      - ["FF16r": "plant::FF16r_Strategy", "FF16r_Env": "plant::FF16r_Environment"]
+      - ["TF24": "plant::TF24_Strategy", "TF24_Env": "plant::TF24_Environment"]
+      - ["FF16w": "plant::FF16w_Strategy", "FF16_Env": "plant::FF16_Environment"]
+      - ["FF16r": "plant::FF16r_Strategy", "FF16_Env": "plant::FF16_Environment"]
       - ["K93": "plant::K93_Strategy", "K93_Env": "plant::K93_Environment"]
   constructor:
-    args: [parameters: "plant::Parameters<T,E>"]
+    args:
+      - parameters: "plant::Parameters<T,E>"
+      - environment: "E"
+      - control: "plant::Control"
   active:
     time: {type: double, access: member}
     size: {type: size_t, access: member}
@@ -665,14 +665,14 @@ StochasticPatch:
     ode_rates: {type: "plant::ode::state_type", access: function, name_cpp: "plant::ode::r_ode_rates"}
   methods:
     compute_competition: {return_type: double, args: [height: double]}
-    add_seed:
+    introduce_new_node:
       return_type: bool
       args: [species_index: "plant::util::index"]
-      name_cpp: r_add_seed
-    add_seedling:
+      name_cpp: r_introduce_new_node
+    introduce_new_node_and_update:
       return_type: void
       args: [species_index: "plant::util::index"]
-      name_cpp: r_add_seedling
+      name_cpp: r_introduce_new_node_and_update
     compute_environment:
       return_type: void
       name_cpp: r_compute_environment
@@ -684,7 +684,7 @@ StochasticPatch:
       return_type: void
     # Because we now care about time, we need to make sure that the
     # setter function passes time along, so can't be done via the
-    # active binding (unlike Species, Cohort, etc).
+    # active binding (unlike Species, Node, etc).
     set_ode_state:
       return_type: void
       access: function
@@ -708,15 +708,20 @@ StochasticPatchRunner:
     parameters: [T,E]
     concrete:
       - ["FF16": "plant::FF16_Strategy", "FF16_Env": "plant::FF16_Environment"]
-      - ["FF16r": "plant::FF16r_Strategy", "FF16r_Env": "plant::FF16r_Environment"]
+      - ["TF24": "plant::TF24_Strategy", "TF24_Env": "plant::TF24_Environment"]
+      - ["FF16w": "plant::FF16w_Strategy", "FF16_Env": "plant::FF16_Environment"]
+      - ["FF16r": "plant::FF16r_Strategy", "FF16_Env": "plant::FF16_Environment"]
       - ["K93": "plant::K93_Strategy", "K93_Env": "plant::K93_Environment"]
   constructor:
-    args: [parameters: "plant::Parameters<T,E>"]
+    args:
+      - parameters: "plant::Parameters<T,E>"
+      - environment: "E"
+      - control: "plant::Control"
   methods:
     run:
       return_type: void
     run_next:
-      return_type: plant::util::index
+      return_type: "plant::util::index"
       name_cpp: r_run_next
     reset:
       return_type: void
@@ -733,7 +738,7 @@ StochasticPatchRunner:
       access: member
       name_cpp: r_patch
     schedule:
-      type: "plant::CohortSchedule"
+      type: "plant::NodeSchedule"
       access: member
       name_cpp: r_schedule
       name_cpp_set: r_set_schedule
@@ -741,6 +746,84 @@ StochasticPatchRunner:
       type: "Rcpp::List"
       access: function
       name_cpp: "plant::get_state"
+
+ResourceSpline:
+  name_cpp: "plant::ResourceSpline"
+  constructor:
+    args:
+      - tol: double
+      - nbase: double
+      - max_depth: double
+      - rescale_usually: bool
+  methods:
+    get_value_at_height:
+      args: [height: double]
+      return_type: double
+    clear:
+      return_type: void
+  active:
+    spline: {type: "plant::interpolator::Interpolator", access: field}
+
+Disturbance_Regime:
+  name_cpp: "plant::Disturbance_Regime"
+  constructor:
+    roxygen: |
+      Base class of representing patch disturbance
+      @title Disturbance regime
+      @export
+  methods:
+    density:
+      args: [time: "std::vector<double>"]
+      return_type: "std::vector<double>"
+      name_cpp: r_density
+    pr_survival:
+      args: [time: double]
+      return_type: double
+
+No_Disturbance:
+  name_cpp: "plant::No_Disturbance"
+  constructor:
+    roxygen: |
+      A disturbance-free regime for running individual patches
+      @title No disturbance regime
+      No_Disturbance_Regime control object
+      @export
+  methods:
+    density:
+      args: [time: "std::vector<double>"]
+      return_type: "std::vector<double>"
+      name_cpp: r_density
+    pr_survival:
+      args: [time: double]
+      return_type: double
+
+Weibull_Disturbance_Regime:
+  name_cpp: "plant::Weibull_Disturbance_Regime"
+  constructor:
+    args: [max_patch_lifetime: double]
+    roxygen: |
+      Weibull_Disturbance_Regime control object.
+      @title Weibull disturbance regime
+      The frequency of disturbance in a meta-population of patches follows a Weibull distribution
+      @param max_patch_lifetime Maximum lifetime of a patch, determines length of a simulation
+      @export
+  methods:
+    density:
+      args: [time: "std::vector<double>"]
+      return_type: "std::vector<double>"
+      name_cpp: r_density
+    pr_survival:
+      args: [time: double]
+      return_type: double
+    mean_interval:
+      return_type: double
+      name_cpp: r_mean_interval
+    cdf:
+      args: [time: double]
+      return_type: double
+    icdf:
+      args: [prob: double]
+      return_type: double
 
 FF16_Strategy:
   name_cpp: "plant::FF16_Strategy"
@@ -781,43 +864,54 @@ FF16_Strategy:
     - d_I: double
     - a_dG1: double
     - a_dG2: double
-    - control: "plant::Control" 
-    - collect_all_auxillary: bool
+    - k_I: double
+    - recruitment_decay: double
+    - control: "plant::Control"
+    - collect_all_auxiliary: bool
+    - birth_rate_x: std::vector<double>
+    - birth_rate_y: std::vector<double>
+    - is_variable_birth_rate: bool
 
 FF16_Environment:
   name_cpp: "plant::FF16_Environment"
   constructor:
-    args: [disturbance_mean_interval: double, seed_rain: "std::vector<double>", k_I: double, control: "plant::Control"]
+    args:
+      - light_availability_spline_rescale_usually: bool
+      - soil_number_of_depths: int
     roxygen: |
       FF16_Environment object
-      @param disturbance_mean_interval mean disturbance interval in years
-      @param seed_rain vector of seed rains
-      @param k_I light extinction coefficient
-      @param control A Control object
+      @param  light_availability_spline_rescale_usually whether to rescale intervals when estimating light environment
+      @param  soil_number_of_depths Number of soil layers to include
       @export
   methods:
-    canopy_openness:
+    get_environment_at_height:
       args: [height: double]
-      return_type: double
-    patch_survival_conditional:
-      args: [time_at_birth: double]
       return_type: double
     clear:
       return_type: void
-    set_seed_rain_index:
-      args: [x: "plant::util::index"]
-      return_type: void
-      name_cpp: r_set_seed_rain_index
     set_fixed_environment:
       args: [value: double, height_max: double]
       return_type: void
+    set_soil_water_state:
+      args: [state: "std::vector<double>"]
+      return_type: void
+    compute_rates:
+      args: [resource_depletion: "std::vector<double>"]
+      return_type: void
   active:
-    patch_survival: {type: double, access: member}
-    seed_rain_dt: {type: double, access: member}
-    disturbance_regime: {type: "plant::Disturbance", access: field}
     time: {type: double, access: field}
-    environment_interpolator: {type: "plant::interpolator::Interpolator", access: field}
-
+    ode_size: {type: size_t, access: member}
+    soil_number_of_depths: {type: size_t, access: member, name_cpp: ode_size}
+    light_availability:
+      type: "plant::ResourceSpline"
+      access: field
+    soil:
+      type: "plant::Internals"
+      access: member
+      name_cpp: "r_internals"
+    extrinsic_drivers: # this actually exists in the base class, not in the derived environment classes
+      type: "plant::ExtrinsicDrivers"
+      access: field
 
 # The following strategy was built from FF16 on Wed Aug 12 11:12:34 2020
 FF16r_Strategy:
@@ -859,45 +953,13 @@ FF16r_Strategy:
     - d_I: double
     - a_dG1: double
     - a_dG2: double
-    - control: "plant::Control" 
-    - collect_all_auxillary: bool
-
-
-# The following environment was built from FF16 on Wed Aug 12 11:12:34 2020
-FF16r_Environment:
-  name_cpp: "plant::FF16r_Environment"
-  constructor:
-    args: [disturbance_mean_interval: double, seed_rain: "std::vector<double>", k_I: double, control: "plant::Control"]
-    roxygen: |
-      FF16r_Environment object
-      @param disturbance_mean_interval mean disturbance interval in years
-      @param seed_rain vector of seed rains
-      @param k_I light extinction coefficient
-      @param control A Control object
-      @export
-  methods:
-    canopy_openness:
-      args: [height: double]
-      return_type: double
-    patch_survival_conditional:
-      args: [time_at_birth: double]
-      return_type: double
-    clear:
-      return_type: void
-    set_seed_rain_index:
-      args: [x: "plant::util::index"]
-      return_type: void
-      name_cpp: r_set_seed_rain_index
-    set_fixed_environment:
-      args: [value: double, height_max: double]
-      return_type: void
-  active:
-    patch_survival: {type: double, access: member}
-    seed_rain_dt: {type: double, access: member}
-    disturbance_regime: {type: "plant::Disturbance", access: field}
-    time: {type: double, access: field}
-    environment_interpolator: {type: "plant::interpolator::Interpolator", access: field}
-
+    - k_I: double
+    - recruitment_decay: double
+    - control: "plant::Control"
+    - collect_all_auxiliary: bool
+    - birth_rate_x: std::vector<double>
+    - birth_rate_y: std::vector<double>
+    - is_variable_birth_rate: bool
 
 # The following strategy was built from FF16r on Wed Aug 12 15:33:08 2020
 K93_Strategy:
@@ -918,41 +980,191 @@ K93_Strategy:
     - d_0: double
     - d_1: double
     - S_D: double
+    - eta: double
+    - k_I: double
     - control: "plant::Control"
-
+    - birth_rate_x: std::vector<double>
+    - birth_rate_y: std::vector<double>
+    - is_variable_birth_rate: bool
 
 # The following environment was built from FF16r on Wed Aug 12 15:46:38 2020
 K93_Environment:
   name_cpp: "plant::K93_Environment"
   constructor:
-    args: [disturbance_mean_interval: double, seed_rain: "std::vector<double>", k_I: double, control: "plant::Control"]
     roxygen: |
       K93_Environment object
-      @param disturbance_mean_interval mean disturbance interval in years
-      @param seed_rain vector of seed rains
-      @param k_I light extinction coefficient
-      @param control A Control object
       @export
   methods:
-    canopy_openness:
+    get_environment_at_height:
       args: [height: double]
-      return_type: double
-    patch_survival_conditional:
-      args: [time_at_birth: double]
       return_type: double
     clear:
       return_type: void
-    set_seed_rain_index:
-      args: [x: "plant::util::index"]
-      return_type: void
-      name_cpp: r_set_seed_rain_index
     set_fixed_environment:
       args: [value: double, height_max: double]
       return_type: void
   active:
-    patch_survival: {type: double, access: member}
-    seed_rain_dt: {type: double, access: member}
-    disturbance_regime: {type: "plant::Disturbance", access: field}
     time: {type: double, access: field}
-    environment_interpolator: {type: "plant::interpolator::Interpolator", access: field}
+    light_availability: {type: "plant::ResourceSpline", access: field}
+    ode_size: {type: size_t, access: member}
+
+# The following strategy was built from FF16 on Mon Jul 19 11:01:04 2021
+FF16w_Strategy:
+  name_cpp: "plant::FF16w_Strategy"
+  roxygen: |
+    Strategy parameters that tune various aspects of the biological model.
+    @title Strategy parameters
+    @param ...,values Values to initialise the struct with (either as
+    variadic arguments, or as a list, but not both).
+    @export
+  list:
+    - lma: double
+    - rho: double
+    - hmat: double
+    - omega: double
+    - eta: double
+    - theta: double
+    - a_l1: double
+    - a_l2: double
+    - a_r1: double
+    - a_b1: double
+    - r_s: double
+    - r_b: double
+    - r_r: double
+    - r_l: double
+    - a_y: double
+    - a_bio: double
+    - k_l: double
+    - k_b: double
+    - k_s: double
+    - k_r: double
+    - a_p1: double
+    - a_p2: double
+    - a_f3: double
+    - a_f1: double
+    - a_f2: double
+    - S_D: double
+    - a_d0: double
+    - d_I: double
+    - a_dG1: double
+    - a_dG2: double
+    - k_I: double
+    - recruitment_decay: double
+    - control: "plant::Control"
+    - collect_all_auxiliary: bool
+    - birth_rate_x: std::vector<double>
+    - birth_rate_y: std::vector<double>
+    - is_variable_birth_rate: bool
+    
+ExtrinsicDrivers:
+  name_cpp: "plant::ExtrinsicDrivers"
+  methods:
+    evaluate:
+      return_type: double
+      args: [driver_name: std::string, u: double]
+    evaluate_range:
+      return_type: std::vector<double>
+      args: [ driver_name: std::string, u: std::vector<double>]
+    get_names:
+      return_type: std::vector<std::string>
+    set_constant:
+      return_type: void
+      args: [ driver_name: std::string, k: double]
+    set_variable:
+      return_type: void
+      args: [ driver_name: std::string, x: std::vector<double>, y: std::vector<double> ]
+    set_extrapolate:
+      return_type: void
+      args: [ driver_name: std::string, extrapolate: bool]
+
+# The following strategy was built from FF16 on Mon Feb 12 09:52:27 2024
+TF24_Strategy:
+  name_cpp: "plant::TF24_Strategy"
+  roxygen: |
+    Strategy parameters that tune various aspects of the biological model.
+    @title Strategy parameters
+    @param ...,values Values to initialise the struct with (either as
+    variadic arguments, or as a list, but not both).
+    @export
+  list:
+    - lma: double
+    - rho: double
+    - hmat: double
+    - omega: double
+    - eta: double
+    - theta: double
+    - a_l1: double
+    - a_l2: double
+    - a_r1: double
+    - a_b1: double
+    - r_s: double
+    - r_b: double
+    - r_r: double
+    - r_l: double
+    - a_y: double
+    - a_bio: double
+    - k_l: double
+    - k_b: double
+    - k_s: double
+    - k_r: double
+    - a_p1: double
+    - a_p2: double
+    - a_f3: double
+    - a_f1: double
+    - a_f2: double
+    - S_D: double
+    - a_d0: double
+    - d_I: double
+    - a_dG1: double
+    - a_dG2: double
+    - k_I: double
+    - recruitment_decay: double
+    - control: "plant::Control"
+    - collect_all_auxiliary: bool
+    - birth_rate_x: std::vector<double>
+    - birth_rate_y: std::vector<double>
+    - is_variable_birth_rate: bool
+
+
+# The following environment was built from FF16 on Mon Feb 12 09:52:27 2024
+TF24_Environment:
+  name_cpp: "plant::TF24_Environment"
+  constructor:
+    args:
+      - light_availability_spline_rescale_usually: bool
+      - soil_number_of_depths: int
+    roxygen: |
+      TF24_Environment object
+      @param  light_availability_spline_rescale_usually whether to rescale intervals when estimating light environment
+      @param  soil_number_of_depths Number of soil layers to include
+      @export
+  methods:
+    get_environment_at_height:
+      args: [height: double]
+      return_type: double
+    clear:
+      return_type: void
+    set_fixed_environment:
+      args: [value: double, height_max: double]
+      return_type: void
+    set_soil_water_state:
+      args: [state: "std::vector<double>"]
+      return_type: void
+    compute_rates:
+      args: [resource_depletion: "std::vector<double>"]
+      return_type: void
+  active:
+    time: {type: double, access: field}
+    ode_size: {type: size_t, access: member}
+    soil_number_of_depths: {type: size_t, access: member, name_cpp: ode_size}
+    light_availability:
+      type: "plant::ResourceSpline"
+      access: field
+    soil:
+      type: "plant::Internals"
+      access: member
+      name_cpp: "r_internals"
+    extrinsic_drivers: # this actually exists in the base class, not in the derived environment classes
+      type: "plant::ExtrinsicDrivers"
+      access: field
 

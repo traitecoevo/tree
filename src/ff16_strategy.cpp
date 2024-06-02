@@ -7,87 +7,7 @@ namespace plant {
 // before physiology, before compound things?)
 // TODO: Consider moving to activating as an initialisation list?
 FF16_Strategy::FF16_Strategy() {
-  // * Core traits - default values
-  lma       = 0.1978791;  // Leaf mass per area [kg / m2]
-  rho       = 608.0;      // Wood density [kg/m3]
-  hmat      = 16.5958691; // Height at maturation [m]
-  omega     = 3.8e-5;     // Seed mass [kg]
-
-  // * Individual allometry
-  // Canopy shape parameter (extra calculation here later)
-  eta       = 12.0; // [dimensionless]
-  // Ratio sapwood area area to leaf area
-  theta     = 1.0/4669; // [dimensionless]
-  // Height - leaf mass scaling
-  a_l1        = 5.44; // height with 1m2 leaf [m]
-  a_l2        = 0.306; // dimensionless scaling of height with leaf area
-  // Root mass per leaf area
-  a_r1        = 0.07;  //[kg / m]
-  // Ratio of bark area : sapwood area
-  a_b1         = 0.17; // [dimensionless]
-
-  // * Production
-  // Ratio of leaf dark respiration to leaf mass [mol CO2 / yr  / kg]
-  // =  [mol CO2 / m2 / yr]  |  (39.27 = 2100 * 0.00187)  | narea * photosynthesis_per_nitrogen
-  //    / [kg(leaf) / m2 ]   |    / (0.1978791)           | lma
-  // Hard coded in value of lma here so that this value doesn't change
-  // if that trait changes above.
-  r_l   = 39.27 / 0.1978791;
-  // Root respiration per mass [mol CO2 / yr / kg]
-  r_r   = 217.0;
-  // Sapwood respiration per stem mass  [mol CO2 / yr / kg]
-  // = respiration per volume [mol CO2 / m3 / yr]
-  // /  wood density [kg/m3]
-  r_s   = 4012.0 / 608.0;
-  // Bark respiration per stem mass
-  // assumed to be twice rate of sapwood
-  // (NOTE that there is a re-parametrisation here relative to the paper
-  // -- r_b is defined (new) as 2*r_s, whereas the paper assumes a
-  // fixed multiplication by 2)
-  r_b   = 2.0 * r_s;
-  // Carbon conversion parameter
-  a_y      = 0.7;
-  // Constant converting assimilated CO2 to dry mass [kg / mol]
-  // (12E-3 / 0.49)
-  a_bio  = 2.45e-2;
-  // Leaf turnover [/yr]
-  k_l=  0.4565855;
- // Bark turnover [/yr]
-  k_b    = 0.2;
-  // Sapwood turnover [/yr]
-  k_s     = 0.2;
-  // Root turnover [/yr]
-  k_r    = 1.0;
-  // Parameters of the hyperbola for annual LRC
-  a_p1   = 151.177775377968; // [mol CO2 / yr / m2]
-  a_p2   = 0.204716166503633; // [dimensionless]
-
-  // * Seed production
-  // Accessory cost of reproduction
-  a_f3  = 3.0 *  3.8e-5; // [kg per seed]
-
-  // Maximum allocation to reproduction
-  a_f1   = 1.0; //[dimensionless]
-  // Size range across which individuals mature
-  a_f2   = 50; // [dimensionless]
-
-// * Mortality parameters
-  // Probability of survival during dispersal
-  S_D   = 0.25; // [dimensionless]
-  // Parameter for seedling survival
-  a_d0    = 0.1; //[kg / yr / m2]
-  // Baseline for intrinsic mortality
-  d_I    = 0.01; // [ / yr]
- // Baseline rate for growth-related mortality
-  a_dG1    = 5.5; // [ / yr]
-  // Risk coefficient for dry mass production (per area)
-  a_dG2    = 20.0;// [yr m2 / kg ]
-
-  // Will get computed properly by prepare_strategy
-  height_0 = NA_REAL;
-  eta_c    = NA_REAL;
-
-  collect_all_auxillary = false;
+  collect_all_auxiliary = false;
   // build the string state/aux name to index map
   refresh_indices();
   name = "FF16";
@@ -99,10 +19,10 @@ void FF16_Strategy::refresh_indices () {
   aux_index   = std::map<std::string,int>();
   std::vector<std::string> aux_names_vec = aux_names();
   std::vector<std::string> state_names_vec = state_names();
-  for (int i = 0; i < state_names_vec.size(); i++) {
+  for (size_t i = 0; i < state_names_vec.size(); i++) {
     state_index[state_names_vec[i]] = i;
   }
-  for (int i = 0; i < aux_names_vec.size(); i++) {
+  for (size_t i = 0; i < aux_names_vec.size(); i++) {
     aux_index[aux_names_vec[i]] = i;
   }
 }
@@ -166,7 +86,7 @@ double FF16_Strategy::mass_above_ground(double mass_leaf, double mass_bark,
   return mass_leaf + mass_bark + mass_sapwood + mass_root;
 }
 
-// for updating auxillary state
+// for updating auxiliary state
 void FF16_Strategy::update_dependent_aux(const int index, Internals& vars) {
   if (index == HEIGHT_INDEX) {
     double height = vars.state(HEIGHT_INDEX);
@@ -177,26 +97,24 @@ void FF16_Strategy::update_dependent_aux(const int index, Internals& vars) {
 
 // one-shot update of the scm variables
 // i.e. setting rates of ode vars from the state and updating aux vars
-void FF16_Strategy::compute_rates(const FF16_Environment& environment,
-                              bool reuse_intervals,
-                              Internals& vars) {
+void FF16_Strategy::compute_rates(const FF16_Environment& environment,  Internals& vars) {
 
   double height = vars.state(HEIGHT_INDEX);
   double area_leaf_ = vars.aux(aux_index.at("competition_effect"));
 
   const double net_mass_production_dt_ =
-    net_mass_production_dt(environment, height, area_leaf_, reuse_intervals);
+    net_mass_production_dt(environment, height, area_leaf_);
 
   // store the aux sate
   vars.set_aux(aux_index.at("net_mass_production_dt"), net_mass_production_dt_);
 
   if (net_mass_production_dt_ > 0) {
-    
+
     const double fraction_allocation_reproduction_ = fraction_allocation_reproduction(height);
     const double darea_leaf_dmass_live_ = darea_leaf_dmass_live(area_leaf_);
     const double fraction_allocation_growth_ = fraction_allocation_growth(height);
     const double area_leaf_dt = net_mass_production_dt_ * fraction_allocation_growth_ * darea_leaf_dmass_live_;
-      
+
     vars.set_rate(HEIGHT_INDEX, dheight_darea_leaf(area_leaf_) * area_leaf_dt);
     vars.set_rate(FECUNDITY_INDEX,
       fecundity_dt(net_mass_production_dt_, fraction_allocation_reproduction_));
@@ -206,7 +124,7 @@ void FF16_Strategy::compute_rates(const FF16_Environment& environment,
     const double mass_sapwood_ = mass_sapwood(area_sapwood_, height);
     vars.set_rate(state_index.at("mass_heartwood"), mass_heartwood_dt(mass_sapwood_));
 
-    if (collect_all_auxillary) {
+    if (collect_all_auxiliary) {
       vars.set_aux(aux_index.at("area_sapwood"), area_sapwood_);
     }
   } else {
@@ -220,6 +138,34 @@ void FF16_Strategy::compute_rates(const FF16_Environment& environment,
       mortality_dt(net_mass_production_dt_ / area_leaf_, vars.state(MORTALITY_INDEX)));
 }
 
+// [eqn 12] Gross annual CO2 assimilation
+double FF16_Strategy::assimilation(const FF16_Environment& environment,
+                                    double height,
+                                    double area_leaf) {
+
+
+  double A = 0.0;
+
+  // Define an anonymous function to integrate
+  // For given height in crown, take photosynthesis at depth multipled by 
+  //   amount of leaf at that depth
+  std::function<double(double)> f = [&](double z) -> double {
+    return assimilation_leaf(environment.get_environment_at_height(z)) * q(z, height);
+  };
+
+  // Integrate over crown depth using using Gauss-Kronrod quadrature.
+  // The number of points used in the integration is determined by the control parameter
+  // function_integration_rule. Rules defined in qk_rules.cpp
+  A = function_integrator.integrate(f, 0.0, height);
+
+  return area_leaf * A;
+}
+
+// Photosynthetic rate per leaf area
+// `x` is openness, ranging from 0 to 1.
+double FF16_Strategy::assimilation_leaf(double x) const {
+  return a_p1 * x / (x + a_p2);
+}
 
 // [eqn 13] Total maintenance respiration
 // NOTE: In contrast with Falster ref model, we do not normalise by a_y*a_bio.
@@ -284,20 +230,18 @@ double FF16_Strategy::net_mass_production_dt_A(double assimilation, double respi
 // One shot calculation of net_mass_production_dt
 // Used by establishment_probability() and compute_rates().
 double FF16_Strategy::net_mass_production_dt(const FF16_Environment& environment,
-                                double height, double area_leaf_,
-                                bool reuse_intervals) {
+                                double height, double area_leaf_) {
   const double mass_leaf_    = mass_leaf(area_leaf_);
   const double area_sapwood_ = area_sapwood(area_leaf_);
   const double mass_sapwood_ = mass_sapwood(area_sapwood_, height);
   const double area_bark_    = area_bark(area_leaf_);
   const double mass_bark_    = mass_bark(area_bark_, height);
   const double mass_root_    = mass_root(area_leaf_);
-  const double assimilation_ = assimilator.assimilate(control, environment, height,
-                                            area_leaf_, reuse_intervals);
+  const double assimilation_ = assimilation(environment, height, area_leaf_);
   const double respiration_ =
     respiration(mass_leaf_, mass_sapwood_, mass_bark_, mass_root_);
   const double turnover_ =
-    turnover(mass_leaf_, mass_sapwood_, mass_bark_, mass_root_);
+    turnover(mass_leaf_, mass_bark_, mass_sapwood_, mass_root_);
   return net_mass_production_dt_A(assimilation_, respiration_, turnover_);
 }
 
@@ -465,18 +409,27 @@ double FF16_Strategy::mortality_growth_dependent_dt(double productivity_area) co
 
 // [eqn 20] Survival of seedlings during establishment
 double FF16_Strategy::establishment_probability(const FF16_Environment& environment) {
+  
+  double decay_over_time = exp(-recruitment_decay * environment.time);
+  
   const double net_mass_production_dt_ =
     net_mass_production_dt(environment, height_0, area_leaf_0);
   if (net_mass_production_dt_ > 0) {
     const double tmp = a_d0 * area_leaf_0 / net_mass_production_dt_;
-    return 1.0 / (tmp * tmp + 1.0);
+    return 1.0 / (tmp * tmp + 1.0) * decay_over_time;
   } else {
     return 0.0;
   }
 }
 
-double FF16_Strategy::area_leaf_above(double z, double height) const {
-  return area_leaf(height) * Q(z, height);
+double FF16_Strategy::compute_competition(double z, double height) const {
+  return k_I * area_leaf(height) * Q(z, height);
+}
+
+// [eqn  9] Probability density of leaf area at height `z`
+double FF16_Strategy::q(double z, double height) const {
+  const double tmp = pow(z / height, eta);
+  return 2 * eta * (1 - tmp) * tmp / z;
 }
 
 // [eqn 10] ... Fraction of leaf area above height 'z' for an
@@ -487,6 +440,12 @@ double FF16_Strategy::Q(double z, double height) const {
   }
   const double tmp = 1.0-pow(z / height, eta);
   return tmp * tmp;
+}
+
+// (inverse of [eqn 10]; return the height above which fraction 'x' of
+// the leaf mass would be found).
+double FF16_Strategy::Qp(double x, double height) const { // x in [0,1], unchecked.
+  return pow(1 - sqrt(x), (1/eta)) * height;
 }
 
 // The aim is to find a plant height that gives the correct seed mass.
@@ -502,8 +461,8 @@ double FF16_Strategy::height_seed(void) const {
     h0 = height_given_mass_leaf(std::numeric_limits<double>::min()),
     h1 = height_given_mass_leaf(omega);
 
-  const double tol = control.plant_seed_tol;
-  const size_t max_iterations = control.plant_seed_iterations;
+  const double tol = control.offspring_production_tol;
+  const size_t max_iterations = control.offspring_production_iterations;
 
   auto target = [&] (double x) mutable -> double {
     return mass_live_given_height(x) - omega;
@@ -513,14 +472,23 @@ double FF16_Strategy::height_seed(void) const {
 }
 
 void FF16_Strategy::prepare_strategy() {
-  // Set up the integrator
-  control.initialize();
-  assimilator.initialize(a_p1, a_p2, eta);
+
+  // Set up the function_integrator
+  function_integrator = quadrature::QK(
+      // Gauss-Kronrod quadrature integeration rule (see qkrules)
+      control.function_integration_rule);
+
   // NOTE: this pre-computes something to save a very small amount of time
   eta_c = 1 - 2/(1 + eta) + 1/(1 + 2*eta);
   // NOTE: Also pre-computing, though less trivial
   height_0 = height_seed();
   area_leaf_0 = area_leaf(height_0);
+
+  if (is_variable_birth_rate) {
+    extrinsic_drivers.set_variable("birth_rate", birth_rate_x, birth_rate_y);
+  } else {
+    extrinsic_drivers.set_constant("birth_rate", birth_rate_y[0]);
+  }
 }
 
 FF16_Strategy::ptr make_strategy_ptr(FF16_Strategy s) {

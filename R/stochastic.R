@@ -3,33 +3,56 @@
 ## Generate a vector of arrival times.
 ##
 ## This will be slow, but fairly easy to get right.
-##' @importFrom stats rexp
-stochastic_arrival_times <- function(max_time, seed_rain_total, n=NULL) {
-  if (is.null(n)) {
-    n <- max_time * seed_rain_total
-  }
+##' @importFrom stats rexp rpois runif
+stochastic_arrival_times <- function(max_time, species, delta_t = 0.1, patch_area = 1) {
   ret <- numeric(0)
   t0 <- 0.0
-  while (t0 < max_time) {
-    t <- t0 + cumsum(rexp(n, seed_rain_total))
-    t0 <- t[[n]]
-    if (t0 > max_time) {
-      t <- t[t <= max_time]
-    }
-    ret <- c(ret, t)
+  t1 <- t0 + delta_t
+
+  # first calculate average arrival rate in this interval
+  if (species$is_variable_birth_rate) {
+    interpolated <- splinefun(species$birth_rate_x, species$birth_rate_y)
+  } else {
+    rate <- species$birth_rate_y
   }
-  ret
+
+  while (t0 < max_time) {
+    # first calculate average arrival rate in this interval
+    if (species$is_variable_birth_rate) {
+      x = seq(t0, t1, len = 10)
+      rate = mean(interpolated(x))
+    }
+
+    # now calculate actual number arriving, given the rate
+    n <- rpois(1,  delta_t * rate * patch_area)
+
+    # now generate arrival times in this interval, from a uniform distribution
+    t <- sort(runif(n, t0, t1))
+    ret <- c(ret, t)
+
+    # update for next iteration
+    t0 <- t1
+    t1 <- t1 + delta_t
+  }
+
+  ret[ret < max_time]
 }
 
+
 stochastic_schedule <- function(p) {
-  max_time  <- p$cohort_schedule_max_time
-  seed_rain <- p$seed_rain * p$patch_area
-  n_species <- length(seed_rain)
-  sched <- CohortSchedule(n_species)
+  patch_area <- p$patch_area
+  max_time  <- p$max_patch_lifetime
+  n_species <- length(p$strategies)
+
+  sched <- NodeSchedule(n_species)
   sched$max_time <- max_time
-  for (i in seq_along(seed_rain)) {
-    sched$set_times(stochastic_arrival_times(max_time, seed_rain[[i]]), i)
+
+  for (i in 1:n_species) {
+    species <- p$strategies[[i]]
+    times <- stochastic_arrival_times(max_time, species, patch_area)
+    sched$set_times(times, i)
   }
+
   sched
 }
 
@@ -42,16 +65,20 @@ stochastic_schedule <- function(p) {
 ##'
 ##' @title Run a stochastic patch, Collecting Output
 ##' @param p A \code{\link{FF16_Parameters}} object
+##' @param env Environment object
+##' @param ctrl Control object
 ##' @param random_schedule setting to TRUE causes algorithm to generate
-##' a random schedule based on seed rain and area.
+##' a random schedule based on offspring arrival and area.
 ##' @author Rich FitzJohn
 ##' @export
-run_stochastic_collect <- function(p, random_schedule=TRUE) {
+run_stochastic_collect <- function(p, env = make_environment(parameters = p), 
+                                   ctrl = scm_base_control(), 
+                                   random_schedule=TRUE) {
   collect <- function(obj) {
     obj$state
   }
   types <- extract_RcppR6_template_types(p, "Parameters")
-  obj <- do.call('StochasticPatchRunner', types)(p)
+  obj <- do.call('StochasticPatchRunner', types)(p, env, ctrl)
   if (random_schedule) {
     obj$schedule <- stochastic_schedule(p)
   }
@@ -80,13 +107,15 @@ run_stochastic_collect <- function(p, random_schedule=TRUE) {
     aperm(pad_list_to_array(lapply(species, "[[", i)), c(1, 3, 2)))
   attr(species, "is_alive") <- species_is_alive
 
-  patch_density <- obj$patch$environment$disturbance_regime$density(time)
+  # Not sure how this works in a stochastic patch, I wouldn't have thought
+  # meta-populations worked without a continuous gradient to integrate over.
+  # patch_density <- obj$patch$density(time)
 
   ret <- list(time=time,
               species=species,
               light_env=light_env,
-              seed_rain=obj$seed_rains,
-              patch_density=patch_density,
+              offspring_production=obj$offspring_production,
+              # patch_density=patch_density,
               p=p)
 
   ret

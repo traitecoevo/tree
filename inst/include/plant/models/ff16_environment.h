@@ -3,6 +3,8 @@
 #define PLANT_PLANT_FF16_ENVIRONMENT_H_
 
 #include <plant/environment.h>
+#include <plant/resource_spline.h>
+#include <plant/interpolator.h>
 
 using namespace Rcpp;
 
@@ -10,74 +12,27 @@ namespace plant {
 
 class FF16_Environment : public Environment {
 public:
-
-  FF16_Environment() {
-    // Define an anonymous function to pass got the environment generator
-    time = NA_REAL;
-    disturbance_regime = 0;
-    seed_rain = { 1.0, 1.0, 1.0 };
-    seed_rain_index = 0;
-    k_I = NA_REAL;
-    environment_generator = interpolator::AdaptiveInterpolator(1e-6, 1e-6, 17, 16);
-    environment_interpolator = environment_generator.construct(
-      [&](double height) {
-          return get_environment_at_height(height);
-      }, 0, 1); // these are update with init(x, y) when patch is created
-  };
-
-  FF16_Environment(double disturbance_mean_interval,
-                   std::vector<double> seed_rain_,
-                   double k_I_,
-                   Control control) {
-    k_I = k_I_;
+  // constructor for R interface - default settings can be modified
+  // except for soil_number_of_depths and light_availability_spline_rescale_usually
+  // which are only updated on construction
+  FF16_Environment(bool light_availability_spline_rescale_usually = false,
+                   int soil_number_of_depths = 0) {
     time = 0.0;
-    disturbance_regime = disturbance_mean_interval;
-    seed_rain = seed_rain_;
-    seed_rain_index = 0;
-    environment_generator = interpolator::AdaptiveInterpolator(
-      control.environment_light_tol,
-      control.environment_light_tol,
-      control.environment_light_nbase,
-      control.environment_light_max_depth
-    );
-    environment_interpolator = environment_generator.construct(
-      [&](double height) {
-          return get_environment_at_height(height);
-      }, 0, 1); // these are update with init(x, y) when patch is created
+    
+    light_availability = ResourceSpline();
+    light_availability.spline_rescale_usually = light_availability_spline_rescale_usually;
+
+    vars = Internals(soil_number_of_depths);
+    set_soil_water_state(std::vector<double>(soil_number_of_depths, 0.0));
   };
 
-  template <typename Function>
-  void compute_environment(Function f_compute_competition, double height_max) {
-    const double lower_bound = 0.0;
-    double upper_bound = height_max;
+  // A ResourceSpline used for storing light availbility (0-1)
+  ResourceSpline light_availability;
 
-    auto f_canopy_openness = [&] (double height) -> double {return exp(-k_I * f_compute_competition(height));};
-    environment_interpolator =
-      environment_generator.construct(f_canopy_openness, lower_bound, upper_bound);
-  }
-
-  template <typename Function>
-  void rescale_environment(Function f_compute_competition, double height_max) {
-    std::vector<double> h = environment_interpolator.get_x();
-    const double min = environment_interpolator.min(), // 0.0?
-      height_max_old = environment_interpolator.max();
-
-    auto f_canopy_openness = [&] (double height) -> double {return exp(-k_I * f_compute_competition(height));};
-    util::rescale(h.begin(), h.end(), min, height_max_old, min, height_max);
-    h.back() = height_max; // Avoid round-off error.
-
-    environment_interpolator.clear();
-    for (auto hi : h) {
-      environment_interpolator.add_point(hi, f_canopy_openness(hi));
-    }
-    environment_interpolator.initialise();
-  }
-
+  // Ability to prescribe a fixed value
+  // TODO: add setting to set other variables like water
   void set_fixed_environment(double value, double height_max) {
-    std::vector<double> x = {0, height_max/2.0, height_max};
-    std::vector<double> y = {value, value, value};
-    clear_environment();
-    environment_interpolator.init(x, y);
+    light_availability.set_fixed_value(value, height_max);
   }
 
   void set_fixed_environment(double value) {
@@ -85,21 +40,81 @@ public:
     set_fixed_environment(value, height_max);
   }
 
-  double canopy_openness(double height) const {
-    return get_environment_at_height(height);
+  double get_environment_at_height(double height) const {
+    return light_availability.get_value_at_height(height);
+  }
+
+  virtual void r_init_interpolators(const std::vector<double> &state)
+  {
+    light_availability.r_init_interpolators(state);
+  }
+
+  virtual void compute_rates(std::vector<double> const& resource_depletion) {
+    double infiltration;
+    double net_flux;
+
+    double drainage_multiplier = 0.1; // experimental only;
+
+    // treat each soil layer as a separate resource pool
+    for (size_t i = 0; i < vars.state_size; i++) {
+
+      // initial representation of drainage; to be improved
+      if(i == 0) {
+        infiltration = extrinsic_drivers.evaluate("rainfall", time);
+      } else {
+        infiltration = std::max(vars.state(i - 1), 0.0) * drainage_multiplier;
+      }
+
+      // ecologically, soil water shouldn't go below zero
+      // truncating at zero until such a model is implemented
+      double drainage_rate = std::max(vars.state(i), 0.0) * drainage_multiplier;
+
+      net_flux = infiltration - resource_depletion[i] - drainage_rate;
+      vars.set_rate(i, net_flux);
+    }
+
+  }
+
+  std::vector<double> get_soil_water_state() const {
+    return vars.states;
+  }
+
+  // TODO: I wonder if this needs a better name? See also environment.h
+  Internals r_internals() const { return vars; }
+
+  // R interface
+  void set_soil_water_state(std::vector<double> state) {
+    for (size_t i = 0; i < vars.state_size; i++) {
+      vars.set_state(i, state[i]);
+    }
+  }
+
+  // Pre-compute resources available in the environment, as a function of height
+  template <typename Function>
+  void compute_environment(Function f_compute_competition, double height_max, bool rescale) {
+
+    // Define an anonymous function to use in creation of light_availability spline
+    // Note: extinction coefficient was already applied in strategy, so
+    // f_compute_competition gives sum of projected leaf area (k L) across species. Just need to apply Beer's law, E = exp(- (k L))
+    auto f_light_availability = [&](double height) -> double
+    { return exp(-f_compute_competition(height)); };
+
+    // Calculates the light_availability spline, by fitting to the function
+    // `f_compute_competition` as a function of height
+    light_availability.compute_environment(f_light_availability, height_max, rescale);
+  }
+
+  virtual void clear_environment() {
+    light_availability.clear();
   }
 };
 
-inline Rcpp::NumericMatrix get_state(const FF16_Environment environment) {
-  using namespace Rcpp;
-  NumericMatrix xy = environment.environment_interpolator.r_get_xy();
-  Rcpp::CharacterVector colnames =
-    Rcpp::CharacterVector::create("height", "canopy_openness");
-  xy.attr("dimnames") = Rcpp::List::create(R_NilValue, colnames);
-  return xy;
+
+inline Rcpp::List get_state(const FF16_Environment environment, double time) {
+  auto ret = get_state(environment.extrinsic_drivers, time);
+  ret["light_availability"] = get_state(environment.light_availability);
+  return ret;
 }
-
-
 }
 
 #endif

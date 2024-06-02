@@ -1,26 +1,28 @@
 
 strategy_types <- get_list_of_strategy_types()
+environment_types <- get_list_of_environment_types()
 
 for (x in names(strategy_types)) {
+  e <- environment_types[[x]]
 
   context(sprintf("Environment-%s",x))
 
   test_that("Empty environment", {
-    p <- Parameters(x, paste0(x, "_Env"))()
-    e <- make_environment(x, p)
+    p <- Parameters(x, e)()
+    env <- make_environment(x)
 
     ## At this point, we should have full canopy openness, partly because
     ## the spline is just not constructed.
-    expect_equal(e$canopy_openness(0), 1.0)
-    expect_equal(e$canopy_openness(100), 1.0)
+    expect_equal(env$get_environment_at_height(0), 1.0)
+    expect_equal(env$get_environment_at_height(100), 1.0)
 
-    spline <- e$environment_interpolator
+    spline <- env$light_availability$spline
     expect_equal(spline$size, 33)
     expect_equal(spline$x, seq(0,1, length.out=33))
   })
 
   test_that("Manually set environment", {
-    e <- make_environment(x, Parameters(x, paste0(x, "_Env"))())
+    env <- make_environment(x)
     ## Now, set the light environment.
     hh <- seq(0, 10, length.out=101)
     light_env <- function(x) {
@@ -31,40 +33,48 @@ for (x in names(strategy_types)) {
     interplator$init(hh, ee)
 
     ## And set it
-    e$environment_interpolator <- interplator
+    env$light_availability$spline <- interplator
 
-    expect_identical(e$environment_interpolator$xy, interplator$xy)
+    expect_identical(env$light_availability$spline$xy, interplator$xy)
 
     hmid <- (hh[-1] + hh[-length(hh)])/2
-    expect_identical(sapply(hmid, e$environment_interpolator$eval), sapply(hmid, interplator$eval))
-  })
-
-  test_that("Disturbance related parameters", {
-    e <- make_environment(x, Parameters(x, paste0(x, "_Env"))())
-    expect_identical(e$time, 0.0)
-    expect_identical(e$patch_survival_conditional(e$time), 1.0)
-
-    disturbance <- Disturbance(30.0)
-    e$time <- 10
-    expect_identical(e$patch_survival_conditional(0), disturbance$pr_survival_conditional(e$time, 0))
-    expect_identical(e$patch_survival_conditional(2), disturbance$pr_survival_conditional(e$time, 2))
-
-    expect_is(e$disturbance_regime, "Disturbance")
-  })
-
-  test_that("Seed rain related parameters", {
-    e <- make_environment(x, Parameters(x, paste0(x, "_Env"))())
-    expect_error(e$seed_rain_dt, "Cannot get seed rain for empty environment")
-
-    z <- c(.1, .2)
-    e <- test_environment(x, 10, n_strategies=2, seed_rain=z)
-
-    expect_identical(e$seed_rain_dt, z[[1]])
-    e$set_seed_rain_index(1)
-    expect_identical(e$seed_rain_dt, z[[1]])
-    e$set_seed_rain_index(2)
-    expect_identical(e$seed_rain_dt, z[[2]])
-    expect_error(e$set_seed_rain_index(0), "Invalid value for index")
-    expect_error(e$set_seed_rain_index(3), "Index 3 out of bounds")
+    expect_identical(sapply(hmid, env$light_availability$spline$eval), sapply(hmid, interplator$eval))
   })
 }
+
+test_that("FF16 rainfall spline", {
+  
+  context("Rainfall-FF16")
+  
+  env <- make_environment("FF16w")
+  # get list of extrinsic drivers for the environment
+  expect_equal(env$extrinsic_drivers$get_names(), c("rainfall"))
+  
+  # test extrapolation on default spline of y = 1
+  expect_equal(env$extrinsic_drivers$evaluate("rainfall", 100), 1)
+  expect_equal(env$extrinsic_drivers$evaluate("rainfall", 10000000), 1)
+  
+  # test extrapolation on spline of y = 5.613432
+  env <- make_environment("FF16w", rainfall=5.613432)
+  expect_equal(env$extrinsic_drivers$evaluate("rainfall", 100), 5.613432)
+  expect_equal(env$extrinsic_drivers$evaluate("rainfall", 10000000), 5.613432)
+  
+  ## simple quadratic
+  x <- seq(-10, 10, 0.41)
+  quadratic_rain <- list(
+    x = x,
+    y = x^2
+  )
+  env <- make_environment("FF16w", rainfall=quadratic_rain) # overwrites previously created spline
+  
+  # interpolated points
+  expect_equal(env$extrinsic_drivers$evaluate("rainfall", 2), 4)
+  expect_equal(env$extrinsic_drivers$evaluate("rainfall", -2), 4)
+  expect_equal(env$extrinsic_drivers$evaluate("rainfall", 3), 9, tolerance=1e-7)
+  expect_equal(env$extrinsic_drivers$evaluate("rainfall", -3), 9, tolerance=1e-7)
+  expect_equal(env$extrinsic_drivers$evaluate("rainfall", 5.5), 30.25, tolerance=1e-7)
+  expect_equal(env$extrinsic_drivers$evaluate("rainfall", -5.5), 30.25, tolerance=1e-7)
+  
+  ## interpolated range of points
+  expect_equal(env$extrinsic_drivers$evaluate_range("rainfall", c(-7, 1, 7.8345)), c(49, 1, 61.37939025), tolerance=1e-6)
+})

@@ -33,8 +33,13 @@ test_that("Defaults", {
     rho    = 608,
     omega  = 3.8e-5,
     theta  = 1.0/4669,
+    k_I    = 0.5,
+    recruitment_decay = 0,
     control = Control(),
-    collect_all_auxillary = FALSE)
+    collect_all_auxiliary = FALSE,
+    birth_rate_x = numeric(0), # empty
+    birth_rate_y = c(1.0), 
+    is_variable_birth_rate = FALSE)
 
   keys <- sort(names(expected))
 
@@ -45,7 +50,7 @@ test_that("Defaults", {
   expect_identical(unclass(s)[keys], expected[keys])
 })
 
-test_that("FF16r collect_all_auxillary option", {
+test_that("FF16r collect_all_auxiliary option", {
 
   s <- FF16r_Strategy()
   p <- FF16r_Individual(s)
@@ -56,8 +61,8 @@ test_that("FF16r collect_all_auxillary option", {
     "net_mass_production_dt"
   ))
 
-  s <- FF16r_Strategy(collect_all_auxillary=TRUE)
-  expect_true(s$collect_all_auxillary)
+  s <- FF16r_Strategy(collect_all_auxiliary=TRUE)
+  expect_true(s$collect_all_auxiliary)
   p <- FF16r_Individual(s)
   expect_equal(p$aux_size, 3)
   expect_equal(length(p$internals$auxs), 3)
