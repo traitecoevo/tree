@@ -10,7 +10,7 @@ TF24_make_environment(
   light_availability_spline_max_depth = 16,
   light_availability_spline_rescale_usually = TRUE,
   soil_number_of_depths = 1,
-  soil_initial_state = 0.5,
+  soil_initial_state = rep(0.25, soil_number_of_depths),
   rainfall = 1,
   atm_vpd = 1,
   ca = 40,
