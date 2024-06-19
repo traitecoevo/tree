@@ -5534,6 +5534,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Patch___FF16__FF16_Env__get_area__get
+double Patch___FF16__FF16_Env__get_area__get(plant::RcppR6::RcppR6<plant::Patch<plant::FF16_Strategy,plant::FF16_Environment> > obj_);
+RcppExport SEXP _plant_Patch___FF16__FF16_Env__get_area__get(SEXP obj_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Patch<plant::FF16_Strategy,plant::FF16_Environment> > >::type obj_(obj_SEXP);
+    rcpp_result_gen = Rcpp::wrap(Patch___FF16__FF16_Env__get_area__get(obj_));
+    return rcpp_result_gen;
+END_RCPP
+}
 // Patch___FF16__FF16_Env__height_max__get
 double Patch___FF16__FF16_Env__height_max__get(plant::RcppR6::RcppR6<plant::Patch<plant::FF16_Strategy,plant::FF16_Environment> > obj_);
 RcppExport SEXP _plant_Patch___FF16__FF16_Env__height_max__get(SEXP obj_SEXP) {
@@ -5838,6 +5849,17 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Patch<plant::TF24_Strategy,plant::TF24_Environment> > >::type obj_(obj_SEXP);
     rcpp_result_gen = Rcpp::wrap(Patch___TF24__TF24_Env__size__get(obj_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Patch___TF24__TF24_Env__get_area__get
+double Patch___TF24__TF24_Env__get_area__get(plant::RcppR6::RcppR6<plant::Patch<plant::TF24_Strategy,plant::TF24_Environment> > obj_);
+RcppExport SEXP _plant_Patch___TF24__TF24_Env__get_area__get(SEXP obj_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Patch<plant::TF24_Strategy,plant::TF24_Environment> > >::type obj_(obj_SEXP);
+    rcpp_result_gen = Rcpp::wrap(Patch___TF24__TF24_Env__get_area__get(obj_));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -6148,6 +6170,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Patch___FF16w__FF16_Env__get_area__get
+double Patch___FF16w__FF16_Env__get_area__get(plant::RcppR6::RcppR6<plant::Patch<plant::FF16w_Strategy,plant::FF16_Environment> > obj_);
+RcppExport SEXP _plant_Patch___FF16w__FF16_Env__get_area__get(SEXP obj_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Patch<plant::FF16w_Strategy,plant::FF16_Environment> > >::type obj_(obj_SEXP);
+    rcpp_result_gen = Rcpp::wrap(Patch___FF16w__FF16_Env__get_area__get(obj_));
+    return rcpp_result_gen;
+END_RCPP
+}
 // Patch___FF16w__FF16_Env__height_max__get
 double Patch___FF16w__FF16_Env__height_max__get(plant::RcppR6::RcppR6<plant::Patch<plant::FF16w_Strategy,plant::FF16_Environment> > obj_);
 RcppExport SEXP _plant_Patch___FF16w__FF16_Env__height_max__get(SEXP obj_SEXP) {
@@ -6455,6 +6488,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Patch___FF16r__FF16_Env__get_area__get
+double Patch___FF16r__FF16_Env__get_area__get(plant::RcppR6::RcppR6<plant::Patch<plant::FF16r_Strategy,plant::FF16_Environment> > obj_);
+RcppExport SEXP _plant_Patch___FF16r__FF16_Env__get_area__get(SEXP obj_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Patch<plant::FF16r_Strategy,plant::FF16_Environment> > >::type obj_(obj_SEXP);
+    rcpp_result_gen = Rcpp::wrap(Patch___FF16r__FF16_Env__get_area__get(obj_));
+    return rcpp_result_gen;
+END_RCPP
+}
 // Patch___FF16r__FF16_Env__height_max__get
 double Patch___FF16r__FF16_Env__height_max__get(plant::RcppR6::RcppR6<plant::Patch<plant::FF16r_Strategy,plant::FF16_Environment> > obj_);
 RcppExport SEXP _plant_Patch___FF16r__FF16_Env__height_max__get(SEXP obj_SEXP) {
@@ -6759,6 +6803,17 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Patch<plant::K93_Strategy,plant::K93_Environment> > >::type obj_(obj_SEXP);
     rcpp_result_gen = Rcpp::wrap(Patch___K93__K93_Env__size__get(obj_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Patch___K93__K93_Env__get_area__get
+double Patch___K93__K93_Env__get_area__get(plant::RcppR6::RcppR6<plant::Patch<plant::K93_Strategy,plant::K93_Environment> > obj_);
+RcppExport SEXP _plant_Patch___K93__K93_Env__get_area__get(SEXP obj_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Patch<plant::K93_Strategy,plant::K93_Environment> > >::type obj_(obj_SEXP);
+    rcpp_result_gen = Rcpp::wrap(Patch___K93__K93_Env__get_area__get(obj_));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -9412,6 +9467,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// StochasticPatch___FF16__FF16_Env__get_area__get
+double StochasticPatch___FF16__FF16_Env__get_area__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::FF16_Strategy,plant::FF16_Environment> > obj_);
+RcppExport SEXP _plant_StochasticPatch___FF16__FF16_Env__get_area__get(SEXP obj_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::StochasticPatch<plant::FF16_Strategy,plant::FF16_Environment> > >::type obj_(obj_SEXP);
+    rcpp_result_gen = Rcpp::wrap(StochasticPatch___FF16__FF16_Env__get_area__get(obj_));
+    return rcpp_result_gen;
+END_RCPP
+}
 // StochasticPatch___FF16__FF16_Env__parameters__get
 plant::Parameters<plant::FF16_Strategy,plant::FF16_Environment> StochasticPatch___FF16__FF16_Env__parameters__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::FF16_Strategy,plant::FF16_Environment> > obj_);
 RcppExport SEXP _plant_StochasticPatch___FF16__FF16_Env__parameters__get(SEXP obj_SEXP) {
@@ -9646,6 +9712,17 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::StochasticPatch<plant::TF24_Strategy,plant::TF24_Environment> > >::type obj_(obj_SEXP);
     rcpp_result_gen = Rcpp::wrap(StochasticPatch___TF24__TF24_Env__height_max__get(obj_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// StochasticPatch___TF24__TF24_Env__get_area__get
+double StochasticPatch___TF24__TF24_Env__get_area__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::TF24_Strategy,plant::TF24_Environment> > obj_);
+RcppExport SEXP _plant_StochasticPatch___TF24__TF24_Env__get_area__get(SEXP obj_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::StochasticPatch<plant::TF24_Strategy,plant::TF24_Environment> > >::type obj_(obj_SEXP);
+    rcpp_result_gen = Rcpp::wrap(StochasticPatch___TF24__TF24_Env__get_area__get(obj_));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -9886,6 +9963,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// StochasticPatch___FF16w__FF16_Env__get_area__get
+double StochasticPatch___FF16w__FF16_Env__get_area__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::FF16w_Strategy,plant::FF16_Environment> > obj_);
+RcppExport SEXP _plant_StochasticPatch___FF16w__FF16_Env__get_area__get(SEXP obj_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::StochasticPatch<plant::FF16w_Strategy,plant::FF16_Environment> > >::type obj_(obj_SEXP);
+    rcpp_result_gen = Rcpp::wrap(StochasticPatch___FF16w__FF16_Env__get_area__get(obj_));
+    return rcpp_result_gen;
+END_RCPP
+}
 // StochasticPatch___FF16w__FF16_Env__parameters__get
 plant::Parameters<plant::FF16w_Strategy,plant::FF16_Environment> StochasticPatch___FF16w__FF16_Env__parameters__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::FF16w_Strategy,plant::FF16_Environment> > obj_);
 RcppExport SEXP _plant_StochasticPatch___FF16w__FF16_Env__parameters__get(SEXP obj_SEXP) {
@@ -10123,6 +10211,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// StochasticPatch___FF16r__FF16_Env__get_area__get
+double StochasticPatch___FF16r__FF16_Env__get_area__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::FF16r_Strategy,plant::FF16_Environment> > obj_);
+RcppExport SEXP _plant_StochasticPatch___FF16r__FF16_Env__get_area__get(SEXP obj_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::StochasticPatch<plant::FF16r_Strategy,plant::FF16_Environment> > >::type obj_(obj_SEXP);
+    rcpp_result_gen = Rcpp::wrap(StochasticPatch___FF16r__FF16_Env__get_area__get(obj_));
+    return rcpp_result_gen;
+END_RCPP
+}
 // StochasticPatch___FF16r__FF16_Env__parameters__get
 plant::Parameters<plant::FF16r_Strategy,plant::FF16_Environment> StochasticPatch___FF16r__FF16_Env__parameters__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::FF16r_Strategy,plant::FF16_Environment> > obj_);
 RcppExport SEXP _plant_StochasticPatch___FF16r__FF16_Env__parameters__get(SEXP obj_SEXP) {
@@ -10357,6 +10456,17 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::StochasticPatch<plant::K93_Strategy,plant::K93_Environment> > >::type obj_(obj_SEXP);
     rcpp_result_gen = Rcpp::wrap(StochasticPatch___K93__K93_Env__height_max__get(obj_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// StochasticPatch___K93__K93_Env__get_area__get
+double StochasticPatch___K93__K93_Env__get_area__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::K93_Strategy,plant::K93_Environment> > obj_);
+RcppExport SEXP _plant_StochasticPatch___K93__K93_Env__get_area__get(SEXP obj_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::StochasticPatch<plant::K93_Strategy,plant::K93_Environment> > >::type obj_(obj_SEXP);
+    rcpp_result_gen = Rcpp::wrap(StochasticPatch___K93__K93_Env__get_area__get(obj_));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -12633,6 +12743,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_Patch___FF16__FF16_Env__compute_competition", (DL_FUNC) &_plant_Patch___FF16__FF16_Env__compute_competition, 2},
     {"_plant_Patch___FF16__FF16_Env__time__get", (DL_FUNC) &_plant_Patch___FF16__FF16_Env__time__get, 1},
     {"_plant_Patch___FF16__FF16_Env__size__get", (DL_FUNC) &_plant_Patch___FF16__FF16_Env__size__get, 1},
+    {"_plant_Patch___FF16__FF16_Env__get_area__get", (DL_FUNC) &_plant_Patch___FF16__FF16_Env__get_area__get, 1},
     {"_plant_Patch___FF16__FF16_Env__height_max__get", (DL_FUNC) &_plant_Patch___FF16__FF16_Env__height_max__get, 1},
     {"_plant_Patch___FF16__FF16_Env__parameters__get", (DL_FUNC) &_plant_Patch___FF16__FF16_Env__parameters__get, 1},
     {"_plant_Patch___FF16__FF16_Env__environment__get", (DL_FUNC) &_plant_Patch___FF16__FF16_Env__environment__get, 1},
@@ -12660,6 +12771,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_Patch___TF24__TF24_Env__compute_competition", (DL_FUNC) &_plant_Patch___TF24__TF24_Env__compute_competition, 2},
     {"_plant_Patch___TF24__TF24_Env__time__get", (DL_FUNC) &_plant_Patch___TF24__TF24_Env__time__get, 1},
     {"_plant_Patch___TF24__TF24_Env__size__get", (DL_FUNC) &_plant_Patch___TF24__TF24_Env__size__get, 1},
+    {"_plant_Patch___TF24__TF24_Env__get_area__get", (DL_FUNC) &_plant_Patch___TF24__TF24_Env__get_area__get, 1},
     {"_plant_Patch___TF24__TF24_Env__height_max__get", (DL_FUNC) &_plant_Patch___TF24__TF24_Env__height_max__get, 1},
     {"_plant_Patch___TF24__TF24_Env__parameters__get", (DL_FUNC) &_plant_Patch___TF24__TF24_Env__parameters__get, 1},
     {"_plant_Patch___TF24__TF24_Env__environment__get", (DL_FUNC) &_plant_Patch___TF24__TF24_Env__environment__get, 1},
@@ -12687,6 +12799,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_Patch___FF16w__FF16_Env__compute_competition", (DL_FUNC) &_plant_Patch___FF16w__FF16_Env__compute_competition, 2},
     {"_plant_Patch___FF16w__FF16_Env__time__get", (DL_FUNC) &_plant_Patch___FF16w__FF16_Env__time__get, 1},
     {"_plant_Patch___FF16w__FF16_Env__size__get", (DL_FUNC) &_plant_Patch___FF16w__FF16_Env__size__get, 1},
+    {"_plant_Patch___FF16w__FF16_Env__get_area__get", (DL_FUNC) &_plant_Patch___FF16w__FF16_Env__get_area__get, 1},
     {"_plant_Patch___FF16w__FF16_Env__height_max__get", (DL_FUNC) &_plant_Patch___FF16w__FF16_Env__height_max__get, 1},
     {"_plant_Patch___FF16w__FF16_Env__parameters__get", (DL_FUNC) &_plant_Patch___FF16w__FF16_Env__parameters__get, 1},
     {"_plant_Patch___FF16w__FF16_Env__environment__get", (DL_FUNC) &_plant_Patch___FF16w__FF16_Env__environment__get, 1},
@@ -12714,6 +12827,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_Patch___FF16r__FF16_Env__compute_competition", (DL_FUNC) &_plant_Patch___FF16r__FF16_Env__compute_competition, 2},
     {"_plant_Patch___FF16r__FF16_Env__time__get", (DL_FUNC) &_plant_Patch___FF16r__FF16_Env__time__get, 1},
     {"_plant_Patch___FF16r__FF16_Env__size__get", (DL_FUNC) &_plant_Patch___FF16r__FF16_Env__size__get, 1},
+    {"_plant_Patch___FF16r__FF16_Env__get_area__get", (DL_FUNC) &_plant_Patch___FF16r__FF16_Env__get_area__get, 1},
     {"_plant_Patch___FF16r__FF16_Env__height_max__get", (DL_FUNC) &_plant_Patch___FF16r__FF16_Env__height_max__get, 1},
     {"_plant_Patch___FF16r__FF16_Env__parameters__get", (DL_FUNC) &_plant_Patch___FF16r__FF16_Env__parameters__get, 1},
     {"_plant_Patch___FF16r__FF16_Env__environment__get", (DL_FUNC) &_plant_Patch___FF16r__FF16_Env__environment__get, 1},
@@ -12741,6 +12855,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_Patch___K93__K93_Env__compute_competition", (DL_FUNC) &_plant_Patch___K93__K93_Env__compute_competition, 2},
     {"_plant_Patch___K93__K93_Env__time__get", (DL_FUNC) &_plant_Patch___K93__K93_Env__time__get, 1},
     {"_plant_Patch___K93__K93_Env__size__get", (DL_FUNC) &_plant_Patch___K93__K93_Env__size__get, 1},
+    {"_plant_Patch___K93__K93_Env__get_area__get", (DL_FUNC) &_plant_Patch___K93__K93_Env__get_area__get, 1},
     {"_plant_Patch___K93__K93_Env__height_max__get", (DL_FUNC) &_plant_Patch___K93__K93_Env__height_max__get, 1},
     {"_plant_Patch___K93__K93_Env__parameters__get", (DL_FUNC) &_plant_Patch___K93__K93_Env__parameters__get, 1},
     {"_plant_Patch___K93__K93_Env__environment__get", (DL_FUNC) &_plant_Patch___K93__K93_Env__environment__get, 1},
@@ -12980,6 +13095,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_StochasticPatch___FF16__FF16_Env__time__get", (DL_FUNC) &_plant_StochasticPatch___FF16__FF16_Env__time__get, 1},
     {"_plant_StochasticPatch___FF16__FF16_Env__size__get", (DL_FUNC) &_plant_StochasticPatch___FF16__FF16_Env__size__get, 1},
     {"_plant_StochasticPatch___FF16__FF16_Env__height_max__get", (DL_FUNC) &_plant_StochasticPatch___FF16__FF16_Env__height_max__get, 1},
+    {"_plant_StochasticPatch___FF16__FF16_Env__get_area__get", (DL_FUNC) &_plant_StochasticPatch___FF16__FF16_Env__get_area__get, 1},
     {"_plant_StochasticPatch___FF16__FF16_Env__parameters__get", (DL_FUNC) &_plant_StochasticPatch___FF16__FF16_Env__parameters__get, 1},
     {"_plant_StochasticPatch___FF16__FF16_Env__environment__get", (DL_FUNC) &_plant_StochasticPatch___FF16__FF16_Env__environment__get, 1},
     {"_plant_StochasticPatch___FF16__FF16_Env__species__get", (DL_FUNC) &_plant_StochasticPatch___FF16__FF16_Env__species__get, 1},
@@ -13001,6 +13117,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_StochasticPatch___TF24__TF24_Env__time__get", (DL_FUNC) &_plant_StochasticPatch___TF24__TF24_Env__time__get, 1},
     {"_plant_StochasticPatch___TF24__TF24_Env__size__get", (DL_FUNC) &_plant_StochasticPatch___TF24__TF24_Env__size__get, 1},
     {"_plant_StochasticPatch___TF24__TF24_Env__height_max__get", (DL_FUNC) &_plant_StochasticPatch___TF24__TF24_Env__height_max__get, 1},
+    {"_plant_StochasticPatch___TF24__TF24_Env__get_area__get", (DL_FUNC) &_plant_StochasticPatch___TF24__TF24_Env__get_area__get, 1},
     {"_plant_StochasticPatch___TF24__TF24_Env__parameters__get", (DL_FUNC) &_plant_StochasticPatch___TF24__TF24_Env__parameters__get, 1},
     {"_plant_StochasticPatch___TF24__TF24_Env__environment__get", (DL_FUNC) &_plant_StochasticPatch___TF24__TF24_Env__environment__get, 1},
     {"_plant_StochasticPatch___TF24__TF24_Env__species__get", (DL_FUNC) &_plant_StochasticPatch___TF24__TF24_Env__species__get, 1},
@@ -13022,6 +13139,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_StochasticPatch___FF16w__FF16_Env__time__get", (DL_FUNC) &_plant_StochasticPatch___FF16w__FF16_Env__time__get, 1},
     {"_plant_StochasticPatch___FF16w__FF16_Env__size__get", (DL_FUNC) &_plant_StochasticPatch___FF16w__FF16_Env__size__get, 1},
     {"_plant_StochasticPatch___FF16w__FF16_Env__height_max__get", (DL_FUNC) &_plant_StochasticPatch___FF16w__FF16_Env__height_max__get, 1},
+    {"_plant_StochasticPatch___FF16w__FF16_Env__get_area__get", (DL_FUNC) &_plant_StochasticPatch___FF16w__FF16_Env__get_area__get, 1},
     {"_plant_StochasticPatch___FF16w__FF16_Env__parameters__get", (DL_FUNC) &_plant_StochasticPatch___FF16w__FF16_Env__parameters__get, 1},
     {"_plant_StochasticPatch___FF16w__FF16_Env__environment__get", (DL_FUNC) &_plant_StochasticPatch___FF16w__FF16_Env__environment__get, 1},
     {"_plant_StochasticPatch___FF16w__FF16_Env__species__get", (DL_FUNC) &_plant_StochasticPatch___FF16w__FF16_Env__species__get, 1},
@@ -13043,6 +13161,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_StochasticPatch___FF16r__FF16_Env__time__get", (DL_FUNC) &_plant_StochasticPatch___FF16r__FF16_Env__time__get, 1},
     {"_plant_StochasticPatch___FF16r__FF16_Env__size__get", (DL_FUNC) &_plant_StochasticPatch___FF16r__FF16_Env__size__get, 1},
     {"_plant_StochasticPatch___FF16r__FF16_Env__height_max__get", (DL_FUNC) &_plant_StochasticPatch___FF16r__FF16_Env__height_max__get, 1},
+    {"_plant_StochasticPatch___FF16r__FF16_Env__get_area__get", (DL_FUNC) &_plant_StochasticPatch___FF16r__FF16_Env__get_area__get, 1},
     {"_plant_StochasticPatch___FF16r__FF16_Env__parameters__get", (DL_FUNC) &_plant_StochasticPatch___FF16r__FF16_Env__parameters__get, 1},
     {"_plant_StochasticPatch___FF16r__FF16_Env__environment__get", (DL_FUNC) &_plant_StochasticPatch___FF16r__FF16_Env__environment__get, 1},
     {"_plant_StochasticPatch___FF16r__FF16_Env__species__get", (DL_FUNC) &_plant_StochasticPatch___FF16r__FF16_Env__species__get, 1},
@@ -13064,6 +13183,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_StochasticPatch___K93__K93_Env__time__get", (DL_FUNC) &_plant_StochasticPatch___K93__K93_Env__time__get, 1},
     {"_plant_StochasticPatch___K93__K93_Env__size__get", (DL_FUNC) &_plant_StochasticPatch___K93__K93_Env__size__get, 1},
     {"_plant_StochasticPatch___K93__K93_Env__height_max__get", (DL_FUNC) &_plant_StochasticPatch___K93__K93_Env__height_max__get, 1},
+    {"_plant_StochasticPatch___K93__K93_Env__get_area__get", (DL_FUNC) &_plant_StochasticPatch___K93__K93_Env__get_area__get, 1},
     {"_plant_StochasticPatch___K93__K93_Env__parameters__get", (DL_FUNC) &_plant_StochasticPatch___K93__K93_Env__parameters__get, 1},
     {"_plant_StochasticPatch___K93__K93_Env__environment__get", (DL_FUNC) &_plant_StochasticPatch___K93__K93_Env__environment__get, 1},
     {"_plant_StochasticPatch___K93__K93_Env__species__get", (DL_FUNC) &_plant_StochasticPatch___K93__K93_Env__species__get, 1},

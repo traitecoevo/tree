@@ -75,7 +75,7 @@ SCM<T, E>::SCM(parameters_type p, environment_type e, Control c)
 
   parameters.validate();
   if (!util::identical(parameters.patch_area, 1.0)) {
-    util::stop("Patch area must be exactly 1 for the SCM");
+    util::warning("We recommened keeping patch_area = 1 for the SCM, as need to check units for all other sizes");
   }
 }
 

@@ -2246,6 +2246,11 @@ size_t Patch___FF16__FF16_Env__size__get(plant::RcppR6::RcppR6<plant::Patch<plan
 }
 
 // [[Rcpp::export]]
+double Patch___FF16__FF16_Env__get_area__get(plant::RcppR6::RcppR6<plant::Patch<plant::FF16_Strategy,plant::FF16_Environment> > obj_) {
+  return obj_->get_area();
+}
+
+// [[Rcpp::export]]
 double Patch___FF16__FF16_Env__height_max__get(plant::RcppR6::RcppR6<plant::Patch<plant::FF16_Strategy,plant::FF16_Environment> > obj_) {
   return obj_->height_max();
 }
@@ -2364,6 +2369,11 @@ double Patch___TF24__TF24_Env__time__get(plant::RcppR6::RcppR6<plant::Patch<plan
 // [[Rcpp::export]]
 size_t Patch___TF24__TF24_Env__size__get(plant::RcppR6::RcppR6<plant::Patch<plant::TF24_Strategy,plant::TF24_Environment> > obj_) {
   return obj_->size();
+}
+
+// [[Rcpp::export]]
+double Patch___TF24__TF24_Env__get_area__get(plant::RcppR6::RcppR6<plant::Patch<plant::TF24_Strategy,plant::TF24_Environment> > obj_) {
+  return obj_->get_area();
 }
 
 // [[Rcpp::export]]
@@ -2488,6 +2498,11 @@ size_t Patch___FF16w__FF16_Env__size__get(plant::RcppR6::RcppR6<plant::Patch<pla
 }
 
 // [[Rcpp::export]]
+double Patch___FF16w__FF16_Env__get_area__get(plant::RcppR6::RcppR6<plant::Patch<plant::FF16w_Strategy,plant::FF16_Environment> > obj_) {
+  return obj_->get_area();
+}
+
+// [[Rcpp::export]]
 double Patch___FF16w__FF16_Env__height_max__get(plant::RcppR6::RcppR6<plant::Patch<plant::FF16w_Strategy,plant::FF16_Environment> > obj_) {
   return obj_->height_max();
 }
@@ -2609,6 +2624,11 @@ size_t Patch___FF16r__FF16_Env__size__get(plant::RcppR6::RcppR6<plant::Patch<pla
 }
 
 // [[Rcpp::export]]
+double Patch___FF16r__FF16_Env__get_area__get(plant::RcppR6::RcppR6<plant::Patch<plant::FF16r_Strategy,plant::FF16_Environment> > obj_) {
+  return obj_->get_area();
+}
+
+// [[Rcpp::export]]
 double Patch___FF16r__FF16_Env__height_max__get(plant::RcppR6::RcppR6<plant::Patch<plant::FF16r_Strategy,plant::FF16_Environment> > obj_) {
   return obj_->height_max();
 }
@@ -2727,6 +2747,11 @@ double Patch___K93__K93_Env__time__get(plant::RcppR6::RcppR6<plant::Patch<plant:
 // [[Rcpp::export]]
 size_t Patch___K93__K93_Env__size__get(plant::RcppR6::RcppR6<plant::Patch<plant::K93_Strategy,plant::K93_Environment> > obj_) {
   return obj_->size();
+}
+
+// [[Rcpp::export]]
+double Patch___K93__K93_Env__get_area__get(plant::RcppR6::RcppR6<plant::Patch<plant::K93_Strategy,plant::K93_Environment> > obj_) {
+  return obj_->get_area();
 }
 
 // [[Rcpp::export]]
@@ -3825,6 +3850,11 @@ double StochasticPatch___FF16__FF16_Env__height_max__get(plant::RcppR6::RcppR6<p
 }
 
 // [[Rcpp::export]]
+double StochasticPatch___FF16__FF16_Env__get_area__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::FF16_Strategy,plant::FF16_Environment> > obj_) {
+  return obj_->get_area();
+}
+
+// [[Rcpp::export]]
 plant::Parameters<plant::FF16_Strategy,plant::FF16_Environment> StochasticPatch___FF16__FF16_Env__parameters__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::FF16_Strategy,plant::FF16_Environment> > obj_) {
   return obj_->r_parameters();
 }
@@ -3917,6 +3947,11 @@ size_t StochasticPatch___TF24__TF24_Env__size__get(plant::RcppR6::RcppR6<plant::
 // [[Rcpp::export]]
 double StochasticPatch___TF24__TF24_Env__height_max__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::TF24_Strategy,plant::TF24_Environment> > obj_) {
   return obj_->height_max();
+}
+
+// [[Rcpp::export]]
+double StochasticPatch___TF24__TF24_Env__get_area__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::TF24_Strategy,plant::TF24_Environment> > obj_) {
+  return obj_->get_area();
 }
 
 // [[Rcpp::export]]
@@ -4015,6 +4050,11 @@ double StochasticPatch___FF16w__FF16_Env__height_max__get(plant::RcppR6::RcppR6<
 }
 
 // [[Rcpp::export]]
+double StochasticPatch___FF16w__FF16_Env__get_area__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::FF16w_Strategy,plant::FF16_Environment> > obj_) {
+  return obj_->get_area();
+}
+
+// [[Rcpp::export]]
 plant::Parameters<plant::FF16w_Strategy,plant::FF16_Environment> StochasticPatch___FF16w__FF16_Env__parameters__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::FF16w_Strategy,plant::FF16_Environment> > obj_) {
   return obj_->r_parameters();
 }
@@ -4110,6 +4150,11 @@ double StochasticPatch___FF16r__FF16_Env__height_max__get(plant::RcppR6::RcppR6<
 }
 
 // [[Rcpp::export]]
+double StochasticPatch___FF16r__FF16_Env__get_area__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::FF16r_Strategy,plant::FF16_Environment> > obj_) {
+  return obj_->get_area();
+}
+
+// [[Rcpp::export]]
 plant::Parameters<plant::FF16r_Strategy,plant::FF16_Environment> StochasticPatch___FF16r__FF16_Env__parameters__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::FF16r_Strategy,plant::FF16_Environment> > obj_) {
   return obj_->r_parameters();
 }
@@ -4202,6 +4247,11 @@ size_t StochasticPatch___K93__K93_Env__size__get(plant::RcppR6::RcppR6<plant::St
 // [[Rcpp::export]]
 double StochasticPatch___K93__K93_Env__height_max__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::K93_Strategy,plant::K93_Environment> > obj_) {
   return obj_->height_max();
+}
+
+// [[Rcpp::export]]
+double StochasticPatch___K93__K93_Env__get_area__get(plant::RcppR6::RcppR6<plant::StochasticPatch<plant::K93_Strategy,plant::K93_Environment> > obj_) {
+  return obj_->get_area();
 }
 
 // [[Rcpp::export]]

@@ -1969,6 +1969,10 @@ Patch___FF16__FF16_Env__size__get <- function(obj_) {
     .Call('_plant_Patch___FF16__FF16_Env__size__get', PACKAGE = 'plant', obj_)
 }
 
+Patch___FF16__FF16_Env__get_area__get <- function(obj_) {
+    .Call('_plant_Patch___FF16__FF16_Env__get_area__get', PACKAGE = 'plant', obj_)
+}
+
 Patch___FF16__FF16_Env__height_max__get <- function(obj_) {
     .Call('_plant_Patch___FF16__FF16_Env__height_max__get', PACKAGE = 'plant', obj_)
 }
@@ -2075,6 +2079,10 @@ Patch___TF24__TF24_Env__time__get <- function(obj_) {
 
 Patch___TF24__TF24_Env__size__get <- function(obj_) {
     .Call('_plant_Patch___TF24__TF24_Env__size__get', PACKAGE = 'plant', obj_)
+}
+
+Patch___TF24__TF24_Env__get_area__get <- function(obj_) {
+    .Call('_plant_Patch___TF24__TF24_Env__get_area__get', PACKAGE = 'plant', obj_)
 }
 
 Patch___TF24__TF24_Env__height_max__get <- function(obj_) {
@@ -2185,6 +2193,10 @@ Patch___FF16w__FF16_Env__size__get <- function(obj_) {
     .Call('_plant_Patch___FF16w__FF16_Env__size__get', PACKAGE = 'plant', obj_)
 }
 
+Patch___FF16w__FF16_Env__get_area__get <- function(obj_) {
+    .Call('_plant_Patch___FF16w__FF16_Env__get_area__get', PACKAGE = 'plant', obj_)
+}
+
 Patch___FF16w__FF16_Env__height_max__get <- function(obj_) {
     .Call('_plant_Patch___FF16w__FF16_Env__height_max__get', PACKAGE = 'plant', obj_)
 }
@@ -2293,6 +2305,10 @@ Patch___FF16r__FF16_Env__size__get <- function(obj_) {
     .Call('_plant_Patch___FF16r__FF16_Env__size__get', PACKAGE = 'plant', obj_)
 }
 
+Patch___FF16r__FF16_Env__get_area__get <- function(obj_) {
+    .Call('_plant_Patch___FF16r__FF16_Env__get_area__get', PACKAGE = 'plant', obj_)
+}
+
 Patch___FF16r__FF16_Env__height_max__get <- function(obj_) {
     .Call('_plant_Patch___FF16r__FF16_Env__height_max__get', PACKAGE = 'plant', obj_)
 }
@@ -2399,6 +2415,10 @@ Patch___K93__K93_Env__time__get <- function(obj_) {
 
 Patch___K93__K93_Env__size__get <- function(obj_) {
     .Call('_plant_Patch___K93__K93_Env__size__get', PACKAGE = 'plant', obj_)
+}
+
+Patch___K93__K93_Env__get_area__get <- function(obj_) {
+    .Call('_plant_Patch___K93__K93_Env__get_area__get', PACKAGE = 'plant', obj_)
 }
 
 Patch___K93__K93_Env__height_max__get <- function(obj_) {
@@ -3357,6 +3377,10 @@ StochasticPatch___FF16__FF16_Env__height_max__get <- function(obj_) {
     .Call('_plant_StochasticPatch___FF16__FF16_Env__height_max__get', PACKAGE = 'plant', obj_)
 }
 
+StochasticPatch___FF16__FF16_Env__get_area__get <- function(obj_) {
+    .Call('_plant_StochasticPatch___FF16__FF16_Env__get_area__get', PACKAGE = 'plant', obj_)
+}
+
 StochasticPatch___FF16__FF16_Env__parameters__get <- function(obj_) {
     .Call('_plant_StochasticPatch___FF16__FF16_Env__parameters__get', PACKAGE = 'plant', obj_)
 }
@@ -3439,6 +3463,10 @@ StochasticPatch___TF24__TF24_Env__size__get <- function(obj_) {
 
 StochasticPatch___TF24__TF24_Env__height_max__get <- function(obj_) {
     .Call('_plant_StochasticPatch___TF24__TF24_Env__height_max__get', PACKAGE = 'plant', obj_)
+}
+
+StochasticPatch___TF24__TF24_Env__get_area__get <- function(obj_) {
+    .Call('_plant_StochasticPatch___TF24__TF24_Env__get_area__get', PACKAGE = 'plant', obj_)
 }
 
 StochasticPatch___TF24__TF24_Env__parameters__get <- function(obj_) {
@@ -3525,6 +3553,10 @@ StochasticPatch___FF16w__FF16_Env__height_max__get <- function(obj_) {
     .Call('_plant_StochasticPatch___FF16w__FF16_Env__height_max__get', PACKAGE = 'plant', obj_)
 }
 
+StochasticPatch___FF16w__FF16_Env__get_area__get <- function(obj_) {
+    .Call('_plant_StochasticPatch___FF16w__FF16_Env__get_area__get', PACKAGE = 'plant', obj_)
+}
+
 StochasticPatch___FF16w__FF16_Env__parameters__get <- function(obj_) {
     .Call('_plant_StochasticPatch___FF16w__FF16_Env__parameters__get', PACKAGE = 'plant', obj_)
 }
@@ -3609,6 +3641,10 @@ StochasticPatch___FF16r__FF16_Env__height_max__get <- function(obj_) {
     .Call('_plant_StochasticPatch___FF16r__FF16_Env__height_max__get', PACKAGE = 'plant', obj_)
 }
 
+StochasticPatch___FF16r__FF16_Env__get_area__get <- function(obj_) {
+    .Call('_plant_StochasticPatch___FF16r__FF16_Env__get_area__get', PACKAGE = 'plant', obj_)
+}
+
 StochasticPatch___FF16r__FF16_Env__parameters__get <- function(obj_) {
     .Call('_plant_StochasticPatch___FF16r__FF16_Env__parameters__get', PACKAGE = 'plant', obj_)
 }
@@ -3691,6 +3727,10 @@ StochasticPatch___K93__K93_Env__size__get <- function(obj_) {
 
 StochasticPatch___K93__K93_Env__height_max__get <- function(obj_) {
     .Call('_plant_StochasticPatch___K93__K93_Env__height_max__get', PACKAGE = 'plant', obj_)
+}
+
+StochasticPatch___K93__K93_Env__get_area__get <- function(obj_) {
+    .Call('_plant_StochasticPatch___K93__K93_Env__get_area__get', PACKAGE = 'plant', obj_)
 }
 
 StochasticPatch___K93__K93_Env__parameters__get <- function(obj_) {
