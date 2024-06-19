@@ -196,7 +196,7 @@ tidy_individual <- function(results) {
 integrate_over_size_distribution <- function(tidy_species_data) {
   
   tidy_species_data  %>%
-    dplyr::select(-node) %>% stats::na.omit() %>%
+    dplyr::select(-dplyr::any_of("node")) %>% stats::na.omit() %>%
     dplyr::filter(.data$step > 1) %>% 
     dplyr::group_by(.data$step, .data$time, .data$patch_density, .data$species) %>% 
     dplyr::reframe(

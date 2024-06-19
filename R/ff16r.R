@@ -4,7 +4,7 @@
 ##' @title Create a FF16r Plant or Node
 ##' @param s A \code{\link{FF16r_Strategy}} object
 ##' @export
-##' @rdname FF16r
+##' @rdname FF16r_Individual
 ##' @examples
 ##' pl <- FF16r_Individual()
 ##' pl$height
@@ -13,50 +13,17 @@ FF16r_Individual <- function(s=FF16r_Strategy()) {
 }
 
 ##' @export
-##' @rdname FF16r
+##' @rdname FF16_Parameters
 FF16r_Parameters <- function() {
   Parameters("FF16r","FF16_Env")()
 }
 
-## Helper:
 ##' @export
-##' @rdname FF16_Environment
-##' @param light_availability_spline_rescale_usually turns on environment rescaling (default = TRUE)
-FF16r_make_environment <- function(light_availability_spline_rescale_usually = TRUE) {
-  
-  FF16_make_environment(light_availability_spline_rescale_usually)
-}
+##' @rdname FF16_make_environment
+FF16r_make_environment <- FF16_make_environment
 
-
-##' This makes a pretend light environment over the plant height,
-##' slightly concave up, whatever.
-##' @title Create a test environment for FF16r startegy
-##' @param height top height of environment object
-##' @param n number of points
-##' @param light_env function for light environment in test object
-##' @param n_strategies number of strategies for test environment
-##' @rdname FF16r_test_environment
-##' @examples
-##' environment <- plant:::FF16r_test_environment(10)
-FF16r_test_environment <- function(height, n=101, light_env=NULL,
-                             n_strategies=1) {
-  hh <- seq(0, height, length.out=n)
-  if (is.null(light_env)) {
-    light_env <- function(x) {
-      exp(x/(height*2)) - 1 + (1 - (exp(.5) - 1))/2
-    }
-  }
-  ee <- light_env(hh)
-  interpolator <- Interpolator()
-  interpolator$init(hh, ee)
-
-  ret <- FF16r_make_environment()
-  ret$light_availability$spline <- interpolator
-  attr(ret, "light_env") <- light_env
-  ret
-}
-
-
+##' @rdname FF16_test_environment
+FF16r_test_environment <- FF16_test_environment
 
 ##' Hyperparameters for FF16r physiological model
 ##' @title Hyperparameters for FF16r physiological model
@@ -82,7 +49,6 @@ FF16r_test_environment <- function(height, n=101, light_env=NULL,
 ##' @param latitude degrees from equator (0-90), used in solar model [deg]
 ##' @importFrom stats coef nls
 ##' @export
-##' @rdname FF16r_hyperpar
 make_FF16r_hyperpar <- function(
                                 lma_0=0.1978791,
                                 B_kl1=0.4565855,
@@ -256,9 +222,6 @@ make_FF16r_hyperpar <- function(
 
 ##' Hyperparameter function for FF16r physiological model
 ##' @title Hyperparameter function for FF16r physiological model
-##' @param m A matrix of trait values, as returned by \code{trait_matrix}
-##' @param s A strategy object
-##' @param filter A flag indicating whether to filter columns. If TRUE, any numbers
-##' that are within eps of the default strategy are not replaced.
+##' @inheritParams FF16_hyperpar
 ##' @export
 FF16r_hyperpar <- make_FF16r_hyperpar()

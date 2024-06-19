@@ -25,7 +25,8 @@ run_plant_benchmarks <- function(strategy_types = list(FF16 = FF16_Strategy,
   }
 
   message("Running benchmarks via `run_plant_benchmarks`")
-  bench::press(strategy = names(strategy_types),
+  strategy <- names(strategy_types)
+  bench::press(strategy = strategy,
                {
                  bench::mark(
                    check = FALSE,
@@ -58,7 +59,8 @@ run_resource_consumption_benchmarks <- function(its = 10) {
   }
   
   message("Running resource consumption benchmarks`")
-  bench::press(soil_layers = c(1, 10, 50, 100),
+  soil_layers <- c(1, 10, 50, 100)
+  bench::press(soil_layers = soil_layers,
                {
                  bench::mark(
                    check = FALSE,

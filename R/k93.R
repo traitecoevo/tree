@@ -4,7 +4,7 @@
 ##' @title Create a K93 Individual or Node
 ##' @param s A \code{\link{K93_Strategy}} object
 ##' @export
-##' @rdname K93
+##' @rdname K93_Individual
 ##' @examples
 ##' pl <- K93_Individual()
 ##' pl$height
@@ -13,21 +13,13 @@ K93_Individual <- function(s=K93_Strategy()) {
 }
 
 ##' @export
-##' @rdname K93
+##' @rdname FF16_Parameters
 K93_Parameters <- function() {
   Parameters("K93","K93_Env")()
 }
 
-
-## Helper to create K93_environment object. Useful for running individuals
-##' create K93_environment object
-##' @param light_availability_spline_tol
-##' @param light_availability_spline_nbase
-##' @param light_availability_spline_max_depth
-##' @param light_availability_spline_rescale_usually
-##'
 ##' @export
-##' @rdname K93_make_environment
+##' @rdname FF16_make_environment
 K93_make_environment <- function(light_availability_spline_tol = 1e-4, 
                                  light_availability_spline_nbase = 17,
                                  light_availability_spline_max_depth = 16, 
@@ -47,29 +39,15 @@ K93_make_environment <- function(light_availability_spline_tol = 1e-4,
   return(e)
 }
 
-##' Construct a fixed environment for K93 strategy
-##'
-##' @param e Value of environment (default=1.0)
-##' @param height_max = 300.0 maximum possible height in environment
-##' @rdname K93_Environment
-##'
+##' @rdname FF16_fixed_environment
 ##' @export
-K93_fixed_environment <- function(e=1.0, height_max = 300.0) {
-  env <- K93_make_environment()
+K93_fixed_environment <- function(e=1.0, height_max = 300.0, ...) {
+  env <- K93_make_environment(...)
   env$set_fixed_environment(e, height_max)
   env
 }
 
-
-##' This makes a pretend light environment over the plant height,
-##' slightly concave up, whatever.
-##' @title Create a test environment for K93 startegy
-##' @param height top height of environment object
-##' @param n number of points
-##' @param light_env function for light environment in test object
-##' @param n_strategies number of strategies for test environment
-##' @export
-##' @rdname K93_test_environment
+##' @rdname FF16_test_environment
 ##' @examples
 ##' environment <- plant:::K93_test_environment(10)
 K93_test_environment <- function(height, n=101, light_env=NULL,
@@ -85,10 +63,6 @@ K93_test_environment <- function(height, n=101, light_env=NULL,
   ee <- light_env(hh)
   interpolator <- Interpolator()
   interpolator$init(hh, ee)
-
-  # parameters <- K93_Parameters()
-  # parameters$strategies <- rep(list(K93_Strategy()), n_strategies)
-  # 
 
   ret <- K93_make_environment()
   ret$light_availability$spline <- interpolator
@@ -108,7 +82,6 @@ K93_test_environment <- function(height, n=101, light_env=NULL,
 ##' @param eta Crown shape parameter
 ##' @param k_I Extinction coefficient used when estimating competitive effect
 ##' @export
-##' @rdname make_K93_hyperpar
 make_K93_hyperpar <- function(
         b_0 = 0.059,    # Growth intercept year-1
         b_1 = 0.012,    # Growth asymptote year-1.(ln cm)-1
@@ -150,10 +123,6 @@ make_K93_hyperpar <- function(
 
 ##' Hyperparameter function for K93 physiological model
 ##' @title Hyperparameter function for K93 physiological model
-##' @param m A matrix of trait values, as returned by \code{trait_matrix}
-##' @param s A strategy object
-##' @param filter A flag indicating whether to filter columns. If TRUE, any numbers
-##' that are within eps of the default strategy are not replaced.
-##' @rdname K93_hyperpar
+##' @inheritParams FF16_hyperpar
 ##' @export
 K93_hyperpar <- make_K93_hyperpar()
