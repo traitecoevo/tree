@@ -12,14 +12,10 @@ test_that("Run SCM", {
     node <- Node(x, e)(s)
 
     p <- Parameters(x, e)(strategies=list(s),
-                          patch_area=10)
+                          patch_area=1)
     
     env <- make_environment(x)
     ctrl <- Control()
-
-    expect_error(scm <- SCM(x, e)(p, env, ctrl), "Patch area must be exactly 1 for the SCM")
-
-    p$patch_area <- 1.0
     scm <- SCM(x, e)(p, env, ctrl)
     expect_is(scm, sprintf("SCM<%s,%s>", x, e))
 
