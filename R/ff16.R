@@ -1,8 +1,8 @@
-##' Create a FF16 Plant or Node
-##' @title Create a FF16 Plant or Node
+##' Create a FF16 Individual
+##' @title Create a FF16 Individual
 ##' @param s A \code{\link{FF16_Strategy}} object
 ##' @export
-##' @rdname FF16
+##' @rdname FF16_individual
 ##' @examples
 ##' pl <- FF16_Individual()
 ##' pl$height
@@ -10,21 +10,34 @@ FF16_Individual <- function(s=FF16_Strategy()) {
   Individual("FF16", "FF16_Env")(s)
 }
 
+##' @title Setup an a model system with default or specified parameters
+##'
+##' @description Setup an a model system with default or specified parameters. 
+##' This function enables you initialize a model system. Use the model name to start different models. 
+##' @param ... Arguments to be passed to the model constructor. These include
+##' 
+##'   *`patch_area`: Area of idnividfual patch. Only relevant for stochastic model. Default is 1.0m2.
+##'   *`max_patch_lifetime`: The maximum time in years we want to simulate
+##'   *`strategies`: A list of stratgies to simulate. The default is an empty list.
+##'   *`strategy_default`: Values for the default startegy. The default values are those specified in the C++ code for the model.
+##'   *`node_schedule_times_default`: Default vector of times at which to introduce nodes. The default is chosen to have close spacing at the start of the simulation.
+##'   *`node_schedule_times`: A list with each element containing the vector of times we want to introduce nodes for each strategy. The default is an empty list.
+##'   *`ode_times`: A vector of patch ages we want the ode solver to stop at
 ##' @export
-##' @rdname FF16
-FF16_Parameters <- function() {
-  Parameters("FF16","FF16_Env")()
+##' @rdname FF16_Parameters
+##' @examples
+##' p1 <- FF16_Parameters()
+##' p2 <- FF16_Parameters(max_patch_lifetime = 10.0, patch_area = 1.0, strategies = list(FF16_Strategy()), strategy_default = FF16_Strategy(), node_schedule_times_default = node_schedule_times_default(10.0), node_schedule_times = list(node_schedule_times_default(10.0)), ode_times = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+FF16_Parameters <- function(...) {
+  Parameters("FF16","FF16_Env")(...)
 }
 
-
-## Helper to create FF16_environment object. Useful for running individuals
-##' @title create FF16_environment object
-##' @param light_availability_spline_tol 
-##'
-##' @param light_availability_spline_nbase 
-##' @param light_availability_spline_max_depth 
-##' @param light_availability_spline_rescale_usually 
-##'
+## Helper functions to create an XXX_Environment object. Useful for running individuals
+##' @title create a model Environment object
+##' @param light_availability_spline_tol Error tolerance of adpative spline method. Deafult is 1e-4.
+##' @param light_availability_spline_nbase Parameter used in adaptive spline method. Default is 17.
+##' @param light_availability_spline_max_depth Parameter used in adaptive spline method. Default is 16.
+##' @inheritParams FF16_Environment
 ##' @export
 ##' @rdname FF16_make_environment
 FF16_make_environment <- function(light_availability_spline_tol = 1e-4, 
@@ -44,15 +57,16 @@ FF16_make_environment <- function(light_availability_spline_tol = 1e-4,
   return(e)
 }
 
-##' Construct a fixed environment for FF16 strategy
+##' Construct a fixed environment for a model
 ##'
 ##' @param e Value of environment (deafult  = 1.0)
-##' @param height_max = 150.0 maximum possible height in environment
-##' @rdname FF16_Environment
+##' @param height_max maximum possible height in environment
+##' @param ... Additional parameters to be passed to \code{XXXX_make_environment}, where XXXX referes to model name.
+##' @rdname FF16_fixed_environment
 ##'
 ##' @export
-FF16_fixed_environment <- function(e=1.0, height_max = 150.0) {
-  env <- FF16_make_environment()
+FF16_fixed_environment <- function(e=1.0, height_max = 150.0, ...) {
+  env <- FF16_make_environment(...)
   env$set_fixed_environment(e, height_max)
   env
 }
@@ -165,7 +179,7 @@ FF16_generate_stand_report <- function(results,
 ##' @param latitude degrees from equator (0-90), used in solar model [deg]
 ##' @importFrom stats coef nls
 ##' @export
-##' @rdname FF16_hyperpar
+##' @rdname make_FF16_hyperpar
 make_FF16_hyperpar <- function(
                                 lma_0=0.1978791,
                                 B_kl1=0.4565855,
@@ -349,5 +363,6 @@ make_FF16_hyperpar <- function(
 ##' @param s A strategy object
 ##' @param filter A flag indicating whether to filter columns. If TRUE, any numbers
 ##' that are within eps of the default strategy are not replaced.
+##' @rdname FF16_hyperpar
 ##' @export
 FF16_hyperpar <- make_FF16_hyperpar()

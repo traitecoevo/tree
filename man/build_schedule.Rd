@@ -23,7 +23,7 @@ output offspring produced is also available as an attribute
 \code{birth_rate}.
 }
 \description{
-Build an appropriately refined schedule.
+Build an appropriately refined schedule for node introduction.
 }
 \details{
 There are control options (within the \code{Parameters} object)

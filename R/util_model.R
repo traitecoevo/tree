@@ -81,7 +81,7 @@ expand_parameters <- function(trait_matrix, p, hyperpar=param_hyperpar(p), birth
   if(nrow(trait_matrix) != length(birth_rate_list)) {
     stop("Must provide exactly one birth rate input for each species")
   }
-  extra <- plant:::strategy_list(trait_matrix, p, hyperpar, birth_rate_list)
+  extra <- strategy_list(trait_matrix, p, hyperpar, birth_rate_list)
   n_extra <- length(extra)
 
   ret <- p <- validate(p) # Ensure times are set up correctly.
@@ -110,6 +110,7 @@ expand_parameters <- function(trait_matrix, p, hyperpar=param_hyperpar(p), birth
 }
 
 ##' @export
+##' @param ... Arguments to \code{\link{expand_parameters}}
 ##' @rdname expand_parameters
 mutant_parameters <- function(..., keep_existing_strategies = FALSE) {
   expand_parameters(..., keep_existing_strategies = keep_existing_strategies)

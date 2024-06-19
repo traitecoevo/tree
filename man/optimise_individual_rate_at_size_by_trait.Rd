@@ -18,13 +18,37 @@ optimise_individual_rate_at_size_by_trait(
   params = scm_base_parameters(type),
   env = make_environment(type),
   hyperpars = hyperpar(type),
-  set_state_by_ode = FALSE
+  set_state_directly = FALSE
 )
 
 optimise_individual_rate_at_height_by_trait(..., height = 1)
 }
 \arguments{
-\item{hyperpars}{}
+\item{type}{The type of model to use (e.g. "FF16"). Defaults to "FF16"}
+
+\item{bounds}{A vector giving the lower and upper bounds of the trait}
+
+\item{log_scale}{Should the trait be optimised on a log scale? Defaults to TRUE}
+
+\item{tol}{The tolerance for the optimisation}
+
+\item{size}{The size of the individual to optimise the rate at}
+
+\item{size_name}{The name of the size variable specified by \code{size}}
+
+\item{rate}{The name of the rate to optimise. Defaults to \code{size_name}}
+
+\item{params}{The parameters of the model}
+
+\item{env}{The environment of the model}
+
+\item{hyperpars}{The hyperparameter function of the model}
+
+\item{set_state_directly}{If TRUE, set the state directly to the size, otherwise grows the plant to that size. Defaults to FALSE}
+
+\item{...}{Additional parameters passed to \code{optimise_individual_rate_at_size_by_trait}}
+
+\item{height}{Heigh at which grow is optimsied. Defaults to 1}
 }
 \description{
 The function `optimise_individual_rate_at_height_by_trait` and `optimise_individual_rate_at_size_by_trait` solve for the maximum of

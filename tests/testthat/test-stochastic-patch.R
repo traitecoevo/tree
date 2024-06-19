@@ -42,8 +42,6 @@ test_that("non empty", {
     patch <- StochasticPatch(x, e)(p, env, ctrl)
     cmp <- Individual(x, e)(p$strategies[[1]])
     
-    patch
-
     expect_error(patch$introduce_new_node(0), "Invalid value")
     expect_error(patch$introduce_new_node(10), "out of bounds")
 

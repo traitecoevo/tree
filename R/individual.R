@@ -240,17 +240,17 @@ resource_compensation_point.Plant <- function(p, ...) {
 #' The function `optimise_individual_rate_at_height_by_trait` and `optimise_individual_rate_at_size_by_trait` solve for the maximum of
 #' some rate (e.g. growth rate) at a specified height within
 #' the interval of the bounds of a given trait
-#' @param type
-#' @param bounds
-#' @param log_scale
-#' @param tol
-#' @param size
-#' @param size_name
-#' @param rate
-#' @param params
-#' @param env
-#' @param hyperpars
-#'
+#' @param type The type of model to use (e.g. "FF16"). Defaults to "FF16"
+#' @param bounds A vector giving the lower and upper bounds of the trait
+#' @param log_scale Should the trait be optimised on a log scale? Defaults to TRUE
+#' @param tol The tolerance for the optimisation
+#' @param size  The size of the individual to optimise the rate at
+#' @param size_name The name of the size variable specified by \code{size}
+#' @param rate The name of the rate to optimise. Defaults to \code{size_name}
+#' @param params The parameters of the model
+#' @param env The environment of the model
+#' @param hyperpars The hyperparameter function of the model
+#' @param set_state_directly If TRUE, set the state directly to the size, otherwise grows the plant to that size. Defaults to FALSE
 #' @export
 #' @rdname optimise_individual_rate_at_size_by_trait
 #' @author Isaac Towers, Daniel Falster and Andrew O'Reilly-Nugent
@@ -332,6 +332,8 @@ optimise_individual_rate_at_size_by_trait <- function(
   return(ret)
 }
 
+##' @param height Heigh at which grow is optimsied. Defaults to 1
+##' @param ... Additional parameters passed to \code{optimise_individual_rate_at_size_by_trait}
 #' @export
 #' @rdname optimise_individual_rate_at_size_by_trait
 optimise_individual_rate_at_height_by_trait <- function(..., height = 1) {
@@ -350,13 +352,13 @@ solve_max_worker <- function(bounds, f, tol = 1e-3, outcome) {
     ##   NA/Inf replaced by maximum positive value
     ##
     ## which is probably the desired behaviour here.
-    out <- suppressWarnings(optimise(f, interval = bounds, maximum = TRUE, tol = tol))
+    out <- suppressWarnings(stats::optimise(f, interval = bounds, maximum = TRUE, tol = tol))
     # browser()
     ret <- out$maximum
     attr(ret, outcome) <- out$objective
   } else {
     ## This is not very well tested, and the tolerance is not useful:
-    out <- optim(rowMeans(bounds), f,
+    out <- stats::optim(rowMeans(bounds), f,
       method = "L-BFGS-B",
       lower = bounds[, "lower"], upper = bounds[, "upper"],
       control = list(fnscale = -1, factr = 1e10)

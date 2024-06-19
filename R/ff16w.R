@@ -17,11 +17,12 @@ FF16w_Parameters <- function() {
 }
 
 
-## Helper:
 ##' @export
-##' @rdname FF16_Environment
+##' @inheritParams FF16_Environment
 ##' @param soil_number_of_depths the number of soil layers
+##' @param soil_initial_state the initial state of the soil layers
 ##' @param rainfall constant function value for rainfall driver, y = rainfall
+##' @rdname FF16_make_environment
 FF16w_make_environment <- function(light_availability_spline_tol = 1e-4, 
                                    light_availability_spline_nbase = 17,
                                    light_availability_spline_max_depth = 16, 
@@ -70,7 +71,7 @@ FF16w_make_environment <- function(light_availability_spline_tol = 1e-4,
 ##'
 ##' @param e Value of environment (deafult  = 1.0)
 ##' @param height_max = 150.0 maximum possible height in environment
-##' @rdname FF16_Environment
+##' @rdname FF16_fixed_environment
 ##'
 ##' @export
 FF16w_fixed_environment <- function(e=1.0, height_max = 150.0) {
@@ -79,15 +80,7 @@ FF16w_fixed_environment <- function(e=1.0, height_max = 150.0) {
   env
 }
 
-
-##' This makes a pretend light environment over the plant height,
-##' slightly concave up, whatever.
-##' @title Create a test environment for FF16w startegy
-##' @param height top height of environment object
-##' @param n number of points
-##' @param light_env function for light environment in test object
-##' @param n_strategies number of strategies for test environment
-##' @rdname FF16w_test_environment
+##' @rdname FF16_test_environment
 ##' @examples
 ##' environment <- plant:::FF16w_test_environment(10)
 FF16w_test_environment <- function(height,

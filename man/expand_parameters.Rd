@@ -30,6 +30,8 @@ to standard function for this strategy type.}
 x. Birth rates can take the form of a scalar (constant) or a vector.
 In either case birth rates are set as \code{strategy$birth_rate_y}, however
 varying birth rates will also have \code{strategy$birth_rate_x} and}
+
+\item{...}{Arguments to \code{\link{expand_parameters}}}
 }
 \description{
 The functions expand_parameters and mutant_parameters convert trait values into parametr objects for the model. By default, expand_parameters adds an extra strategy to existing.

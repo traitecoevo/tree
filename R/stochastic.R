@@ -44,7 +44,7 @@ stochastic_schedule <- function(p) {
   max_time  <- p$max_patch_lifetime
   n_species <- length(p$strategies)
 
-  sched <- plant:::NodeSchedule(n_species)
+  sched <- NodeSchedule(n_species)
   sched$max_time <- max_time
 
   for (i in 1:n_species) {

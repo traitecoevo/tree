@@ -3,7 +3,7 @@
 ##' @title Create a TF24 Plant or Node
 ##' @param s A \code{\link{TF24_Strategy}} object
 ##' @export
-##' @rdname TF24
+##' @rdname TF24_Individual
 ##' @examples
 ##' pl <- TF24_Individual()
 ##' pl$height
@@ -12,21 +12,17 @@ TF24_Individual <- function(s=TF24_Strategy()) {
 }
 
 ##' @export
-##' @rdname TF24
-TF24_Parameters <- function() {
-  Parameters("TF24","TF24_Env")()
+##' @rdname FF16_Parameters
+##' @examples
+##' p1 <- TF24_Parameters()
+##' p2 <- TF24_Parameters(max_patch_lifetime = 10.0)
+TF24_Parameters <- function(...) {
+  Parameters("TF24","TF24_Env")(...)
 }
 
-## Helper to create TF24_environment object. Useful for running individuals
-##' @title create TF24_environment object
-##' @param light_availability_spline_tol 
-##'
-##' @param light_availability_spline_nbase 
-##' @param light_availability_spline_max_depth 
-##' @param light_availability_spline_rescale_usually 
-##'
+##' @inheritParams FF16_make_environment
 ##' @export
-##' @rdname TF24_make_environment
+##' @rdname FF16_make_environment
 TF24_make_environment <- function(light_availability_spline_tol = 1e-4, 
                                   light_availability_spline_nbase = 17,
                                   light_availability_spline_max_depth = 16, 
@@ -44,29 +40,16 @@ TF24_make_environment <- function(light_availability_spline_tol = 1e-4,
   return(e)
 }
 
-##' Construct a fixed environment for TF24 strategy
-##'
-##' @param e Value of environment (deafult  = 1.0)
-##' @param height_max = 150.0 maximum possible height in environment
-##' @rdname TF24_Environment
+##' @rdname FF16_fixed_environment
 ##'
 ##' @export
-TF24_fixed_environment <- function(e=1.0, height_max = 150.0) {
-  env <- TF24_make_environment()
+TF24_fixed_environment <- function(e=1.0, height_max = 150.0, ...) {
+  env <- TF24_make_environment(...)
   env$set_fixed_environment(e, height_max)
   env
 }
 
-
-##' This makes a pretend light environment over the plant height,
-##' slightly concave up, whatever.
-##' @title Create a test environment for TF24 startegy
-##' @param height top height of environment object
-##' @param n number of points
-##' @param light_env function for light environment in test object
-##' @param n_strategies number of strategies for test environment
-##' @export
-##' @rdname TF24_test_environment
+##' @rdname FF16_test_environment
 ##' @examples
 ##' environment <- plant:::TF24_test_environment(10)
 TF24_test_environment <- function(height, n=101, light_env=NULL,
@@ -166,7 +149,6 @@ TF24_generate_stand_report <- function(results,
 ##' @param latitude degrees from equator (0-90), used in solar model [deg]
 ##' @importFrom stats coef nls
 ##' @export
-##' @rdname TF24_hyperpar
 make_TF24_hyperpar <- function(
                                 lma_0=0.1978791,
                                 B_kl1=0.4565855,
@@ -346,9 +328,6 @@ make_TF24_hyperpar <- function(
 
 ##' Hyperparameter function for TF24 physiological model
 ##' @title Hyperparameter function for TF24 physiological model
-##' @param m A matrix of trait values, as returned by \code{trait_matrix}
-##' @param s A strategy object
-##' @param filter A flag indicating whether to filter columns. If TRUE, any numbers
-##' that are within eps of the default strategy are not replaced.
+##' @inheritParams FF16_hyperpar
 ##' @export
 TF24_hyperpar <- make_TF24_hyperpar()
