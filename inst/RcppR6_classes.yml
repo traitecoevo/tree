@@ -1,6 +1,25 @@
 Leaf:
   name_cpp: "plant::Leaf"
   constructor:
+    roxygen: |
+      Leaf model
+      @param vcmax_25 Maximum Carboxylation Rate (umol m^-2 s^-1)
+      @param c shape parameter of hydraulic vulnerability curve (unitless)
+      @param b sensitivity parameter of hydraulic vulnerability curve (MPa)
+      @param psi_crit critical psi stem (-MPa )
+      @param beta2 exponent for effect of hydraulic risk (unitless)
+      @param jmax_25  maximum rate of electron transport (umol m^-2 s^-1)
+      @param hk_s maximum hydraulic-dependent sapwood turnover rate yr ^ -1
+      @param a quantum yield of photosynthetic electron transport (mol mol^-1)
+      @param curv_fact_elec_trans curvature factor for the light response curve (unitless)
+      @param curv_fact_colim curvature factor for the colimited photosythnthesis equatiom
+      @param GSS_tol_abs tolereance parameter for golden section search
+      @param vulnerability_curve_ncontrol number of points for pre-calculating vulnerability curve
+      @param ci_abs_tol absolute tolerance value for root-solving ci
+      @param ci_niter maximum number of iterations for root-solving ci
+
+
+      @export
     args:
       - vcmax_25: double
       - c: double
