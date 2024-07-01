@@ -1,5 +1,5 @@
 ---
-title: "ff16w_documentation"
+title: "tf24w_documentation"
 output: html_document
 date: "2023-01-10"
 ---
@@ -8,13 +8,13 @@ date: "2023-01-10"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This is the documentation for the ff16w strategy
+This is the documentation for the tf24w strategy
 
 #Introduction
 
-ff16w is an implementation of the ff16 strategy including water dynamics. This includes an updated strategy object `ff16w`, a physiological stomatal optimisation sub-model which determines how plants assimilate carbon and transpire water dynamically in response to water availability, vapour pressure deficit, leaf temperature, in a trait-dependent manner, and a soil-water submodel which takes rainfall as an input and determines how much soil moisture is available to plants.
+tf24w is an implementation of the tf24 strategy including water dynamics. This includes an updated strategy object `tf24w`, a physiological stomatal optimisation sub-model which determines how plants assimilate carbon and transpire water dynamically in response to water availability, vapour pressure deficit, leaf temperature, in a trait-dependent manner, and a soil-water submodel which takes rainfall as an input and determines how much soil moisture is available to plants.
 
-We can compare the two strategy objects to first understand the new traits that have been introduced in `ff16w`
+We can compare the two strategy objects to first understand the new traits that have been introduced in `tf24w`
 
 ```{r}
 devtools::load_all()
@@ -23,8 +23,8 @@ library(tidyverse)
 
 
 ```{r}
-s <- FF16_Strategy()
-sw <- FF16w_Strategy()
+s <- tf24_Strategy()
+sw <- tf24w_Strategy()
 
 names(s)
 names(sw)
@@ -39,11 +39,11 @@ There are 9 new traits thus far:
 -b: Sensitivity parameter for the hydraulic vulnerability curve (-MPa)
 -psi_crit: $\psi_l$ at which 95% of conductivity is lost. Maximum water potential. (-MPa)
 
-For the most part, these traits, in combination with traits from `ff16`, determine how plant assimilate carbon and tranpsire water via the physiological `Leaf` submodel. We can start by exploring the theory behind how the `Leaf` submodel works, found in `leaf_model.cpp`. 
+For the most part, these traits, in combination with traits from `tf24`, determine how plant assimilate carbon and tranpsire water via the physiological `Leaf` submodel. We can start by exploring the theory behind how the `Leaf` submodel works, found in `leaf_model.cpp`. 
 
 #Profitmax
 
-Plants are known to vary the aperture of their stomata, which control the rate of conductance of $H_2O$ for $CO_2$, in response to environmental stimuli including the amount of available soil moisture. But how do plants determine the optimum rate of exchange? Multiple theoretical frameworks exist to address this question, but currently `ff16w` employs the `profitmax` model. The profitmax models states that the optimum stomatal conductance is the point at which profits, $P~(\mu mol~m^{-2}~s^{-1})$, is maximimised.
+Plants are known to vary the aperture of their stomata, which control the rate of conductance of $H_2O$ for $CO_2$, in response to environmental stimuli including the amount of available soil moisture. But how do plants determine the optimum rate of exchange? Multiple theoretical frameworks exist to address this question, but currently `tf24w` employs the `profitmax` model. The profitmax models states that the optimum stomatal conductance is the point at which profits, $P~(\mu mol~m^{-2}~s^{-1})$, is maximimised.
 
 $P (\mu mol~m^{-2}~s^{-1})$ is the difference between photosynthetic revenue, $A~(\mu mol~m^{-2}~s^{-1})$ and the costs,$C~(\mu mol~m^{-2}~s^{-1})$ required to maintain the transpirational pathway which supplies water for transpiration through the stomates: 
 
@@ -101,7 +101,7 @@ We can view the functional form of $A_c$ and $A_j$ a function of $C_i$ below.
 
 First, we need to initialise a leaf with some traits and some environmental information. We can extract them from the strategy object. Remember, we only need to initalise the leaf object with traits which are related to leaf physiological sub-model, rather than the whole plant as would be required for growing an `Individual` or a `patch`.
 
-The `Leaf` function creates a `Leaf` object, which contains most of the internal functions which are used when calculating the photosynthetic assimilation and water use of a unit of leaf area when using `ff16w`. We initialise the `Leaf` object with a set of traits.
+The `Leaf` function creates a `Leaf` object, which contains most of the internal functions which are used when calculating the photosynthetic assimilation and water use of a unit of leaf area when using `tf24w`. We initialise the `Leaf` object with a set of traits.
 
 ```{r}
 leaf <- Leaf(vcmax= sw$vcmax_25, b = sw$b, c = sw$c, psi_crit = sw$psi_crit, epsilon_leaf = sw$epsilon_leaf, jmax_25 = sw$jmax_25, hk_s = sw$hk_s, a = sw$a, curv_fact_elec_trans = sw$curv_fact_elec_trans, curv_fact_colim = sw$curv_fact_colim)
@@ -152,7 +152,7 @@ The A_net function also includes a carbon deduction associated with dark respira
 
 #Cost
 
-In order for plants to photosynthesise, plants must move from water from the soil to the canopy via the xylem. To do this, the downstream water potential must be lower (i.e. more negative) than the soil. In `profitmax`, the hydraulic cost incurred by plants is associated with the fact that as the xylem water potential increases, the hydraulic conductance $k_{l,max}~(\mu mol~m^{-2}~s^{-1}~MPa^{-1})$ of the xylem pathway declines, which is assumed to be caused by an increased risk of embolism in the xylem. For simplicity, in `ff16w`, we currently represent the xylem pathway as a single element representing the roots, stem and leaves. We acknowledge that in reality these elements would each have seperate hydraulic conductances. The decline in hydraulic conductance with increasing $\psi_l$ follows the hydraulic vulnerability curve:
+In order for plants to photosynthesise, plants must move from water from the soil to the canopy via the xylem. To do this, the downstream water potential must be lower (i.e. more negative) than the soil. In `profitmax`, the hydraulic cost incurred by plants is associated with the fact that as the xylem water potential increases, the hydraulic conductance $k_{l,max}~(\mu mol~m^{-2}~s^{-1}~MPa^{-1})$ of the xylem pathway declines, which is assumed to be caused by an increased risk of embolism in the xylem. For simplicity, in `tf24w`, we currently represent the xylem pathway as a single element representing the roots, stem and leaves. We acknowledge that in reality these elements would each have seperate hydraulic conductances. The decline in hydraulic conductance with increasing $\psi_l$ follows the hydraulic vulnerability curve:
 
 \begin{equation}
 k_l = k_{l,max}e^{-{(\frac{\psi_l}{b})}^c}.
@@ -185,7 +185,7 @@ $k_{l,max}$ is the maximum hydraulic conductance achievable by the plant at $\ps
 $$k_{l,max} = \frac{K_s\theta}{h\eta_c},$$
 \end{equation}
 
-where $\theta~(m^2~sapwood~m^{-2}~leaf~area)$ is the huber value (described in `ff16`), $h$ is the height of the plant and $eta_c~(unitless)[0,1]$ (described in `ff16`) is the average relative position of leaves in the canopy. Input traits required to parameterise these equations beyond those required in `ff16` are therefore: $K_s$, $\theta$ and $c$, with the remaining traits being handled by the `ff16w` hyperparameterisation function. $h$ is the height of the plant, and is therefore resolved dynamically when running `plant`
+where $\theta~(m^2~sapwood~m^{-2}~leaf~area)$ is the huber value (described in `tf24`), $h$ is the height of the plant and $eta_c~(unitless)[0,1]$ (described in `tf24`) is the average relative position of leaves in the canopy. Input traits required to parameterise these equations beyond those required in `tf24` are therefore: $K_s$, $\theta$ and $c$, with the remaining traits being handled by the `tf24w` hyperparameterisation function. $h$ is the height of the plant, and is therefore resolved dynamically when running `plant`
 
 The total volume of water transpiring through a given unit area of leaf is given by the following equation:
 
@@ -260,7 +260,7 @@ data %>%
   geom_vline(xintercept = 2.05, linetype = "dashed")
 ```
 
-That's a pretty complicated way to do it though. We can just automatically calculated these values using a given profit funciton. For example, the in-built profit funciton in `ff16w` is the `profit_psi_stem_TF`.
+That's a pretty complicated way to do it though. We can just automatically calculated these values using a given profit funciton. For example, the in-built profit funciton in `tf24w` is the `profit_psi_stem_TF`.
 
 ```{r}
 tibble(psi_stem = seq(1, 4, length.out = 100)) %>%
@@ -281,9 +281,9 @@ data %>%
 
 Recall that the goal of the leaf physiology sub-model is to calculate the $CO_2$ assimilation and water use of a given unit of leaf area given the presiding environmental conditions and plant state. In order to do this, then, a numerical method is required to find the $\psi_l$ which maximises $P$. This also allows $E$ to be calculated, which is used in the soil hydrology sub-model (discussed elsewhere).
 
-The preferred method for numerical optimisation at the time of writing for `ff16` is the Golden Section Search algorthim. This algorithm finds local maxima or minima by successively narrowing the position of two initial boundary values until the distance of movement is below a defined tolerance values. As above, the x-values of the method is $\psi_l$, and the two initial boundary values in this case are $\psi_s$ and $psi_{crit}$; $psi_l$ cannot be less negative than $psi_s$ and is assumed to not surpass $psi_crit$. 
+The preferred method for numerical optimisation at the time of writing for `tf24` is the Golden Section Search algorthim. This algorithm finds local maxima or minima by successively narrowing the position of two initial boundary values until the distance of movement is below a defined tolerance values. As above, the x-values of the method is $\psi_l$, and the two initial boundary values in this case are $\psi_s$ and $psi_{crit}$; $psi_l$ cannot be less negative than $psi_s$ and is assumed to not surpass $psi_crit$. 
 
-A manual demonstration is shown below, and then the method implemented in `ff16w`
+A manual demonstration is shown below, and then the method implemented in `tf24w`
 
 ```{r}
 #golden ratio
@@ -327,7 +327,7 @@ while (abs(bound_b - bound_a) > delta_crit) {
     transpiration = leaf$transpiration_
 ```
 
-`ff16w` implementation.
+`tf24w` implementation.
 
 ```{r}
 leaf$optimise_psi_stem_TF()
