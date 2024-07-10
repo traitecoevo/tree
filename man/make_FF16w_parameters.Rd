@@ -28,8 +28,6 @@ make_FF16w_parameters(
   k_I = p0$strategy_default$k_I,
   vcmax_25 = p0$strategy_default$vcmax_25,
   K_s = p0$strategy_default$K_s,
-  beta1 = p0$strategy_default$beta1,
-  beta2 = p0$strategy_default$beta2,
   jmax_25 = p0$strategy_default$jmax_25,
   a = p0$strategy_default$a,
   curv_fact_elec_trans = p0$strategy_default$curv_fact_elec_trans,
@@ -87,10 +85,6 @@ make_FF16w_parameters(
 \item{vcmax_25}{}
 
 \item{K_s}{}
-
-\item{beta1}{}
-
-\item{beta2}{}
 
 \item{jmax_25}{}
 

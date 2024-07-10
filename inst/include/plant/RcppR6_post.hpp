@@ -371,7 +371,6 @@ template <> inline SEXP wrap(const plant::Control& x) {
   ret["equilibrium_solver_logN"] = Rcpp::wrap(x.equilibrium_solver_logN);
   ret["equilibrium_solver_try_keep"] = Rcpp::wrap(x.equilibrium_solver_try_keep);
   ret["save_RK45_cache"] = Rcpp::wrap(x.save_RK45_cache);
-  ret["newton_tol_abs"] = Rcpp::wrap(x.newton_tol_abs);
   ret["GSS_tol_abs"] = Rcpp::wrap(x.GSS_tol_abs);
   ret["vulnerability_curve_ncontrol"] = Rcpp::wrap(x.vulnerability_curve_ncontrol);
   ret["ci_abs_tol"] = Rcpp::wrap(x.ci_abs_tol);
@@ -448,8 +447,6 @@ template <> inline plant::Control as(SEXP x) {
   ret.equilibrium_solver_try_keep = Rcpp::as<bool >(xl["equilibrium_solver_try_keep"]);
   // ret.save_RK45_cache = Rcpp::as<decltype(retsave_RK45_cache) >(xl["save_RK45_cache"]);
   ret.save_RK45_cache = Rcpp::as<bool >(xl["save_RK45_cache"]);
-  // ret.newton_tol_abs = Rcpp::as<decltype(retnewton_tol_abs) >(xl["newton_tol_abs"]);
-  ret.newton_tol_abs = Rcpp::as<double >(xl["newton_tol_abs"]);
   // ret.GSS_tol_abs = Rcpp::as<decltype(retGSS_tol_abs) >(xl["GSS_tol_abs"]);
   ret.GSS_tol_abs = Rcpp::as<double >(xl["GSS_tol_abs"]);
   // ret.vulnerability_curve_ncontrol = Rcpp::as<decltype(retvulnerability_curve_ncontrol) >(xl["vulnerability_curve_ncontrol"]);
@@ -1336,8 +1333,6 @@ template <> inline SEXP wrap(const plant::FF16w_Strategy& x) {
   ret["hk_s"] = Rcpp::wrap(x.hk_s);
   ret["newton_tol_abs"] = Rcpp::wrap(x.newton_tol_abs);
   ret["GSS_tol_abs"] = Rcpp::wrap(x.GSS_tol_abs);
-  ret["beta1"] = Rcpp::wrap(x.beta1);
-  ret["beta2"] = Rcpp::wrap(x.beta2);
   ret["jmax_25"] = Rcpp::wrap(x.jmax_25);
   ret["a"] = Rcpp::wrap(x.a);
   ret["curv_fact_elec_trans"] = Rcpp::wrap(x.curv_fact_elec_trans);
@@ -1446,10 +1441,6 @@ template <> inline plant::FF16w_Strategy as(SEXP x) {
   ret.newton_tol_abs = Rcpp::as<double >(xl["newton_tol_abs"]);
   // ret.GSS_tol_abs = Rcpp::as<decltype(retGSS_tol_abs) >(xl["GSS_tol_abs"]);
   ret.GSS_tol_abs = Rcpp::as<double >(xl["GSS_tol_abs"]);
-  // ret.beta1 = Rcpp::as<decltype(retbeta1) >(xl["beta1"]);
-  ret.beta1 = Rcpp::as<double >(xl["beta1"]);
-  // ret.beta2 = Rcpp::as<decltype(retbeta2) >(xl["beta2"]);
-  ret.beta2 = Rcpp::as<double >(xl["beta2"]);
   // ret.jmax_25 = Rcpp::as<decltype(retjmax_25) >(xl["jmax_25"]);
   ret.jmax_25 = Rcpp::as<double >(xl["jmax_25"]);
   // ret.a = Rcpp::as<decltype(reta) >(xl["a"]);

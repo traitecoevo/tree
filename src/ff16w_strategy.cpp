@@ -53,7 +53,7 @@ double FF16w_Strategy::net_mass_production_dt(const FF16_Environment &environmen
   const double average_radiation = k_I * average_light_environment * environment.PPFD;
     // calculate psi_soil (-MPa)
   const double psi_soil = environment.get_psi_soil() / 1000000;
-
+  
   // find leaf specific max hydraulic conductance
   // K_s: max hydraulic conductivity (kg m^-2 s^-1 MPa^-1),
   // theta: huber value
@@ -150,12 +150,14 @@ void FF16w_Strategy::compute_rates(const FF16_Environment &environment,
   if (net_mass_production_dt_ > 0) {
     const double fraction_allocation_reproduction_ =
         fraction_allocation_reproduction(height);
+
     const double darea_leaf_dmass_live_ = darea_leaf_dmass_live(area_leaf_);
     const double fraction_allocation_growth_ =
         fraction_allocation_growth(height);
     const double area_leaf_dt = net_mass_production_dt_ *
                                 fraction_allocation_growth_ *
                                 darea_leaf_dmass_live_;
+
 
   vars.set_aux(aux_index.at("darea_leaf_dmass_live_"), darea_leaf_dmass_live_);
 
@@ -206,7 +208,7 @@ void FF16w_Strategy::prepare_strategy() {
   } else {
     extrinsic_drivers.set_constant("birth_rate", birth_rate_y[0]);
   }
-  leaf = Leaf(vcmax_25,  c,  b, psi_crit, jmax_25, hk_s, a, curv_fact_elec_trans,curv_fact_colim, control.newton_tol_abs, control.GSS_tol_abs,
+  leaf = Leaf(vcmax_25,  c,  b, psi_crit, jmax_25, hk_s, a, curv_fact_elec_trans,curv_fact_colim, control.GSS_tol_abs,
            control.vulnerability_curve_ncontrol,
            control.ci_abs_tol,
            control.ci_niter);

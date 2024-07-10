@@ -24,7 +24,7 @@ Leaf::Leaf()
 
 Leaf::Leaf(double vcmax_25, double c, double b,
            double psi_crit, // derived from b and c,
-           double jmax_25, double hk_s,
+          double jmax_25, double hk_s,
            double a, double curv_fact_elec_trans, double curv_fact_colim, 
            double GSS_tol_abs,
            double vulnerability_curve_ncontrol,
@@ -48,8 +48,7 @@ Leaf::Leaf(double vcmax_25, double c, double b,
       setup_clean_leaf();
 }
 
-
-//set various states and physiology parameters obtained from ff16w to NA to clean leaf object
+// set various states and physiology parameters obtained from TF24 to NA to clean leaf object
 void Leaf::setup_clean_leaf() {
   ci_ = NA_REAL; // Pa
   stom_cond_CO2_= NA_REAL; //mol Co2 m^-2 s^-1 
@@ -240,7 +239,7 @@ double Leaf::assim_colimited(double ci_) {
 // returns difference between co-limited assimilation and stom_cond_CO2, to be minimised (umol m^-2 s^-1)
 double Leaf::assim_minus_stom_cond_CO2(double x, double psi_stem) {
 
-  double assim_colimited_x_ = assim_colimited(x) + R_d_;
+  double assim_colimited_x_ = assim_colimited(x);
 
   double stom_cond_CO2_x_ = stom_cond_CO2(psi_stem);
   return assim_colimited_x_ * umol_to_mol -

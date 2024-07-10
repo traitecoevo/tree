@@ -38,7 +38,7 @@ virtual double net_mass_production_dt(const FF16_Environment &environment,
 // names of auxillary variables
 virtual std::vector<std::string> aux_names() {
   std::vector<std::string> ret(
-      {"competition_effect", "net_mass_production_dt", "opt_psi_stem_","opt_ci_","profit_","assim_colimited_","hydraulic_cost_", "ci_", "stom_cond_CO2_", "transpiration_", "assimilation_per_area","darea_leaf_dmass_live_", "assimilation","respiration_", "turnover_"});
+      {"competition_effect", "net_mass_production_dt", "opt_psi_stem_","profit_","assim_colimited_","hydraulic_cost_", "ci_", "stom_cond_CO2_", "transpiration_","darea_leaf_dmass_live_","respiration_", "turnover_"});
   // add the associated computation to compute_rates and compute there
   if (collect_all_auxiliary) {
     ret.push_back("area_sapwood");

@@ -12,8 +12,8 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // Leaf__ctor
-plant::Leaf Leaf__ctor(double vcmax_25, double c, double b, double psi_crit, double beta1, double beta2, double jmax_25, double hk_s, double a, double curv_fact_elec_trans, double curv_fact_colim, double newton_tol_abs, double GSS_tol_abs, double vulnerability_curve_ncontrol, double ci_abs_tol, double ci_niter);
-RcppExport SEXP _plant_Leaf__ctor(SEXP vcmax_25SEXP, SEXP cSEXP, SEXP bSEXP, SEXP psi_critSEXP, SEXP beta1SEXP, SEXP beta2SEXP, SEXP jmax_25SEXP, SEXP hk_sSEXP, SEXP aSEXP, SEXP curv_fact_elec_transSEXP, SEXP curv_fact_colimSEXP, SEXP newton_tol_absSEXP, SEXP GSS_tol_absSEXP, SEXP vulnerability_curve_ncontrolSEXP, SEXP ci_abs_tolSEXP, SEXP ci_niterSEXP) {
+plant::Leaf Leaf__ctor(double vcmax_25, double c, double b, double psi_crit, double jmax_25, double hk_s, double a, double curv_fact_elec_trans, double curv_fact_colim, double GSS_tol_abs, double vulnerability_curve_ncontrol, double ci_abs_tol, double ci_niter);
+RcppExport SEXP _plant_Leaf__ctor(SEXP vcmax_25SEXP, SEXP cSEXP, SEXP bSEXP, SEXP psi_critSEXP, SEXP jmax_25SEXP, SEXP hk_sSEXP, SEXP aSEXP, SEXP curv_fact_elec_transSEXP, SEXP curv_fact_colimSEXP, SEXP GSS_tol_absSEXP, SEXP vulnerability_curve_ncontrolSEXP, SEXP ci_abs_tolSEXP, SEXP ci_niterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -21,19 +21,16 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type c(cSEXP);
     Rcpp::traits::input_parameter< double >::type b(bSEXP);
     Rcpp::traits::input_parameter< double >::type psi_crit(psi_critSEXP);
-    Rcpp::traits::input_parameter< double >::type beta1(beta1SEXP);
-    Rcpp::traits::input_parameter< double >::type beta2(beta2SEXP);
     Rcpp::traits::input_parameter< double >::type jmax_25(jmax_25SEXP);
     Rcpp::traits::input_parameter< double >::type hk_s(hk_sSEXP);
     Rcpp::traits::input_parameter< double >::type a(aSEXP);
     Rcpp::traits::input_parameter< double >::type curv_fact_elec_trans(curv_fact_elec_transSEXP);
     Rcpp::traits::input_parameter< double >::type curv_fact_colim(curv_fact_colimSEXP);
-    Rcpp::traits::input_parameter< double >::type newton_tol_abs(newton_tol_absSEXP);
     Rcpp::traits::input_parameter< double >::type GSS_tol_abs(GSS_tol_absSEXP);
     Rcpp::traits::input_parameter< double >::type vulnerability_curve_ncontrol(vulnerability_curve_ncontrolSEXP);
     Rcpp::traits::input_parameter< double >::type ci_abs_tol(ci_abs_tolSEXP);
     Rcpp::traits::input_parameter< double >::type ci_niter(ci_niterSEXP);
-    rcpp_result_gen = Rcpp::wrap(Leaf__ctor(vcmax_25, c, b, psi_crit, beta1, beta2, jmax_25, hk_s, a, curv_fact_elec_trans, curv_fact_colim, newton_tol_abs, GSS_tol_abs, vulnerability_curve_ncontrol, ci_abs_tol, ci_niter));
+    rcpp_result_gen = Rcpp::wrap(Leaf__ctor(vcmax_25, c, b, psi_crit, jmax_25, hk_s, a, curv_fact_elec_trans, curv_fact_colim, GSS_tol_abs, vulnerability_curve_ncontrol, ci_abs_tol, ci_niter));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -220,18 +217,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// Leaf__assim_colimited_analytical
-double Leaf__assim_colimited_analytical(plant::RcppR6::RcppR6<plant::Leaf> obj_, double ci_);
-RcppExport SEXP _plant_Leaf__assim_colimited_analytical(SEXP obj_SEXP, SEXP ci_SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Leaf> >::type obj_(obj_SEXP);
-    Rcpp::traits::input_parameter< double >::type ci_(ci_SEXP);
-    rcpp_result_gen = Rcpp::wrap(Leaf__assim_colimited_analytical(obj_, ci_));
-    return rcpp_result_gen;
-END_RCPP
-}
 // Leaf__set_leaf_states_rates_from_psi_stem
 void Leaf__set_leaf_states_rates_from_psi_stem(plant::RcppR6::RcppR6<plant::Leaf> obj_, double psi_stem);
 RcppExport SEXP _plant_Leaf__set_leaf_states_rates_from_psi_stem(SEXP obj_SEXP, SEXP psi_stemSEXP) {
@@ -240,17 +225,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Leaf> >::type obj_(obj_SEXP);
     Rcpp::traits::input_parameter< double >::type psi_stem(psi_stemSEXP);
     Leaf__set_leaf_states_rates_from_psi_stem(obj_, psi_stem);
-    return R_NilValue;
-END_RCPP
-}
-// Leaf__set_leaf_states_rates_from_psi_stem_analytical
-void Leaf__set_leaf_states_rates_from_psi_stem_analytical(plant::RcppR6::RcppR6<plant::Leaf> obj_, double psi_stem);
-RcppExport SEXP _plant_Leaf__set_leaf_states_rates_from_psi_stem_analytical(SEXP obj_SEXP, SEXP psi_stemSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Leaf> >::type obj_(obj_SEXP);
-    Rcpp::traits::input_parameter< double >::type psi_stem(psi_stemSEXP);
-    Leaf__set_leaf_states_rates_from_psi_stem_analytical(obj_, psi_stem);
     return R_NilValue;
 END_RCPP
 }
@@ -266,18 +240,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// Leaf__psi_stem_to_ci_analytical
-double Leaf__psi_stem_to_ci_analytical(plant::RcppR6::RcppR6<plant::Leaf> obj_, double psi_stem);
-RcppExport SEXP _plant_Leaf__psi_stem_to_ci_analytical(SEXP obj_SEXP, SEXP psi_stemSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Leaf> >::type obj_(obj_SEXP);
-    Rcpp::traits::input_parameter< double >::type psi_stem(psi_stemSEXP);
-    rcpp_result_gen = Rcpp::wrap(Leaf__psi_stem_to_ci_analytical(obj_, psi_stem));
-    return rcpp_result_gen;
-END_RCPP
-}
 // Leaf__hydraulic_cost_Sperry
 double Leaf__hydraulic_cost_Sperry(plant::RcppR6::RcppR6<plant::Leaf> obj_, double psi_stem);
 RcppExport SEXP _plant_Leaf__hydraulic_cost_Sperry(SEXP obj_SEXP, SEXP psi_stemSEXP) {
@@ -287,18 +249,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Leaf> >::type obj_(obj_SEXP);
     Rcpp::traits::input_parameter< double >::type psi_stem(psi_stemSEXP);
     rcpp_result_gen = Rcpp::wrap(Leaf__hydraulic_cost_Sperry(obj_, psi_stem));
-    return rcpp_result_gen;
-END_RCPP
-}
-// Leaf__hydraulic_cost_Bartlett
-double Leaf__hydraulic_cost_Bartlett(plant::RcppR6::RcppR6<plant::Leaf> obj_, double psi_stem);
-RcppExport SEXP _plant_Leaf__hydraulic_cost_Bartlett(SEXP obj_SEXP, SEXP psi_stemSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Leaf> >::type obj_(obj_SEXP);
-    Rcpp::traits::input_parameter< double >::type psi_stem(psi_stemSEXP);
-    rcpp_result_gen = Rcpp::wrap(Leaf__hydraulic_cost_Bartlett(obj_, psi_stem));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -338,30 +288,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// Leaf__profit_psi_stem_Sperry_analytical
-double Leaf__profit_psi_stem_Sperry_analytical(plant::RcppR6::RcppR6<plant::Leaf> obj_, double psi_stem);
-RcppExport SEXP _plant_Leaf__profit_psi_stem_Sperry_analytical(SEXP obj_SEXP, SEXP psi_stemSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Leaf> >::type obj_(obj_SEXP);
-    Rcpp::traits::input_parameter< double >::type psi_stem(psi_stemSEXP);
-    rcpp_result_gen = Rcpp::wrap(Leaf__profit_psi_stem_Sperry_analytical(obj_, psi_stem));
-    return rcpp_result_gen;
-END_RCPP
-}
-// Leaf__profit_psi_stem_Bartlett
-double Leaf__profit_psi_stem_Bartlett(plant::RcppR6::RcppR6<plant::Leaf> obj_, double psi_stem);
-RcppExport SEXP _plant_Leaf__profit_psi_stem_Bartlett(SEXP obj_SEXP, SEXP psi_stemSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Leaf> >::type obj_(obj_SEXP);
-    Rcpp::traits::input_parameter< double >::type psi_stem(psi_stemSEXP);
-    rcpp_result_gen = Rcpp::wrap(Leaf__profit_psi_stem_Bartlett(obj_, psi_stem));
-    return rcpp_result_gen;
-END_RCPP
-}
 // Leaf__profit_psi_stem_TF
 double Leaf__profit_psi_stem_TF(plant::RcppR6::RcppR6<plant::Leaf> obj_, double psi_stem);
 RcppExport SEXP _plant_Leaf__profit_psi_stem_TF(SEXP obj_SEXP, SEXP psi_stemSEXP) {
@@ -384,16 +310,6 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
-// Leaf__optimise_psi_stem_Sperry_analytical
-void Leaf__optimise_psi_stem_Sperry_analytical(plant::RcppR6::RcppR6<plant::Leaf> obj_);
-RcppExport SEXP _plant_Leaf__optimise_psi_stem_Sperry_analytical(SEXP obj_SEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Leaf> >::type obj_(obj_SEXP);
-    Leaf__optimise_psi_stem_Sperry_analytical(obj_);
-    return R_NilValue;
-END_RCPP
-}
 // Leaf__optimise_ci_Sperry
 void Leaf__optimise_ci_Sperry(plant::RcppR6::RcppR6<plant::Leaf> obj_, double max_ci);
 RcppExport SEXP _plant_Leaf__optimise_ci_Sperry(SEXP obj_SEXP, SEXP max_ciSEXP) {
@@ -405,16 +321,6 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
-// Leaf__optimise_psi_stem_Bartlett
-void Leaf__optimise_psi_stem_Bartlett(plant::RcppR6::RcppR6<plant::Leaf> obj_);
-RcppExport SEXP _plant_Leaf__optimise_psi_stem_Bartlett(SEXP obj_SEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Leaf> >::type obj_(obj_SEXP);
-    Leaf__optimise_psi_stem_Bartlett(obj_);
-    return R_NilValue;
-END_RCPP
-}
 // Leaf__optimise_psi_stem_TF
 void Leaf__optimise_psi_stem_TF(plant::RcppR6::RcppR6<plant::Leaf> obj_);
 RcppExport SEXP _plant_Leaf__optimise_psi_stem_TF(SEXP obj_SEXP) {
@@ -422,17 +328,6 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Leaf> >::type obj_(obj_SEXP);
     Leaf__optimise_psi_stem_TF(obj_);
-    return R_NilValue;
-END_RCPP
-}
-// Leaf__optimise_psi_stem_TF_newton
-void Leaf__optimise_psi_stem_TF_newton(plant::RcppR6::RcppR6<plant::Leaf> obj_, double psi_guess);
-RcppExport SEXP _plant_Leaf__optimise_psi_stem_TF_newton(SEXP obj_SEXP, SEXP psi_guessSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< plant::RcppR6::RcppR6<plant::Leaf> >::type obj_(obj_SEXP);
-    Rcpp::traits::input_parameter< double >::type psi_guess(psi_guessSEXP);
-    Leaf__optimise_psi_stem_TF_newton(obj_, psi_guess);
     return R_NilValue;
 END_RCPP
 }
@@ -11147,7 +11042,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_plant_Leaf__ctor", (DL_FUNC) &_plant_Leaf__ctor, 16},
+    {"_plant_Leaf__ctor", (DL_FUNC) &_plant_Leaf__ctor, 13},
     {"_plant_Leaf__initialize_integrator", (DL_FUNC) &_plant_Leaf__initialize_integrator, 3},
     {"_plant_Leaf__set_physiology", (DL_FUNC) &_plant_Leaf__set_physiology, 12},
     {"_plant_Leaf__proportion_of_conductivity", (DL_FUNC) &_plant_Leaf__proportion_of_conductivity, 2},
@@ -11162,25 +11057,16 @@ static const R_CallMethodDef CallEntries[] = {
     {"_plant_Leaf__assim_colimited", (DL_FUNC) &_plant_Leaf__assim_colimited, 2},
     {"_plant_Leaf__assim_minus_stom_cond_CO2", (DL_FUNC) &_plant_Leaf__assim_minus_stom_cond_CO2, 3},
     {"_plant_Leaf__electron_transport", (DL_FUNC) &_plant_Leaf__electron_transport, 1},
-    {"_plant_Leaf__assim_colimited_analytical", (DL_FUNC) &_plant_Leaf__assim_colimited_analytical, 2},
     {"_plant_Leaf__set_leaf_states_rates_from_psi_stem", (DL_FUNC) &_plant_Leaf__set_leaf_states_rates_from_psi_stem, 2},
-    {"_plant_Leaf__set_leaf_states_rates_from_psi_stem_analytical", (DL_FUNC) &_plant_Leaf__set_leaf_states_rates_from_psi_stem_analytical, 2},
     {"_plant_Leaf__psi_stem_to_ci", (DL_FUNC) &_plant_Leaf__psi_stem_to_ci, 2},
-    {"_plant_Leaf__psi_stem_to_ci_analytical", (DL_FUNC) &_plant_Leaf__psi_stem_to_ci_analytical, 2},
     {"_plant_Leaf__hydraulic_cost_Sperry", (DL_FUNC) &_plant_Leaf__hydraulic_cost_Sperry, 2},
-    {"_plant_Leaf__hydraulic_cost_Bartlett", (DL_FUNC) &_plant_Leaf__hydraulic_cost_Bartlett, 2},
     {"_plant_Leaf__hydraulic_cost_TF", (DL_FUNC) &_plant_Leaf__hydraulic_cost_TF, 2},
     {"_plant_Leaf__profit_psi_stem_Sperry", (DL_FUNC) &_plant_Leaf__profit_psi_stem_Sperry, 2},
     {"_plant_Leaf__profit_Sperry_ci", (DL_FUNC) &_plant_Leaf__profit_Sperry_ci, 2},
-    {"_plant_Leaf__profit_psi_stem_Sperry_analytical", (DL_FUNC) &_plant_Leaf__profit_psi_stem_Sperry_analytical, 2},
-    {"_plant_Leaf__profit_psi_stem_Bartlett", (DL_FUNC) &_plant_Leaf__profit_psi_stem_Bartlett, 2},
     {"_plant_Leaf__profit_psi_stem_TF", (DL_FUNC) &_plant_Leaf__profit_psi_stem_TF, 2},
     {"_plant_Leaf__optimise_psi_stem_Sperry", (DL_FUNC) &_plant_Leaf__optimise_psi_stem_Sperry, 1},
-    {"_plant_Leaf__optimise_psi_stem_Sperry_analytical", (DL_FUNC) &_plant_Leaf__optimise_psi_stem_Sperry_analytical, 1},
     {"_plant_Leaf__optimise_ci_Sperry", (DL_FUNC) &_plant_Leaf__optimise_ci_Sperry, 2},
-    {"_plant_Leaf__optimise_psi_stem_Bartlett", (DL_FUNC) &_plant_Leaf__optimise_psi_stem_Bartlett, 1},
     {"_plant_Leaf__optimise_psi_stem_TF", (DL_FUNC) &_plant_Leaf__optimise_psi_stem_TF, 1},
-    {"_plant_Leaf__optimise_psi_stem_TF_newton", (DL_FUNC) &_plant_Leaf__optimise_psi_stem_TF_newton, 2},
     {"_plant_Leaf__ci___get", (DL_FUNC) &_plant_Leaf__ci___get, 1},
     {"_plant_Leaf__ci___set", (DL_FUNC) &_plant_Leaf__ci___set, 2},
     {"_plant_Leaf__stom_cond_CO2___get", (DL_FUNC) &_plant_Leaf__stom_cond_CO2___get, 1},

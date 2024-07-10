@@ -606,8 +606,7 @@ eta_c = 1 - 2 / (1 + ff16w_params$eta) + 1 / (1 + 2 * ff16w_params$eta)
 leaf_specific_conductance_max <- ff16w_params$K_s * ff16w_params$theta / (height * eta_c)
 sapwood_volume_per_leaf_area <- ff16w_params$theta * height* eta_c
 leaf_obj <- Leaf(vcmax_25 = ff16w_params$vcmax_25, jmax_25 = ff16w_params$jmax_25, c = ff16w_params$c, b = ff16w_params$b, psi_crit = ff16w_params$psi_crit, hk_s = ff16w_params$hk_s, a = ff16w_params$a,
-          curv_fact_elec_trans = ff16w_params$curv_fact_elec_trans, curv_fact_colim = ff16w_params$curv_fact_colim,
-          newton_tol_abs = ff16w_params$control$newton_tol_abs, GSS_tol_abs = ff16w_params$control$GSS_tol_abs, vulnerability_curve_ncontrol = ff16w_params$control$vulnerability_curve_ncontrol, ci_abs_tol = ff16w_params$control$ci_abs_tol, 
+          curv_fact_elec_trans = ff16w_params$curv_fact_elec_trans, curv_fact_colim = ff16w_params$curv_fact_colim, GSS_tol_abs = ff16w_params$control$GSS_tol_abs, vulnerability_curve_ncontrol = ff16w_params$control$vulnerability_curve_ncontrol, ci_abs_tol = ff16w_params$control$ci_abs_tol, 
           ci_niter = ff16w_params$control$ci_niter)
 leaf_obj$set_physiology(PPFD = PPFD, psi_soil = psi_soil, leaf_specific_conductance_max = leaf_specific_conductance_max, atm_vpd = atm_vpd, 
                  ca = ca, sapwood_volume_per_leaf_area = sapwood_volume_per_leaf_area, rho = ff16w_params$rho, a_bio = ff16w_params$a_bio, 
